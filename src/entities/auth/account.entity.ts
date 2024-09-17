@@ -11,10 +11,10 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    @Column({ type: 'varchar' })
    password: string;
 
-   @Column({ type: 'varchar' })
+   @Column({ type: 'boolean', default: false })
    isVerify: boolean;
 
-   @Column({ type: 'varchar' })
+   @Column({ type: 'boolean' })
    isActive: boolean;
 
    @Column({ type: 'varchar', name: 'access_token', nullable: true })
