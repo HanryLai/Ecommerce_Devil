@@ -1,4 +1,3 @@
-import { AccountEntity } from './auth';
-export * from './base';
-export * from './interfaces';
-export const entities = [AccountEntity];
+import { AccountEntity, DetailInformationEntity, RoleEntity } from './auth';
+
+export const entities = [AccountEntity, DetailInformationEntity, RoleEntity];
