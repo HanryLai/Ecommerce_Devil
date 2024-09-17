@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { entities } from 'src/entities';
-import { AccountEntity } from 'src/entities/auth';
 @Module({
    imports: [
       ConfigModule.forRoot({
@@ -26,7 +25,7 @@ import { AccountEntity } from 'src/entities/auth';
             database: process.env.POSTGRES_DB,
             autoLoadEntities: true,
             synchronize: true,
-            entities: [AccountEntity],
+            entities: entities,
          }),
       }),
    ],
