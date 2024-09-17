@@ -1,6 +1,7 @@
-import { Column, Entity } from 'typeorm';
-import { IAccountEntity } from '../interfaces/account.entity.interface';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { IAccountEntity } from '../interfaces';
 import { BaseEntity } from '../base';
+import { DetailInformationEntity, RoleEntity } from '.';
 
 @Entity({ name: 'account' })
 export class AccountEntity extends BaseEntity<AccountEntity> implements IAccountEntity {
@@ -21,4 +22,12 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    accessToken: string;
    @Column({ type: 'varchar', name: 'refresh_token', nullable: true })
    refreshToken: string;
+
+   @OneToOne(() => DetailInformationEntity)
+   @JoinColumn()
+   detailInformation: DetailInformationEntity;
+
+   @OneToOne(() => RoleEntity)
+   @JoinColumn()
+   roleEntity: RoleEntity;
 }
