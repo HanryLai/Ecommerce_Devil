@@ -24,10 +24,10 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    refreshToken: string;
 
    @OneToOne(() => DetailInformationEntity)
-   @JoinColumn()
+   @JoinColumn({ name: 'detail_information_id' })
    detailInformation: DetailInformationEntity;
 
    @OneToOne(() => RoleEntity)
-   @JoinColumn()
+   @JoinColumn({ name: 'role_id' })
    roleEntity: RoleEntity;
 }
