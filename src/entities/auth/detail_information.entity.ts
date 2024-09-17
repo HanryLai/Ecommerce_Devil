@@ -1,12 +1,11 @@
 import { Column, Entity } from 'typeorm';
-import { IBaseEntity } from '../interfaces';
 import { BaseEntity } from '../base';
-import { IDetailInformation } from '../interfaces/detail_information.interface';
+import { IDetailInformationEntity } from '../interfaces';
 
 @Entity('detail_information')
 export class DetailInformationEntity
    extends BaseEntity<DetailInformationEntity>
-   implements IDetailInformation
+   implements IDetailInformationEntity
 {
    @Column({ type: 'varchar' })
    phone: string;
