@@ -1,4 +1,4 @@
-export interface IDetailInformation {
+export interface IDetailInformationEntity {
    phone: string;
    full_name: string;
    address: string;
