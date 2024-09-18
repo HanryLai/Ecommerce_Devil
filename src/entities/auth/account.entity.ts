@@ -29,5 +29,5 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
 
    @OneToOne(() => RoleEntity)
    @JoinColumn({ name: 'role_id' })
-   roleEntity: RoleEntity;
+   role: RoleEntity;
 }

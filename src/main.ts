@@ -1,8 +1,9 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ConfigModule } from '@nestjs/config';
-import helmet from 'helmet';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
+import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/HttpExceptionFilter.filter';
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
    ConfigModule.forRoot({
@@ -22,6 +23,8 @@ async function bootstrap() {
 
    app.use(helmet());
    app.enableCors();
+
+   app.useGlobalFilters(new HttpExceptionFilter());
    await app.listen(process.env.PORT, () => {
       console.log('Server is running on port ' + process.env.PORT);
    });
