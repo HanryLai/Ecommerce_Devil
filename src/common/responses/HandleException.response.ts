@@ -10,9 +10,9 @@ export class HandleException extends HttpException {
    public errorMessage() {
       return {
          message: this.message,
-         data: {},
          statusCode: this.statusCode,
          success: false,
+         data: {},
       };
    }
 }
