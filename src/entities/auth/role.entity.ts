@@ -1,6 +1,7 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../base';
 import { IRoleEntity } from '../interfaces';
+import { AccountEntity } from './account.entity';
 
 @Entity('role')
 export class RoleEntity extends BaseEntity<RoleEntity> implements IRoleEntity {
@@ -8,4 +9,7 @@ export class RoleEntity extends BaseEntity<RoleEntity> implements IRoleEntity {
    name: string;
    @Column({ type: 'varchar' })
    description: string;
+
+   @OneToMany(() => AccountEntity, (account) => account.role)
+   accounts: AccountEntity[];
 }
