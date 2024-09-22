@@ -7,12 +7,12 @@ export class DetailInformationEntity
    extends BaseEntity<DetailInformationEntity>
    implements IDetailInformationEntity
 {
-   @Column({ type: 'varchar' })
+   @Column({ type: 'varchar', nullable: true })
    phone: string;
-   @Column({ type: 'varchar' })
+   @Column({ type: 'varchar', nullable: true })
    full_name: string;
-   @Column({ type: 'varchar' })
+   @Column({ type: 'varchar', nullable: true })
    address: string;
-   @Column({ type: 'varchar', default: process.env.IMAGE_PATH })
+   @Column({ type: 'varchar', nullable: true })
    avatar_url: string;
 }
