@@ -6,10 +6,9 @@ import { BaseService } from 'src/common/base/service.base';
 import { DetailInformationEntity, RoleEntity } from 'src/entities/auth';
 import { AccountEntity } from 'src/entities/auth/account.entity';
 import { AccountRepository } from 'src/repositories/auth';
-import { EntityManager, In } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { RoleService } from '../role/role.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { TransformDataQuery } from '../../common/queries/findAccount.dto';
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
@@ -25,7 +24,10 @@ export class AuthService extends BaseService {
    public async register(createAuthDto: CreateAuthDto): Promise<AccountEntity> {
       try {
          const foundAccount = await this.accountRepository.findOne({
-            where: [{ username: createAuthDto.username }, { email: createAuthDto.email }],
+            where: [
+               { username: createAuthDto.username, isActive: true },
+               { email: createAuthDto.email, isActive: true },
+            ],
          });
          if (foundAccount) return this.throwConflict('Email or username existed');
          const salt = await bcrypt.genSalt(10);
@@ -65,10 +67,32 @@ export class AuthService extends BaseService {
             where: [{ username: loginDto.username }, { email: loginDto.email }],
          });
          if (!foundAccount) throw this.throwNotFound('Cannot found this account');
+         const comparePassword = await bcrypt.compare(loginDto.password, foundAccount.password);
+         if (comparePassword === false) throw this.throwNotFound('Wrong password');
+         const payload = {
+            id: foundAccount.id,
+         };
+         this.generateToken(payload);
+         // const updateResult =
          return foundAccount;
       } catch (error) {
-         console.log(error);
-         throw this.throwError(400, 'Error: Cannot login');
+         throw this.throwError(400, 'Error: login failed');
       }
+   }
+
+   public async generateToken(payloadData: Record<string, any>): Promise<{
+      accessToken: string;
+      refreshToken: string;
+   }> {
+      const accessTokenSync = this.jwtService.sign(payloadData, {
+         expiresIn: '1d',
+         secret: process.env.JWT_SECRET,
+      });
+      const refreshTokenSync = this.jwtService.sign(payloadData, {
+         expiresIn: '30d',
+         secret: process.env.JWT_SECRET,
+      });
+      const [accessToken, refreshToken] = await Promise.all([accessTokenSync, refreshTokenSync]);
+      return { accessToken, refreshToken };
    }
 }

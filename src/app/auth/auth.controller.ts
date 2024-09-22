@@ -29,7 +29,10 @@ export class AuthController extends BaseController {
    public async login(@Body() loginDto: CreateAuthDto) {
       return this.createSuccessResponse(await this.authService.login(loginDto), 201);
    }
-
+   @Get()
+   async get() {
+      console.log('testt');
+   }
    // @Get('test')
    // public async test(@Body() dataRegister: CreateAuthDto) {
    //    const account = await this.authService.findAccountByField(dataRegister);
