@@ -1,19 +1,38 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { BaseController } from 'src/common/base/controller.base';
+import { AuthGuard } from 'src/common/guard/authorizationRequest.guard';
 
 @Controller('auth')
-export class AuthController {
-   constructor(private readonly authService: AuthService) {}
+export class AuthController extends BaseController {
+   constructor(private readonly authService: AuthService) {
+      super();
+   }
 
    @Post('register')
    @ApiOperation({
-      description: 'register new account for user',
+      description: 'Register new account for user',
    })
-   @ApiResponse({ status: '2XX', description: 'register successfully' })
-   @ApiResponse({ status: '5XX', description: 'register failed' })
+   @ApiResponse({ status: '2XX', description: 'Register successfully' })
+   @ApiResponse({ status: '5XX', description: 'Register failed' })
    public async register(@Body() dataRegister: CreateAuthDto) {
-      return await this.authService.register(dataRegister);
+      const account = await this.authService.register(dataRegister);
+      return this.createSuccessResponse(account, 201);
    }
+
+   @Post('login')
+   @ApiResponse({ status: '2XX', description: 'Login successfully' })
+   @ApiResponse({ status: '5XX', description: 'Login failed' })
+   @ApiBearerAuth()
+   public async login(@Body() loginDto: CreateAuthDto) {
+      return this.createSuccessResponse(await this.authService.login(loginDto), 201);
+   }
+
+   // @Get('test')
+   // public async test(@Body() dataRegister: CreateAuthDto) {
+   //    const account = await this.authService.findAccountByField(dataRegister);
+   //    return this.createSuccessResponse(account);
+   // }
 }

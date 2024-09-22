@@ -1,22 +1,19 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { IAccountEntity } from '../interfaces';
 import { BaseEntity } from '../base';
 import { DetailInformationEntity, RoleEntity } from '.';
 
 @Entity({ name: 'account' })
 export class AccountEntity extends BaseEntity<AccountEntity> implements IAccountEntity {
-   @Column({ type: 'varchar' })
+   @Column({ type: 'varchar', unique: true })
    email: string;
-   @Column({ type: 'varchar' })
+   @Column({ type: 'varchar', unique: true })
    username: string;
    @Column({ type: 'varchar' })
    password: string;
 
    @Column({ type: 'boolean', default: false })
    isVerify: boolean;
-
-   @Column({ type: 'boolean' })
-   isActive: boolean;
 
    @Column({ type: 'varchar', name: 'access_token', nullable: true })
    accessToken: string;
@@ -27,7 +24,7 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    @JoinColumn({ name: 'detail_information_id' })
    detailInformation: DetailInformationEntity;
 
-   @OneToOne(() => RoleEntity)
+   @ManyToOne(() => RoleEntity, (role) => role.accounts)
    @JoinColumn({ name: 'role_id' })
    role: RoleEntity;
 }
