@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { BaseController } from 'src/common/base/controller.base';
-import { AuthGuard } from 'src/common/guard/authorizationRequest.guard';
+import { BaseController } from 'src/common/base/baseController.base';
 
 @Controller('auth')
 export class AuthController extends BaseController {
@@ -19,7 +18,7 @@ export class AuthController extends BaseController {
    @ApiResponse({ status: '5XX', description: 'Register failed' })
    public async register(@Body() dataRegister: CreateAuthDto) {
       const account = await this.authService.register(dataRegister);
-      return this.createSuccessResponse(account, 201);
+      return this.createSuccessResponse(account);
    }
 
    @Post('login')
@@ -27,7 +26,7 @@ export class AuthController extends BaseController {
    @ApiResponse({ status: '5XX', description: 'Login failed' })
    @ApiBearerAuth()
    public async login(@Body() loginDto: CreateAuthDto) {
-      return this.createSuccessResponse(await this.authService.login(loginDto), 201);
+      return this.OkResponse(await this.authService.login(loginDto));
    }
    @Get()
    async get() {

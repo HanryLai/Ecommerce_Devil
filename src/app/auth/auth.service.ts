@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { BaseService } from 'src/common/base/service.base';
 import { DetailInformationEntity, RoleEntity } from 'src/entities/auth';
 import { AccountEntity } from 'src/entities/auth/account.entity';
 import { AccountRepository } from 'src/repositories/auth';
 import { EntityManager } from 'typeorm';
 import { RoleService } from '../role/role.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { BaseService } from 'src/common/base/baseService.base';
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
@@ -29,7 +29,7 @@ export class AuthService extends BaseService {
                { email: createAuthDto.email, isActive: true },
             ],
          });
-         if (foundAccount) return this.throwConflict('Email or username existed');
+         if (foundAccount) throw new Error('Email or username existed');
          const salt = await bcrypt.genSalt(10);
          const passwordHashed = await bcrypt.hash(createAuthDto.password, salt);
          const accountModel = this.accountRepository.create({
@@ -39,7 +39,7 @@ export class AuthService extends BaseService {
          const roleFound = await this.roleService.findRoleByName('Customer');
          return await this.registerTransaction(accountModel, roleFound);
       } catch (error) {
-         this.throwInternalServerError(error);
+         this.ThrowError(error);
       }
    }
 
@@ -57,26 +57,27 @@ export class AuthService extends BaseService {
             return accountSave;
          });
       } catch (error) {
-         throw this.throwInternalServerError('Error: transaction register');
+         throw new Error('Error: transaction register');
       }
    }
 
-   public async login(loginDto: CreateAuthDto): Promise<AccountEntity | BaseService> {
+   public async login(loginDto: CreateAuthDto): Promise<AccountEntity> {
       try {
          const foundAccount = await this.accountRepository.findOne({
             where: [{ username: loginDto.username }, { email: loginDto.email }],
          });
-         if (!foundAccount) throw this.throwNotFound('Cannot found this account');
+         if (!foundAccount) throw new Error('Cannot found this account');
          const comparePassword = await bcrypt.compare(loginDto.password, foundAccount.password);
-         if (comparePassword === false) throw this.throwNotFound('Wrong password');
+         if (comparePassword === false) throw new Error('Wrong password');
          const payload = {
             id: foundAccount.id,
          };
          this.generateToken(payload);
-         // const updateResult =
+
+         // this.ForbiddenException('Test success');
          return foundAccount;
       } catch (error) {
-         throw this.throwError(400, 'Error: login failed');
+         this.ThrowError(error);
       }
    }
 

@@ -1,4 +1,4 @@
-import { MessageResponse } from './interfaces/MessageResponse.interface.response';
+import { MessageResponse } from './interfaces';
 
 export class BaseController {
    protected createSuccessResponse(data: unknown, message?: string): MessageResponse {

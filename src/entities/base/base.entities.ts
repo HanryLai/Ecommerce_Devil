@@ -1,10 +1,4 @@
-import {
-   Column,
-   CreateDateColumn,
-   DeleteDateColumn,
-   PrimaryGeneratedColumn,
-   UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { IBaseEntity } from '../interfaces';
 
 export class BaseEntity<T> implements IBaseEntity {

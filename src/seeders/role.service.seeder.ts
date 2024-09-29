@@ -1,7 +1,7 @@
 import { OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleEntity } from 'src/entities/auth';
-import { RoleRepository } from 'src/repositories/auth/role.repository';
+import { RoleRepository } from 'src/repositories/auth';
 
 export class RoleSeeder implements OnModuleInit {
    @InjectRepository(RoleEntity)
@@ -27,7 +27,6 @@ export class RoleSeeder implements OnModuleInit {
             }
          }
       } catch (error) {
-         console.log(error);
          throw error;
       }
    }

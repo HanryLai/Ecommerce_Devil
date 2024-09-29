@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../base';
 import { IRoleEntity } from '../interfaces';
 import { AccountEntity } from './account.entity';

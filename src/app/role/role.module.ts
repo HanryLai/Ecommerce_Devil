@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { RoleService } from './role.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleEntity } from 'src/entities/auth';
+import { RoleService } from '.';
 
 @Module({
    imports: [TypeOrmModule.forFeature([RoleEntity])],

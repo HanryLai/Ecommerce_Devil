@@ -4,7 +4,7 @@ import { RoleEntity } from 'src/entities/auth';
 import { RoleRepository } from 'src/repositories/auth/role.repository';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Like } from 'typeorm';
-import { BaseService } from 'src/common/base/service.base';
+import { BaseService } from 'src/common/base/baseService.base';
 
 @Injectable()
 export class RoleService extends BaseService {
@@ -16,7 +16,7 @@ export class RoleService extends BaseService {
       try {
          return this.roleRepository.create({ ...updateRoleDto });
       } catch (error) {
-         this.throwError(500, 'create module of role');
+         throw this.BadRequestException('Cannot create new model role');
       }
    }
 
@@ -27,10 +27,10 @@ export class RoleService extends BaseService {
                name: Like(name),
             },
          });
-         if (!foundRole) this.throwNotFound('Not found this role');
+         if (!foundRole) this.NotFoundException('Not have this role');
          return foundRole;
       } catch (error) {
-         this.throwError(500, 'Error: find role by name');
+         throw this.ThrowError(error);
       }
    }
 }
