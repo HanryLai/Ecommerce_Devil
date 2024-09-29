@@ -17,11 +17,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       const status = exception.getStatus();
       let cause = '';
       let message = '';
-      if (exception instanceof BaseError) {
+
+      if (exception) {
          const objectError = exception.getResponse() as unknown as ObjectResponse;
          cause = objectError.error;
          message = objectError.message;
       }
+
       response.status(status).json({
          error: cause,
          message: message,

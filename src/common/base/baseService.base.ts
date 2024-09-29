@@ -147,6 +147,7 @@ export class BaseService {
    }
 
    protected ThrowError(error: any) {
+      console.log(error);
       switch (error.response.error) {
          case 'BadRequestException':
             throw this.BadRequestException(error.response.message);
@@ -217,6 +218,12 @@ export class BaseService {
 
          case 'HTTPVersionNotSupportedException':
             throw this.HTTPVersionNotSupportedException(error.response.message);
+         default:
+            throw new BaseError(
+               'UnknownError',
+               HttpStatus.INTERNAL_SERVER_ERROR,
+               'An unknown error occurred',
+            );
       }
    }
 }
