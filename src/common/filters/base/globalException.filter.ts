@@ -1,7 +1,5 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
-import { error } from 'console';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 import { Response } from 'express';
-import { BaseError } from 'src/common/base/baseError.base';
 
 type ObjectResponse = {
    error: string;
