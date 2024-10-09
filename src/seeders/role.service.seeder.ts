@@ -9,7 +9,7 @@ export class RoleSeeder implements OnModuleInit {
 
    async onModuleInit() {
       try {
-         const roles = ['Admin', 'Customer'];
+         const roles = ['admin', 'customer'];
          const descriptions = [
             'Admin who management of e-commercial market',
             'Customer who access market to buy something',
