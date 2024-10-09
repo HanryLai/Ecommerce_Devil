@@ -1,8 +1,7 @@
 import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from '@nestjs/common';
-import { IPayload } from 'src/app/auth/jwt/IPayload.interface';
-import { JWTService } from 'src/app/auth/jwt/jwt.service';
 import { BaseService } from '../base';
-import { CurrentUserDto } from './dto/user-dto.interceptor';
+import { IPayload, JWTService } from 'src/app/auth/jwt';
+import { CurrentUserDto } from './dto';
 
 @Injectable()
 export class CurrentUserInterceptor extends BaseService implements NestInterceptor {
