@@ -17,7 +17,7 @@ import { entities } from 'src/entities';
       }),
       TypeOrmModule.forRootAsync({
          useFactory: () => ({
-            type: 'postgres',
+            type: 'mysql',
             host: process.env.POSTGRES_HOST,
             port: parseInt(process.env.POSTGRES_PORT),
             username: process.env.POSTGRES_USER,
