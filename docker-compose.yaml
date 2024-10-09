@@ -1,0 +1,12 @@
+version: '3'
+services:
+   db:
+      image: postgres
+      environment:
+         POSTGRES_DB: ecommercial
+         POSTGRES_USER: postgres
+         POSTGRES_PASSWORD: khongbiet
+   app:
+      image: ecommercial-app
+      ports:
+         - 13000:3000
