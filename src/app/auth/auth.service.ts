@@ -1,20 +1,22 @@
-import { HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { BaseService } from 'src/common/base/baseService.base';
+import { CurrentUserDto } from 'src/common/interceptor/dto/user-dto.interceptor';
 import { DetailInformationEntity, RoleEntity } from 'src/entities/auth';
 import { AccountEntity } from 'src/entities/auth/account.entity';
 import { AccountRepository } from 'src/repositories/auth';
 import { EntityManager } from 'typeorm';
 import { RoleService } from '../role/role.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { BaseService } from 'src/common/base/baseService.base';
+import { LoginDto } from './dto/login.dto';
+import { JWTService } from './jwt/jwt.service';
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
       private entityManager: EntityManager,
-      private jwtService: JwtService,
+      private jwtService: JWTService,
 
       @Inject() private readonly roleService: RoleService,
    ) {
@@ -26,10 +28,12 @@ export class AuthService extends BaseService {
          const foundAccount = await this.accountRepository.findOne({
             where: [
                { username: createAuthDto.username, isActive: true },
+               { username: createAuthDto.email, isActive: true },
                { email: createAuthDto.email, isActive: true },
+               { email: createAuthDto.username, isActive: true },
             ],
          });
-         if (foundAccount) throw new Error('Email or username existed');
+         if (foundAccount) this.ConflictException('Email or username existed');
          const salt = await bcrypt.genSalt(10);
          const passwordHashed = await bcrypt.hash(createAuthDto.password, salt);
          const accountModel = this.accountRepository.create({
@@ -61,39 +65,59 @@ export class AuthService extends BaseService {
       }
    }
 
-   public async login(loginDto: CreateAuthDto): Promise<AccountEntity> {
+   public async login(loginDto: LoginDto): Promise<AccountEntity> {
       try {
+         const identifier = loginDto.identifier;
          const foundAccount = await this.accountRepository.findOne({
-            where: [{ username: loginDto.username }, { email: loginDto.email }],
+            where: [{ username: identifier }, { email: identifier }],
+            select: ['id', 'username', 'email', 'password', 'role'],
+            relations: ['role'],
          });
-         if (!foundAccount) throw new Error('Cannot found this account');
+
+         if (!foundAccount) this.NotFoundException('Wrong account or password');
          const comparePassword = await bcrypt.compare(loginDto.password, foundAccount.password);
-         if (comparePassword === false) throw new Error('Wrong password');
+         if (comparePassword === false) this.NotFoundException('Wrong account or password');
          const payload = {
             id: foundAccount.id,
+            username: foundAccount.username,
+            email: foundAccount.email,
+            roleName: foundAccount.role.name,
          };
-         this.generateToken(payload);
+         const { accessToken, refreshToken } = await this.jwtService.generateToken(payload);
 
-         // this.ForbiddenException('Test success');
-         return foundAccount;
+         const updateResult = await this.accountRepository.update(
+            { id: foundAccount.id },
+            { refreshToken, accessToken },
+         );
+         if (!updateResult.affected) this.BadGatewayException('Update failed');
+         delete foundAccount.password;
+         return {
+            ...foundAccount,
+            refreshToken,
+            accessToken,
+         };
       } catch (error) {
          this.ThrowError(error);
       }
    }
 
-   public async generateToken(payloadData: Record<string, any>): Promise<{
-      accessToken: string;
-      refreshToken: string;
-   }> {
-      const accessTokenSync = this.jwtService.sign(payloadData, {
-         expiresIn: '1d',
-         secret: process.env.JWT_SECRET,
-      });
-      const refreshTokenSync = this.jwtService.sign(payloadData, {
-         expiresIn: '30d',
-         secret: process.env.JWT_SECRET,
-      });
-      const [accessToken, refreshToken] = await Promise.all([accessTokenSync, refreshTokenSync]);
-      return { accessToken, refreshToken };
+   public async logout(user: CurrentUserDto): Promise<boolean> {
+      try {
+         if (!user) this.UnauthorizedException('Invalid account');
+         const updateResult = await this.accountRepository.update(
+            { id: user.id },
+            { refreshToken: null, accessToken: null },
+         );
+         if (!updateResult.affected) this.BadGatewayException('Update failed');
+         return true;
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
+
+   public async findAccountById(id: string) {
+      // const foundAccount = await this.accountRepository.findOne({
+      //    where:{id}
+      // })
    }
 }
