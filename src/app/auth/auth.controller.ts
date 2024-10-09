@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpCode, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+   Body,
+   Controller,
+   Get,
+   HttpCode,
+   Param,
+   Post,
+   UseGuards,
+   UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { MessageResponse } from 'src/common/base';
 import { BaseController } from 'src/common/base/baseController.base';
@@ -46,6 +55,21 @@ export class AuthController extends BaseController {
    @HttpCode(200)
    public async logout(@CurrentUser() user: CurrentUserDto): Promise<MessageResponse> {
       return this.OkResponse(await this.authService.logout(user));
+   }
+
+   @Get('account/:id')
+   @ApiOperation({ description: 'Feature logout' })
+   @ApiResponse({ status: '2XX', description: 'Logout successfully' })
+   @ApiResponse({ status: '5XX', description: 'Logout failed' })
+   @ApiBearerAuth()
+   @UseGuards(AuthGuard)
+   @UseInterceptors(CurrentUserInterceptor)
+   @HttpCode(200)
+   async findAccountById(
+      @CurrentUser() user: CurrentUserDto,
+      @Param('id') id: string,
+   ): Promise<MessageResponse> {
+      return this.OkResponse(await this.authService.findAccountById(user, id));
    }
 
    @UseGuards(AuthGuard)

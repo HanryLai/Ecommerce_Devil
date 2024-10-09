@@ -1,16 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { BaseService } from 'src/common/base/baseService.base';
-import { CurrentUserDto } from 'src/common/interceptor/dto/user-dto.interceptor';
-import { DetailInformationEntity, RoleEntity } from 'src/entities/auth';
-import { AccountEntity } from 'src/entities/auth/account.entity';
+import { AccountEntity, DetailInformationEntity, RoleEntity } from 'src/entities/auth';
 import { AccountRepository } from 'src/repositories/auth';
 import { EntityManager } from 'typeorm';
 import { RoleService } from '../role/role.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { LoginDto } from './dto/login.dto';
-import { JWTService } from './jwt/jwt.service';
+import { JWTService } from './jwt';
+import { CreateAuthDto, LoginDto } from './dto';
+import { CurrentUserDto } from 'src/common/interceptor';
+import { BaseService } from 'src/common/base';
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
@@ -23,7 +21,10 @@ export class AuthService extends BaseService {
       super();
    }
 
-   public async register(createAuthDto: CreateAuthDto): Promise<AccountEntity> {
+   public async register(
+      createAuthDto: CreateAuthDto,
+      role?: string | 'customer',
+   ): Promise<AccountEntity> {
       try {
          const foundAccount = await this.accountRepository.findOne({
             where: [
@@ -40,7 +41,7 @@ export class AuthService extends BaseService {
             ...createAuthDto,
             password: passwordHashed,
          });
-         const roleFound = await this.roleService.findRoleByName('Customer');
+         const roleFound = await this.roleService.findRoleByName(role);
          return await this.registerTransaction(accountModel, roleFound);
       } catch (error) {
          this.ThrowError(error);
@@ -115,9 +116,17 @@ export class AuthService extends BaseService {
       }
    }
 
-   public async findAccountById(id: string) {
-      // const foundAccount = await this.accountRepository.findOne({
-      //    where:{id}
-      // })
+   public async findAccountById(user: CurrentUserDto, id_account: string): Promise<AccountEntity> {
+      try {
+         if (!(user.roleName === 'admin' || user.id === id_account))
+            this.UnauthorizedException('Not have permission find this account');
+         const foundAccount = await this.accountRepository.findOne({
+            where: { id: id_account },
+         });
+         if (!foundAccount) this.NotFoundException('Not found this account');
+         return foundAccount;
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 }
