@@ -15,9 +15,9 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    @Column({ type: 'boolean', default: false })
    isVerify: boolean;
 
-   @Column({ type: 'varchar', name: 'access_token', nullable: true })
+   @Column({ type: 'longtext', name: 'access_token', nullable: true })
    accessToken: string;
-   @Column({ type: 'varchar', name: 'refresh_token', nullable: true })
+   @Column({ type: 'longtext', name: 'refresh_token', nullable: true })
    refreshToken: string;
 
    @OneToOne(() => DetailInformationEntity)
