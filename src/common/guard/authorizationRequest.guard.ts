@@ -6,7 +6,7 @@ import { BaseError } from '../base';
 export class AuthGuard implements CanActivate {
    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
       const request = context.switchToHttp().getRequest();
-      if (!request.header.authorization)
+      if (!request.headers.authorization)
          throw new BaseError('UnauthorizedException', HttpStatus.UNAUTHORIZED, 'You must login');
       return true;
    }
