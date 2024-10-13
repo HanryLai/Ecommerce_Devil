@@ -48,6 +48,9 @@ $ pnpm run start:prod
 ## Run tests
 
 ```bash
+
+# REMEMBER CHECK ENVIRONMENT (PRODUCTION OR DEVELOPMENT)
+
 # unit tests
 $ pnpm run test
 
