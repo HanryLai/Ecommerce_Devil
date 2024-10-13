@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { entities } from 'src/entities';
@@ -7,26 +7,23 @@ import { entities } from 'src/entities';
    imports: [
       ConfigModule.forRoot({
          isGlobal: true,
-         validationSchema: Joi.object({
-            POSTGRES_HOST: Joi.string().required(),
-            POSTGRES_PORT: Joi.number().required(),
-            POSTGRES_USER: Joi.string().required(),
-            POSTGRES_PASSWORD: Joi.string().required(),
-            POSTGRES_DB: Joi.string().required(),
-         }),
+         envFilePath: `.env.${process.env.NODE_ENV}`,
       }),
       TypeOrmModule.forRootAsync({
-         useFactory: () => ({
-            type: 'mysql',
-            host: process.env.POSTGRES_HOST,
-            port: parseInt(process.env.POSTGRES_PORT),
-            username: process.env.POSTGRES_USER,
-            password: process.env.POSTGRES_PASSWORD,
-            database: process.env.POSTGRES_DB,
-            autoLoadEntities: true,
-            synchronize: true,
-            entities: entities,
-         }),
+         inject: [ConfigService],
+         useFactory: (config: ConfigService) => {
+            return {
+               type: 'mysql',
+               host: config.get<string>('POSTGRES_HOST'),
+               port: config.get<number>('POSTGRES_PORT'),
+               username: config.get<string>('POSTGRES_USER'),
+               password: config.get<string>('POSTGRES_PASSWORD'),
+               database: config.get<string>('POSTGRES_DB'),
+               autoLoadEntities: true,
+               synchronize: true,
+               entities: entities,
+            };
+         },
       }),
    ],
    providers: [],

@@ -1,4 +1,4 @@
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
@@ -7,10 +7,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { GlobalExceptionFilter } from './common/filters/base';
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
-   ConfigModule.forRoot({
-      isGlobal: true,
-   });
-
+   const configService = app.get(ConfigService);
+   const post = configService.get<number>('PORT') || 9999;
+   console.log('NODE_ENV:', process.env.NODE_ENV);
    app.setGlobalPrefix('api');
 
    const config = new DocumentBuilder()
@@ -27,8 +26,8 @@ async function bootstrap() {
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalPipes(new ValidationPipe());
 
-   await app.listen(process.env.PORT, () => {
-      console.log('Server is running on port ' + process.env.PORT);
+   await app.listen(post, () => {
+      console.log('Server is running on port ' + post);
    });
 }
 bootstrap();
