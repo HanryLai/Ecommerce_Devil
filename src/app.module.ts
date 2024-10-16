@@ -6,6 +6,7 @@ import { LoggerMiddleware } from './middleware';
 import { AdminSeeder, RoleSeeder } from './seeders';
 import { AuthModule } from './app/auth';
 import { RoleModule } from './app/role';
+import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
 
 @Module({
    imports: [
@@ -13,6 +14,7 @@ import { RoleModule } from './app/role';
       DatabaseModule,
       AuthModule,
       RoleModule,
+      CloudinaryModule,
    ],
    providers: [RoleSeeder, AdminSeeder],
 })
