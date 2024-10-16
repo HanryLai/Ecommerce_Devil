@@ -66,6 +66,11 @@ export class CloudinaryService extends BaseService {
          const filePath = file.path;
          const result = await v2.uploader.upload(filePath, {
             folder: 'e-commerce',
+            transformation: [
+               {
+                  size: '500000',
+               },
+            ],
             ...option,
          });
          if (!result) this.ExpectationFailedException('Upload multiple file to cloud failed');
