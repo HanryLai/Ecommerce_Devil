@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { BaseError } from './baseError.base';
+import { CloudinaryError } from 'src/utils/cloudinary/error/cloudinaryError.error';
 
 export class BaseService {
    protected BadRequestException(message: string) {
@@ -151,6 +152,9 @@ export class BaseService {
       if (error instanceof HttpException) {
          const response = error.getResponse() as unknown as { error: string; message: string };
          throw new BaseError(response.error, error.getStatus(), response.message);
+      } else if (error instanceof CloudinaryError) {
+         console.log('DJTTTT');
+         throw error;
       } else {
          throw new BaseError(
             error?.message ? error.message : 'Unknow Error',
