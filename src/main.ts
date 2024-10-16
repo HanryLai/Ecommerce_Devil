@@ -9,7 +9,6 @@ async function bootstrap() {
    const app = await NestFactory.create(AppModule);
    const configService = app.get(ConfigService);
    const post = configService.get<number>('PORT') || 9999;
-   console.log('NODE_ENV:', process.env.NODE_ENV);
    app.setGlobalPrefix('api');
 
    const config = new DocumentBuilder()
