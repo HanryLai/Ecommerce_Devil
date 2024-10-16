@@ -1,4 +1,4 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { BaseError } from './baseError.base';
 
 export class BaseService {
@@ -147,83 +147,16 @@ export class BaseService {
    }
 
    protected ThrowError(error: any) {
-      console.log(error);
-      switch (error.response.error) {
-         case 'BadRequestException':
-            throw this.BadRequestException(error.response.message);
-         case 'UnauthorizedException':
-            throw this.UnauthorizedException(error.response.message);
-         case 'PaymentRequiredException':
-            throw this.PaymentRequiredException(error.response.message);
-         case 'ForbiddenException':
-            throw this.ForbiddenException(error.response.message);
-         case 'NotFoundException':
-            throw this.NotFoundException(error.response.message);
-         case 'MethodNotAllowedException':
-            throw this.MethodNotAllowedException(error.response.message);
-         case 'NotAcceptableException':
-            throw this.NotAcceptableException(error.response.message);
-         case 'ProxyAuthenticationRequiredException':
-            throw this.ProxyAuthenticationRequiredException(error.response.message);
-         case 'LengthRequiredException':
-            throw this.LengthRequiredException(error.response.message);
-         case 'RequestTimeoutException':
-            throw this.RequestTimeoutException(error.response.message);
-         case 'ConflictException':
-            throw this.ConflictException(error.response.message);
-         case 'GoneException':
-            throw this.GoneException(error.response.message);
-         case 'PreconditionFailedException':
-            throw this.PreconditionFailedException(error.response.message);
-         case 'PayloadTooLargeException':
-            throw this.PayloadTooLargeException(error.response.message);
-         case 'URITooLongException':
-            throw this.URITooLongException(error.response.message);
-         case 'UnsupportedMediaTypeException':
-            throw this.UnsupportedMediaTypeException(error.response.message);
-         case 'RequestedRangeNotSatisfiableException':
-            throw this.RequestedRangeNotSatisfiableException(error.response.message);
-         case 'ExpectationFailedException':
-            throw this.ExpectationFailedException(error.response.message);
-         case 'ImATeapotException':
-            throw this.ImATeapotException(error.response.message);
-         case 'MisdirectedRequestException':
-            throw this.MisdirectedRequestException(error.response.message);
-         case 'UnprocessableEntityException':
-            throw this.UnprocessableEntityException(error.response.message);
-
-         case 'FailedDependencyException':
-            throw this.FailedDependencyException(error.response.message);
-
-         case 'PreconditionRequiredException':
-            throw this.PreconditionRequiredException(error.response.message);
-
-         case 'TooManyRequestsException':
-            throw this.MisdirectedRequestException(error.response.message);
-
-         case 'InternalServerErrorException':
-            throw this.InternalServerErrorException(error.response.message);
-
-         case 'NotImplementedException':
-            throw this.NotImplementedException(error.response.message);
-
-         case 'BadGatewayException':
-            throw this.BadGatewayException(error.response.message);
-
-         case 'ServiceUnavailableException':
-            throw this.ServiceUnavailableException(error.response.message);
-
-         case 'GatewayTimeoutException':
-            throw this.GatewayTimeoutException(error.response.message);
-
-         case 'HTTPVersionNotSupportedException':
-            throw this.HTTPVersionNotSupportedException(error.response.message);
-         default:
-            throw new BaseError(
-               'UnknownError',
-               HttpStatus.INTERNAL_SERVER_ERROR,
-               'An unknown error occurred',
-            );
+      console.log('Error', error);
+      if (error instanceof HttpException) {
+         const response = error.getResponse() as unknown as { error: string; message: string };
+         throw new BaseError(response.error, error.getStatus(), response.message);
+      } else {
+         throw new BaseError(
+            error?.message ? error.message : 'Unknow Error',
+            error?.http_code ? error.http_code : 500,
+            error?.name ? error.name : 'Unknow error, pls check log server',
+         );
       }
    }
 }
