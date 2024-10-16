@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Get, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { AccountEntity, DetailInformationEntity, RoleEntity } from 'src/entities/auth';
@@ -9,12 +9,14 @@ import { JWTService } from './jwt';
 import { CreateAuthDto, LoginDto } from './dto';
 import { CurrentUserDto } from 'src/common/interceptor';
 import { BaseService } from 'src/common/base';
+import { CloudinaryService } from '../../utils/cloudinary/cloudinary.service';
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
       private entityManager: EntityManager,
       private jwtService: JWTService,
+      @Inject() private readonly fileService: CloudinaryService,
 
       @Inject() private readonly roleService: RoleService,
    ) {
@@ -41,6 +43,7 @@ export class AuthService extends BaseService {
             ...createAuthDto,
             password: passwordHashed,
          });
+         if (!role) role = 'customer';
          const roleFound = await this.roleService.findRoleByName(role);
          return await this.registerTransaction(accountModel, roleFound);
       } catch (error) {
@@ -128,5 +131,9 @@ export class AuthService extends BaseService {
       } catch (error) {
          this.ThrowError(error);
       }
+   }
+
+   TestService() {
+      return 'Chua co gi test';
    }
 }
