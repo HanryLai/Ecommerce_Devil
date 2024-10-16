@@ -81,7 +81,7 @@ export class CloudinaryService extends BaseService {
          if (!result) this.ExpectationFailedException('Upload multiple file to cloud failed');
          return result;
       } catch (error) {
-         this.ThrowError(error);
+         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
 
@@ -111,7 +111,7 @@ export class CloudinaryService extends BaseService {
          const result = Promise.all(listFileSync);
          return result;
       } catch (error) {
-         this.ThrowError(error);
+         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
 
@@ -141,7 +141,9 @@ export class CloudinaryService extends BaseService {
          });
          if (!result) this.BadRequestException('Update file on cloud have error');
          return result;
-      } catch (error) {}
+      } catch (error) {
+         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
+      }
    }
 
    public async updateMultipleFile(
@@ -184,7 +186,7 @@ export class CloudinaryService extends BaseService {
          });
          return result;
       } catch (error) {
-         this.ThrowError(error);
+         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
 
@@ -195,7 +197,7 @@ export class CloudinaryService extends BaseService {
          if (!result) this.BadRequestException('Cloud delete failed');
          return result;
       } catch (error) {
-         this.ThrowError(error);
+         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
 }
