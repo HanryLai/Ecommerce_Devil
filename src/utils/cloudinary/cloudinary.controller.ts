@@ -7,6 +7,7 @@ import {
    Param,
    Post,
    Put,
+   Query,
    UploadedFile,
    UploadedFiles,
    UseInterceptors,
@@ -23,6 +24,11 @@ export class CloudinaryController extends BaseController {
    @Get('test')
    UploadImage() {
       return this.cloudinaryService.getConfig();
+   }
+   @Get('list')
+   public async getFilesList(@Query('ids') ids: string[]) {
+      console.log('thhhr');
+      return await this.cloudinaryService.getFilesList(ids);
    }
 
    @Get(':id')
