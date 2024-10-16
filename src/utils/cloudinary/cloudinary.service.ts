@@ -68,7 +68,11 @@ export class CloudinaryService extends BaseService {
             folder: 'e-commerce',
             transformation: [
                {
-                  size: '500000',
+                  width: 800,
+                  height: 600,
+                  crop: 'limit',
+                  quality: 'auto:low',
+                  fetch_format: 'auto',
                },
             ],
             ...option,
