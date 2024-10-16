@@ -94,6 +94,15 @@ export class CloudinaryService extends BaseService {
             filesList.map((file) => {
                return v2.uploader.upload(file.path, {
                   folder: 'e-commerce',
+                  transformation: [
+                     {
+                        width: 800,
+                        height: 600,
+                        crop: 'limit',
+                        quality: 'auto:low',
+                        fetch_format: 'auto',
+                     },
+                  ],
                   ...option,
                });
             }),
@@ -115,6 +124,15 @@ export class CloudinaryService extends BaseService {
             this.BadRequestException('File update or public id invalid ');
          public_id = decodeURIComponent(public_id);
          const result = await v2.uploader.upload(fileUpdate.path, {
+            transformation: [
+               {
+                  width: 800,
+                  height: 600,
+                  crop: 'limit',
+                  quality: 'auto:low',
+                  fetch_format: 'auto',
+               },
+            ],
             ...option,
             public_id: public_id,
             overwrite: true,
@@ -134,6 +152,15 @@ export class CloudinaryService extends BaseService {
          if (!filesUpdate.length) this.BadRequestException('List files are null');
          const resultSync = filesUpdate.map((file, index) => {
             return v2.uploader.upload(file.path, {
+               transformation: [
+                  {
+                     width: 800,
+                     height: 600,
+                     crop: 'limit',
+                     quality: 'auto:low',
+                     fetch_format: 'auto',
+                  },
+               ],
                ...option,
                public_id: publicIdsList[index],
                overwrite: true,
