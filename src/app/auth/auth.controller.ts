@@ -78,4 +78,9 @@ export class AuthController extends BaseController {
    async get(@CurrentUser() user: CurrentUserDto) {
       return user;
    }
+
+   @Get('test')
+   async Test() {
+      return this.authService.TestService();
+   }
 }
