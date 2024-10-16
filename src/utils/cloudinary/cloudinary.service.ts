@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DeleteApiResponse, UploadApiResponse, v2 } from 'cloudinary';
 import { BaseService } from 'src/common/base';
 import { GetResourceOption, UploadCloudOption } from './types';
+import { CloudinaryError } from './error/cloudinaryError.error';
 @Injectable()
 export class CloudinaryService extends BaseService {
    constructor() {
@@ -32,7 +33,7 @@ export class CloudinaryService extends BaseService {
          if (!foundFile) this.NotFoundException('Not found this image');
          return foundFile;
       } catch (error) {
-         this.ThrowError(error);
+         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
 
@@ -41,11 +42,11 @@ export class CloudinaryService extends BaseService {
       option?: GetResourceOption,
    ): Promise<Array<Express.Multer.File>> {
       try {
+         console.log('publicIds', publicIds);
          if (!publicIds) this.BadRequestException('Public ids list not valid');
          const foundFilesSync = publicIds.map((id) =>
-            v2.api.resources({
+            v2.api.resource(id, {
                ...option,
-               public_ids: publicIds,
             }),
          );
          const foundFiles = await Promise.all(foundFilesSync);
@@ -53,7 +54,7 @@ export class CloudinaryService extends BaseService {
          if (!foundFiles) this.NotFoundException('Not found this image');
          return foundFiles;
       } catch (error) {
-         this.ThrowError(error);
+         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
 
@@ -126,10 +127,10 @@ export class CloudinaryService extends BaseService {
          const result = await v2.uploader.upload(fileUpdate.path, {
             transformation: [
                {
-                  width: 800,
-                  height: 600,
-                  crop: 'limit',
-                  quality: 'auto:low',
+                  width: 150,
+                  height: 100,
+                  crop: 'scale',
+                  quality: 'auto:sensitive',
                   fetch_format: 'auto',
                },
             ],
