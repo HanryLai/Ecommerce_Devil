@@ -153,7 +153,6 @@ export class BaseService {
          const response = error.getResponse() as unknown as { error: string; message: string };
          throw new BaseError(response.error, error.getStatus(), response.message);
       } else if (error instanceof CloudinaryError) {
-         console.log('DJTTTT');
          throw error;
       } else {
          throw new BaseError(

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { DeleteApiResponse, UploadApiResponse, v2 } from 'cloudinary';
 import { BaseService } from 'src/common/base';
 import { GetResourceOption, UploadCloudOption } from './types';
@@ -33,6 +33,7 @@ export class CloudinaryService extends BaseService {
          if (!foundFile) this.NotFoundException('Not found this image');
          return foundFile;
       } catch (error) {
+         if (error instanceof HttpException) this.ThrowError(error);
          this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
@@ -42,7 +43,6 @@ export class CloudinaryService extends BaseService {
       option?: GetResourceOption,
    ): Promise<Array<Express.Multer.File>> {
       try {
-         console.log('publicIds', publicIds);
          if (!publicIds) this.BadRequestException('Public ids list not valid');
          const foundFilesSync = publicIds.map((id) =>
             v2.api.resource(id, {
@@ -54,7 +54,13 @@ export class CloudinaryService extends BaseService {
          if (!foundFiles) this.NotFoundException('Not found this image');
          return foundFiles;
       } catch (error) {
-         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
+         if (error instanceof HttpException) this.ThrowError(error);
+         this.ThrowError(
+            new CloudinaryError(
+               error.error?.http_code ? error.error.http_code : 'Unknow',
+               error?.error,
+            ),
+         );
       }
    }
 
@@ -81,7 +87,9 @@ export class CloudinaryService extends BaseService {
          if (!result) this.ExpectationFailedException('Upload multiple file to cloud failed');
          return result;
       } catch (error) {
-         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
+         if (error?.error?.http_code && error.error)
+            this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
+         this.ThrowError(error);
       }
    }
 
@@ -111,6 +119,7 @@ export class CloudinaryService extends BaseService {
          const result = Promise.all(listFileSync);
          return result;
       } catch (error) {
+         if (error instanceof HttpException) this.ThrowError(error);
          this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
@@ -142,6 +151,7 @@ export class CloudinaryService extends BaseService {
          if (!result) this.BadRequestException('Update file on cloud have error');
          return result;
       } catch (error) {
+         if (error instanceof HttpException) this.ThrowError(error);
          this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
@@ -174,7 +184,8 @@ export class CloudinaryService extends BaseService {
          if (!result) this.BadRequestException('Update files on cloud have error');
          return result;
       } catch (error) {
-         this.ThrowError(error);
+         if (error instanceof HttpException) this.ThrowError(error);
+         this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
 
@@ -186,6 +197,7 @@ export class CloudinaryService extends BaseService {
          });
          return result;
       } catch (error) {
+         if (error instanceof HttpException) this.ThrowError(error);
          this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }
@@ -197,6 +209,7 @@ export class CloudinaryService extends BaseService {
          if (!result) this.BadRequestException('Cloud delete failed');
          return result;
       } catch (error) {
+         if (error instanceof HttpException) this.ThrowError(error);
          this.ThrowError(new CloudinaryError(error.error.http_code, error.error));
       }
    }

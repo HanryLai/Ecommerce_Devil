@@ -27,7 +27,6 @@ export class CloudinaryController extends BaseController {
    }
    @Get('list')
    public async getFilesList(@Query('ids') ids: string[]) {
-      console.log('thhhr');
       return await this.cloudinaryService.getFilesList(ids);
    }
 
