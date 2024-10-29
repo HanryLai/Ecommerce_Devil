@@ -5,6 +5,4 @@ export interface IProductEntity extends IBaseEntity {
    quantity: number;
    description: string;
    image: string;
-   createdAt: Date;
-   updatedAt: Date;
 }
