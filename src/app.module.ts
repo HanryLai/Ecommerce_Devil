@@ -8,6 +8,7 @@ import { AuthModule } from './app/auth';
 import { RoleModule } from './app/role';
 import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
 import { ProductModule } from './app/product/product.module';
+import { CategoryModule } from './app/category/category.module';
 
 @Module({
    imports: [
@@ -17,6 +18,7 @@ import { ProductModule } from './app/product/product.module';
       RoleModule,
       CloudinaryModule,
       ProductModule,
+      CategoryModule,
    ],
    providers: [RoleSeeder, AdminSeeder],
 })
