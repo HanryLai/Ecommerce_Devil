@@ -7,14 +7,9 @@ services:
          dockerfile: Dockerfile
       ports:
          - '3000:3000'
-      environment:
-         # Database connection environment variables
-         DATABASE_HOST: mysql
-         DATABASE_PORT: 3306
-         DATABASE_USER: root
-         DATABASE_PASSWORD: khongbiet
-         DATABASE_NAME: ecommercial_development
-         PORT: 3030
+
+      env_file:
+         - .env.development
       depends_on:
          - mysql
       command: ['pnpm', 'run', 'start:dev']
