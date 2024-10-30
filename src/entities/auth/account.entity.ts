@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'type
 import { IAccountEntity } from '../interfaces';
 import { BaseEntity } from '../base';
 import { DetailInformationEntity, RoleEntity } from '.';
+import { FavoriteEntity } from '../ecommerce/favorite.entity';
 
 @Entity({ name: 'account' })
 export class AccountEntity extends BaseEntity<AccountEntity> implements IAccountEntity {
@@ -27,4 +28,8 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    @ManyToOne(() => RoleEntity, (role) => role.accounts)
    @JoinColumn({ name: 'role_id' })
    role: RoleEntity;
+
+   @OneToOne(() => FavoriteEntity)
+   @JoinColumn()
+   favorite: FavoriteEntity;
 }
