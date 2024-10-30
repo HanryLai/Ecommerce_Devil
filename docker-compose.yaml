@@ -1,12 +1,33 @@
-version: '3'
+version: '3.8'
+
 services:
-   db:
-      image: postgres
-      environment:
-         POSTGRES_DB: ecommercial
-         POSTGRES_USER: postgres
-         POSTGRES_PASSWORD: khongbiet
    app:
-      image: ecommercial-app
+      build:
+         context: .
+         dockerfile: Dockerfile
       ports:
-         - 13000:3000
+         - '3000:3000'
+      environment:
+         # Database connection environment variables
+         DATABASE_HOST: mysql
+         DATABASE_PORT: 3306
+         DATABASE_USER: root
+         DATABASE_PASSWORD: khongbiet
+         DATABASE_NAME: ecommercial_development
+         PORT: 3030
+      depends_on:
+         - mysql
+      command: ['pnpm', 'run', 'start:dev']
+
+   mysql:
+      image: mysql:8.0
+      environment:
+         MYSQL_ROOT_PASSWORD: khongbiet
+         MYSQL_DATABASE: ecommercial_development
+      ports:
+         - '3306:3306'
+      volumes:
+         - mysql_data:/var/lib/mysql
+
+volumes:
+   mysql_data:
