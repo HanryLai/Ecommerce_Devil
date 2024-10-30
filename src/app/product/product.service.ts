@@ -5,11 +5,12 @@ import { ProductRepository } from 'src/repositories/ecommerce';
 import { BaseService } from 'src/common/base';
 import { EntityManager } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductEntity } from 'src/entities/ecommerce';
 
 @Injectable()
 export class ProductService extends BaseService {
    constructor(
-      @InjectRepository(ProductRepository)
+      @InjectRepository(ProductEntity)
       private productRepository: ProductRepository,
       private entityManager: EntityManager,
    ) {
@@ -23,6 +24,7 @@ export class ProductService extends BaseService {
    async findOne(id: string) {
       return await this.productRepository.findOne({
          where: { id },
+         select: ['id', 'name', 'description', 'price'],
       });
    }
 
