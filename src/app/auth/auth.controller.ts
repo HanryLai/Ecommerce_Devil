@@ -57,7 +57,7 @@ export class AuthController extends BaseController {
       return this.OkResponse(await this.authService.logout(user));
    }
 
-   @Get('account/:id')
+   @Get('my-account')
    @ApiOperation({ description: 'Feature logout' })
    @ApiResponse({ status: '2XX', description: 'Logout successfully' })
    @ApiResponse({ status: '5XX', description: 'Logout failed' })
@@ -65,11 +65,8 @@ export class AuthController extends BaseController {
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @HttpCode(200)
-   async findAccountById(
-      @CurrentUser() user: CurrentUserDto,
-      @Param('id') id: string,
-   ): Promise<MessageResponse> {
-      return this.OkResponse(await this.authService.findAccountById(user, id));
+   async findAccountById(@CurrentUser() user: CurrentUserDto): Promise<MessageResponse> {
+      return this.OkResponse(await this.authService.findAccountById(user));
    }
 
    @UseGuards(AuthGuard)
