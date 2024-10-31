@@ -28,7 +28,6 @@ export class ProductService extends BaseService {
       });
    }
 
-
    async update(id: string, updateProductDto: UpdateProductDto) {
       return await this.productRepository.update(id, updateProductDto);
    }

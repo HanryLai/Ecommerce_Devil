@@ -2,9 +2,11 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, Prim
 import { BaseEntity } from "../base";
 import { ProductEntity } from "./product.entity";
 import { AccountEntity } from "../auth";
+import { extend } from "joi";
+import { IFavoriteEntity } from "../interfaces/favorite.entity.interface";
 
-@Entity({name: 'favorites'})
-export class FavoriteEntity {
+@Entity({name: 'favorite'})
+export class FavoriteEntity{
    @PrimaryColumn()
    userId: string;
 
