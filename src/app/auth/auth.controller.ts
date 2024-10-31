@@ -8,7 +8,7 @@ import {
    UseGuards,
    UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MessageResponse } from 'src/common/base';
 import { BaseController } from 'src/common/base/baseController.base';
 import { CurrentUser } from 'src/common/decorators/CurrentUser.decorator';
@@ -20,6 +20,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController extends BaseController {
    constructor(private readonly authService: AuthService) {
       super();
@@ -39,7 +40,6 @@ export class AuthController extends BaseController {
    @ApiOperation({ description: 'Feature login' })
    @ApiResponse({ status: '2XX', description: 'Login successfully' })
    @ApiResponse({ status: '5XX', description: 'Login failed' })
-   @ApiBearerAuth()
    @HttpCode(200)
    public async login(@Body() loginDto: LoginDto): Promise<MessageResponse> {
       return this.OkResponse(await this.authService.login(loginDto));
