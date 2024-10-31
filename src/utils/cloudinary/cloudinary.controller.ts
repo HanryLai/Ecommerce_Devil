@@ -15,8 +15,10 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from './cloudinary.service';
 import { BaseController } from 'src/common/base';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('cloud')
+@ApiTags('cloudinary')
 export class CloudinaryController extends BaseController {
    constructor(@Inject() private readonly cloudinaryService: CloudinaryService) {
       super();
