@@ -8,7 +8,7 @@ import { ProductRepository } from 'src/repositories/ecommerce';
 import { FavoriteRepository } from 'src/repositories/ecommerce/favorite.repository';
 import { EntityManager } from 'typeorm';
 
-export class FavoriteSeeder extends BaseService implements OnModuleInit {
+export class FavoriteSeeder extends BaseService {
    constructor(
       @InjectRepository(ProductEntity) private productRepository: ProductRepository,
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
@@ -18,7 +18,7 @@ export class FavoriteSeeder extends BaseService implements OnModuleInit {
       super();
    }
 
-   async onModuleInit() {
+   async run() {
       try {
          // getAll account
          const accounts = await this.accountRepository.find();
