@@ -3,8 +3,8 @@ import {
    Controller,
    Get,
    HttpCode,
-   Patch,
    Post,
+   Put,
    UseGuards,
    UseInterceptors,
 } from '@nestjs/common';
@@ -71,7 +71,7 @@ export class AuthController extends BaseController {
       return this.OkResponse(await this.authService.findMyAccount(user));
    }
 
-   @Patch('update-password')
+   @Put('update-password')
    @ApiOperation({ description: 'Feature update password' })
    @ApiResponse({ status: '2XX', description: 'Update password successfully' })
    @ApiResponse({ status: '5XX', description: 'Update password failed' })
@@ -82,7 +82,7 @@ export class AuthController extends BaseController {
    @HttpCode(200)
    async get(@CurrentUser() user: CurrentUserDto, @Body() updatePasswordDto: UpdatePasswordDto) {
       return this.OkResponse(
-         this.authService.updatePassword(
+         await this.authService.updatePassword(
             user,
             updatePasswordDto.currentPassword,
             updatePasswordDto.newPassword,
