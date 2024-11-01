@@ -5,18 +5,15 @@ import { AccountEntity } from 'src/entities/auth';
 @Injectable()
 export class EmailService {
    constructor(private readonly mailerService: MailerService) {}
-   async sendUserConfirmation(account: AccountEntity, token: string) {
-      const url = `example.com/auth/confirm?token=${token}`;
-
+   async sendUserConfirmation(account: AccountEntity) {
       await this.mailerService.sendMail({
          to: 'ldmhieudev@gmail.com',
-         from: '"Support Team" <support@gmail.com>', // override default from
+         from: '"Support Team" <support@gmail.com>',
          subject: 'Welcome to Nice App! Confirm your Email',
-         template: 'otp',
+         template: 'welcom-email',
          context: {
-            customerName: 'hieu',
-            otp: '123123',
-            url,
+            email: account.email,
+            url: process.env.URL + '/api',
          },
       });
    }

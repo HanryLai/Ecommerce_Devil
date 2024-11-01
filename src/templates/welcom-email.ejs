@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Welcome!</title>
+      <style>
+         /* Reset */
+         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+         }
+
+         /* Main Styles */
+         body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e90ff, #ff6347);
+            color: #333;
+         }
+
+         .welcome-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+         }
+
+         h1 {
+            font-size: 2.5em;
+            color: #1e90ff;
+            margin-bottom: 15px;
+         }
+
+         .subheading {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 25px;
+         }
+
+         .highlight {
+            color: #ff6347;
+            font-weight: bold;
+         }
+
+         .welcome-text {
+            margin-top: 20px;
+            line-height: 1.6;
+            font-size: 1em;
+         }
+
+         .button {
+            margin-top: 30px;
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #1e90ff;
+            color: #fff;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: background-color 0.3s ease;
+         }
+
+         .button:hover {
+            background-color: #ff6347;
+         }
+
+         /* Responsive */
+         @media (max-width: 600px) {
+            h1 {
+               font-size: 2em;
+            }
+
+            .welcome-container {
+               padding: 20px;
+            }
+         }
+      </style>
+   </head>
+   <body>
+      <div class="welcome-container">
+         <h1>Welcome, <span class="highlight"><%= locals.email %></span>!</h1>
+         <p class="subheading">We're glad to have you on board</p>
+         <p class="welcome-text">
+            I appreciate you signing up for our service. We're excited to have you on board and
+            can't wait to see what you create with our platform.
+         </p>
+         <a href="<%= locals.url %>" class="button">Get Started</a>
+      </div>
+   </body>
+</html>
