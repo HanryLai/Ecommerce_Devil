@@ -1,5 +1,6 @@
 import { AccountEntity, DetailInformationEntity, RoleEntity } from './auth';
-import { ProductEntity, FavoriteEntity } from './ecommerce/index';
+import { FavoriteEntity, ProductEntity } from './ecommerce';
+
 
 export const entities = [
    AccountEntity,

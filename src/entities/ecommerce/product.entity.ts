@@ -3,7 +3,7 @@ import { BaseEntity } from "../base";
 import { AccountEntity } from "../auth";
 import { FavoriteEntity } from "./favorite.entity";
 
-@Entity({name: 'products'})
+@Entity({name: 'product'})
 export class ProductEntity extends BaseEntity<ProductEntity>{
     @Column({ type: 'nvarchar' })
     name: string;

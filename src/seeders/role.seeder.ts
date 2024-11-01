@@ -1,13 +1,14 @@
 import { OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/common/base';
 import { RoleEntity } from 'src/entities/auth';
 import { RoleRepository } from 'src/repositories/auth';
 
-export class RoleSeeder implements OnModuleInit {
+export class RoleSeeder extends BaseService {
    @InjectRepository(RoleEntity)
    private readonly roleRepository: RoleRepository;
 
-   async onModuleInit() {
+   async run() {
       try {
          const roles = ['admin', 'customer'];
          const descriptions = [
