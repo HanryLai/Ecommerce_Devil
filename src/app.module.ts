@@ -10,6 +10,7 @@ import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
 import { ProductModule } from './app/product/product.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
 import { FavoriteEntity, ProductEntity } from './entities/ecommerce';
+import { RunAllSeeder } from './seeders/run.seeder';
 
 @Module({
    imports: [
@@ -21,7 +22,7 @@ import { FavoriteEntity, ProductEntity } from './entities/ecommerce';
       ProductModule,
       FavoriteModule,
    ],
-   providers: [RoleSeeder, AdminSeeder, ProductSeeder, FavoriteSeeder],
+   providers: [RunAllSeeder, RoleSeeder, AdminSeeder, ProductSeeder, FavoriteSeeder],
 })
 export class AppModule implements NestModule {
    configure(consumer: MiddlewareConsumer) {
