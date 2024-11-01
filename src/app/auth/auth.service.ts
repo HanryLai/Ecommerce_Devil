@@ -135,6 +135,25 @@ export class AuthService extends BaseService {
       }
    }
 
+   public async updatePassword(
+      user: CurrentUserDto,
+      currentPassword: string,
+      newPassword: string,
+   ): Promise<AccountEntity> {
+      try {
+         const foundAccount = await this.findAccountById(user);
+         if (bcrypt.compareSync(currentPassword, foundAccount.password))
+            this.NotFoundException('Current password is wrong !');
+         const salt = bcrypt.genSaltSync(10);
+         const newPassHash = bcrypt.hashSync(newPassword, salt);
+         foundAccount.password = newPassHash;
+         const result = await this.accountRepository.save(foundAccount);
+         return result;
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
+
    TestService() {
       return 'Chua co gi test';
    }
