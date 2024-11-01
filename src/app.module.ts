@@ -3,28 +3,42 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from './common/database';
 import { AccountEntity, RoleEntity } from './entities/auth';
 import { LoggerMiddleware } from './middleware';
-import { AdminSeeder, ProductSeeder, RoleSeeder } from './seeders';
+import { AdminSeeder, CategorySeeder, ProductSeeder, RoleSeeder } from './seeders';
 import { AuthModule } from './app/auth';
 import { RoleModule } from './app/role';
 import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
 import { ProductModule } from './app/product/product.module';
-import { EmailModule } from './utils/email/email.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
-import { FavoriteEntity, ProductEntity } from './entities/ecommerce';
+import { CategoryEntity, FavoriteEntity, ProductEntity } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
+import { FavoriteSeeder } from './seeders/favorite.seeder';
+import { CategoryModule } from './app/category/category.module';
 
 @Module({
    imports: [
-      TypeOrmModule.forFeature([RoleEntity, AccountEntity, ProductEntity, FavoriteEntity]),
+      TypeOrmModule.forFeature([
+         RoleEntity,
+         AccountEntity,
+         ProductEntity,
+         FavoriteEntity,
+         CategoryEntity,
+      ]),
       DatabaseModule,
       AuthModule,
       RoleModule,
       CloudinaryModule,
       ProductModule,
-      EmailModule,
       FavoriteModule,
+      CategoryModule,
    ],
-   providers: [RunAllSeeder, RoleSeeder, AdminSeeder, ProductSeeder, FavoriteSeeder],
+   providers: [
+      RunAllSeeder,
+      RoleSeeder,
+      AdminSeeder,
+      ProductSeeder,
+      FavoriteSeeder,
+      CategorySeeder,
+   ],
 })
 export class AppModule implements NestModule {
    configure(consumer: MiddlewareConsumer) {

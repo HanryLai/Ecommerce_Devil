@@ -3,21 +3,26 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { BaseService } from 'src/common/base';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoryEntity } from 'src/entities/ecommerce';
-import { CategoryRepository } from 'src/repositories/ecommerce';
-import { CurrentUserDto } from 'src/common/interceptor';
+import { CategoryEntity, ProductEntity } from 'src/entities/ecommerce';
+import { CategoryRepository, ProductRepository } from 'src/repositories/ecommerce';
 
 @Injectable()
 export class CategoryService extends BaseService {
    constructor(
       @InjectRepository(CategoryEntity)
       private categoryRepository: CategoryRepository,
+      @InjectRepository(ProductEntity)
+      private readonly productRepository: ProductRepository,
    ) {
       super();
    }
 
-   addCategory(createCategoryDto: CreateCategoryDto) {
-      return 'This action adds a new category';
+   async create(createCategoryDto: CreateCategoryDto) {
+      try {
+         return await this.categoryRepository.save(createCategoryDto);
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    async findAll() {
@@ -26,6 +31,14 @@ export class CategoryService extends BaseService {
       } catch (error) {
          this.ThrowError(error);
       }
+   }
+
+   async findCategoriesOfProduct(productId: string) {
+      const product = await this.productRepository.findOne({
+         where: { id: productId },
+         relations: ['categories'],
+      });
+      return product != null ? product.categories : 'Product not found';
    }
 
    findOne(id: number) {
@@ -39,7 +52,6 @@ export class CategoryService extends BaseService {
    async removeCategory(categoryId: string) {
       try {
          await this.categoryRepository.delete(categoryId);
-         return 'Category has been deleted';
       } catch (error) {
          this.ThrowError(error);
       }

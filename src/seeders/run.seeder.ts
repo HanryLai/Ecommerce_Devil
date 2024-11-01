@@ -4,6 +4,7 @@ import { AdminSeeder } from './admin.seeder';
 import { RoleSeeder } from './role.seeder';
 import { FavoriteSeeder } from './favorite.seeder';
 import { ProductSeeder } from './product.seeder';
+import { CategorySeeder } from './category.seeder';
 
 @Injectable()
 export class RunAllSeeder extends BaseService implements OnModuleInit {
@@ -12,6 +13,7 @@ export class RunAllSeeder extends BaseService implements OnModuleInit {
       private adminSeeder: AdminSeeder,
       private favoriteSeer: FavoriteSeeder,
       private productSeeder: ProductSeeder,
+      private categorySeeder: CategorySeeder,
    ) {
       super();
    }
@@ -20,5 +22,6 @@ export class RunAllSeeder extends BaseService implements OnModuleInit {
       await this.adminSeeder.run();
       await this.productSeeder.run();
       await this.favoriteSeer.run();
+      await this.categorySeeder.run();
    }
 }
