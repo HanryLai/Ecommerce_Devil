@@ -1,20 +1,17 @@
-import { Inject, OnModuleInit } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { ProductService } from "src/app/product/product.service";
-import { BaseService } from "src/common/base";
-import { ProductEntity } from "src/entities/ecommerce";
-import { ProductRepository } from "src/repositories/ecommerce";
-import { EntityManager } from "typeorm";
+import { Inject, OnModuleInit } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ProductService } from 'src/app/product/product.service';
+import { BaseService } from 'src/common/base';
+import { ProductEntity } from 'src/entities/ecommerce';
+import { ProductRepository } from 'src/repositories/ecommerce';
+import { EntityManager } from 'typeorm';
 
-export class ProductSeeder extends BaseService implements OnModuleInit {
-   constructor(
-      @InjectRepository(ProductEntity) private productRepository: ProductRepository,
-
-   ) {
+export class ProductSeeder extends BaseService {
+   constructor(@InjectRepository(ProductEntity) private productRepository: ProductRepository) {
       super();
    }
 
-   async onModuleInit() {
+   async run() {
       try {
          const foundProduct = await this.productRepository.findOne({
             where: {
