@@ -18,21 +18,72 @@ export class ProductService extends BaseService {
    }
 
    async findAll() {
-      return await this.productRepository.find();
+      try {
+         return await this.productRepository.find();
+      } catch (error) {
+         throw error;
+      }
    }
 
    async findOne(id: string) {
-      return await this.productRepository.findOne({
-         where: { id },
-         select: ['id', 'name', 'description', 'price'],
+      try {
+         return await this.productRepository.findOne({
+            where: { id },
+         });
+      } catch (error) {
+         throw error;
+      }
+   }
+
+   async loadProduct(page: number) {
+      const limit = 10;
+      const offset = (page - 1) * limit;
+      const [listProduct, totalProduct] = await this.productRepository.findAndCount({
+         take: limit,
+         skip: offset,
       });
+      const totalPage = Math.ceil(totalProduct / limit);
+      const totalFavoriteOfPage = listProduct.length;
+      return {
+         message: 'Found list favorite',
+         metadata: {
+            favorites: listProduct,
+            numberPage: parseInt(page.toString()),
+            limit: limit,
+            totalPage: totalPage,
+            totalFavoriteOfPage: totalFavoriteOfPage,
+         },
+      };
    }
 
    async update(id: string, updateProductDto: UpdateProductDto) {
-      return await this.productRepository.update(id, updateProductDto);
+      try {
+         const product = await this.productRepository.findOne({
+            where: { id },
+         });
+         if (!product) {
+            return null;
+         }
+         return await this.productRepository.save({
+            ...product,
+            ...updateProductDto,
+         });
+      } catch (error) {
+         throw error;
+      }
    }
 
    async remove(id: string) {
-      return await this.productRepository.delete(id);
+      try {
+         const product = await this.productRepository.findOne({
+            where: { id },
+         });
+         if (!product) {
+            return null;
+         }
+         return await this.productRepository.remove(product);
+      } catch (error) {
+         throw error;
+      }
    }
 }
