@@ -10,6 +10,7 @@ import { CreateAuthDto, LoginDto } from './dto';
 import { CurrentUserDto } from 'src/common/interceptor';
 import { BaseService } from 'src/common/base';
 import { CloudinaryService } from '../../utils/cloudinary/cloudinary.service';
+import { EmailService } from 'src/utils/email/email.service';
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
@@ -17,7 +18,7 @@ export class AuthService extends BaseService {
       private entityManager: EntityManager,
       private jwtService: JWTService,
       @Inject() private readonly fileService: CloudinaryService,
-
+      @Inject() private readonly emailService: EmailService,
       @Inject() private readonly roleService: RoleService,
    ) {
       super();
@@ -45,6 +46,7 @@ export class AuthService extends BaseService {
          });
          if (!role) role = 'customer';
          const roleFound = await this.roleService.findRoleByName(role);
+         this.emailService.sendUserConfirmation(foundAccount, '123');
          return await this.registerTransaction(accountModel, roleFound);
       } catch (error) {
          this.ThrowError(error);
@@ -119,12 +121,12 @@ export class AuthService extends BaseService {
       }
    }
 
-   public async findAccountById(user: CurrentUserDto, id_account: string): Promise<AccountEntity> {
+   public async findAccountById(user: CurrentUserDto): Promise<AccountEntity> {
       try {
-         if (!(user.roleName === 'admin' || user.id === id_account))
+         if (user.roleName !== 'admin')
             this.UnauthorizedException('Not have permission find this account');
          const foundAccount = await this.accountRepository.findOne({
-            where: { id: id_account },
+            where: { id: user.id },
          });
          if (!foundAccount) this.NotFoundException('Not found this account');
          return foundAccount;
