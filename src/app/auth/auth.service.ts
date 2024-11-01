@@ -17,7 +17,6 @@ export class AuthService extends BaseService {
       private entityManager: EntityManager,
       private jwtService: JWTService,
       @Inject() private readonly fileService: CloudinaryService,
-
       @Inject() private readonly roleService: RoleService,
    ) {
       super();
@@ -119,12 +118,12 @@ export class AuthService extends BaseService {
       }
    }
 
-   public async findAccountById(user: CurrentUserDto, id_account: string): Promise<AccountEntity> {
+   public async findAccountById(user: CurrentUserDto): Promise<AccountEntity> {
       try {
-         if (!(user.roleName === 'admin' || user.id === id_account))
+         if (user.roleName !== 'admin')
             this.UnauthorizedException('Not have permission find this account');
          const foundAccount = await this.accountRepository.findOne({
-            where: { id: id_account },
+            where: { id: user.id },
          });
          if (!foundAccount) this.NotFoundException('Not found this account');
          return foundAccount;
