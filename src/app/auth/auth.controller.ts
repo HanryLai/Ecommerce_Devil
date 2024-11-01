@@ -68,7 +68,7 @@ export class AuthController extends BaseController {
    @UseInterceptors(CurrentUserInterceptor)
    @HttpCode(200)
    async findAccountById(@CurrentUser() user: CurrentUserDto): Promise<MessageResponse> {
-      return this.OkResponse(await this.authService.findAccountById(user));
+      return this.OkResponse(await this.authService.findMyAccount(user));
    }
 
    @Patch('update-password')

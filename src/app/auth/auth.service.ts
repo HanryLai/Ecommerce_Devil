@@ -121,7 +121,7 @@ export class AuthService extends BaseService {
       }
    }
 
-   public async findAccountById(user: CurrentUserDto): Promise<AccountEntity> {
+   public async findMyAccount(user: CurrentUserDto): Promise<AccountEntity> {
       try {
          const foundAccount = await this.accountRepository.findOne({
             where: { id: user.id },
@@ -139,7 +139,7 @@ export class AuthService extends BaseService {
       newPassword: string,
    ): Promise<AccountEntity> {
       try {
-         const foundAccount = await this.findAccountById(user);
+         const foundAccount = await this.findMyAccount(user);
          if (!foundAccount?.id) this.BadRequestException('Not found this account');
          const isPasswordValid = await bcrypt.compare(currentPassword, foundAccount.password);
          if (isPasswordValid == false) this.NotFoundException('Current password is wrong !');
