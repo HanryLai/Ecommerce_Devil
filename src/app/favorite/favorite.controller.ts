@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+   Controller,
+   Get,
+   Post,
+   Body,
+   Patch,
+   Param,
+   Delete,
+   Inject,
+   UseGuards,
+   UseInterceptors,
+} from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { UpdateFavoriteDto } from './dto/update-favorite.dto';
@@ -46,7 +57,7 @@ export class FavoriteController extends BaseController {
    @Delete(':product')
    public async removeFavorite(
       @CurrentUser() user: CurrentUserDto,
-      @Param('product') product: string
+      @Param('product') product: string,
    ): Promise<MessageResponse> {
       return this.OkResponse(await this.favoriteService.removeFavorite(user, product));
    }
