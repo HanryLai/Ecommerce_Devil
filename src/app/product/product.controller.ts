@@ -3,12 +3,18 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { BaseController, MessageResponse } from 'src/common/base';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Product')
 @Controller('product')
 export class ProductController extends BaseController {
    constructor(private readonly productService: ProductService) {
       super();
+   }
+
+   @Get('searchProduct/:keyword')
+   public async searchProduct(@Param('keyword') keyword: string): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.searchProduct(keyword));
    }
 
    @Get()
