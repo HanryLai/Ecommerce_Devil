@@ -5,14 +5,14 @@ import { BaseService } from 'src/common/base';
 import { AccountEntity } from 'src/entities/auth';
 import { AccountRepository } from 'src/repositories/auth';
 
-export class AdminSeeder extends BaseService implements OnModuleInit {
+export class AdminSeeder extends BaseService {
    constructor(
       @Inject() private authService: AuthService,
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
    ) {
       super();
    }
-   async onModuleInit() {
+   async run() {
       try {
          const foundAccount = await this.accountRepository.findOne({
             where: {

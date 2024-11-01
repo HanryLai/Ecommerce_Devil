@@ -17,7 +17,7 @@ services:
    mysql:
       image: mysql:8.0
       environment:
-         MYSQL_ROOT_PASSWORD: khongbiet
+         MYSQL_ROOT_PASSWORD: 123
          MYSQL_DATABASE: ecommercial_development
       ports:
          - '3306:3306'
