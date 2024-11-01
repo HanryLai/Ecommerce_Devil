@@ -8,7 +8,7 @@ import {
    UseGuards,
    UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MessageResponse } from 'src/common/base';
 import { BaseController } from 'src/common/base/baseController.base';
 import { CurrentUser } from 'src/common/decorators/CurrentUser.decorator';
@@ -61,6 +61,7 @@ export class AuthController extends BaseController {
    @ApiOperation({ description: 'Feature logout' })
    @ApiResponse({ status: '2XX', description: 'Logout successfully' })
    @ApiResponse({ status: '5XX', description: 'Logout failed' })
+   @ApiBody({ type: LoginDto })
    @ApiBearerAuth()
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
