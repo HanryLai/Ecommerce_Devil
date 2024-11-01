@@ -4,5 +4,4 @@ export class IOptionEntity extends IBaseEntity {
    name: string;
    description: string;
    orderIndex: number;
-   chooseOptionId: string;
 }

@@ -1,31 +1,21 @@
-import { Column, Entity, JoinColumn, ManyToMany, OneToMany, Table } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, Table } from 'typeorm';
 import { BaseEntity } from '../base';
 import { AccountEntity } from '../auth';
 import { FavoriteEntity } from './favorite.entity';
+import { OptionEntity } from './option.entity';
+import { IProductEntity } from '../interfaces';
+import { CategoryEntity } from './category.entity';
 
-<<<<<<< HEAD
-@Entity({ name: 'products' })
-export class ProductEntity extends BaseEntity<ProductEntity> {
+@Entity({ name: 'product' })
+export class ProductEntity extends BaseEntity<ProductEntity> implements IProductEntity {
    @Column({ type: 'nvarchar' })
    name: string;
-=======
-@Entity({name: 'product'})
-export class ProductEntity extends BaseEntity<ProductEntity>{
-    @Column({ type: 'nvarchar' })
-    name: string;
->>>>>>> origin/main
 
    @Column({ type: 'nvarchar' })
    description: string;
 
    @Column({ type: 'nvarchar', default: null })
-   categories: string;
-
-   @Column({ type: 'nvarchar', default: null })
    image_url: string;
-
-   @Column({ type: 'nvarchar', default: null })
-   option_id: string;
 
    @Column({ type: 'double' })
    price: number;
@@ -33,4 +23,11 @@ export class ProductEntity extends BaseEntity<ProductEntity>{
    @OneToMany(() => FavoriteEntity, (favorite) => favorite.product)
    @JoinColumn()
    favorites: FavoriteEntity[];
+
+   @OneToMany(() => OptionEntity, (option) => option.product)
+   options: OptionEntity[];
+
+   @ManyToMany(() => CategoryEntity)
+   @JoinTable({ name: 'products_categories' })
+   categories: CategoryEntity[];
 }

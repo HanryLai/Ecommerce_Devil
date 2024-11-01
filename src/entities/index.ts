@@ -1,12 +1,11 @@
 import { AccountEntity, DetailInformationEntity, RoleEntity } from './auth';
-<<<<<<< HEAD
-import { CategoryEntity } from './ecommerce/category.entity';
-import { ProductEntity, FavoriteEntity, ListOptionEntity } from './ecommerce/index';
-import { OptionEntity } from './ecommerce/option.entity';
-=======
-import { FavoriteEntity, ProductEntity } from './ecommerce';
-
->>>>>>> origin/main
+import {
+   CategoryEntity,
+   FavoriteEntity,
+   ListOptionEntity,
+   OptionEntity,
+   ProductEntity,
+} from './ecommerce';
 
 export const entities = [
    AccountEntity,
