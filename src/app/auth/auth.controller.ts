@@ -3,7 +3,7 @@ import {
    Controller,
    Get,
    HttpCode,
-   Param,
+   Patch,
    Post,
    UseGuards,
    UseInterceptors,
@@ -16,6 +16,7 @@ import { AuthGuard } from 'src/common/guard';
 import { CurrentUserInterceptor } from 'src/common/interceptor/currentUser.interceptor';
 import { CurrentUserDto } from 'src/common/interceptor/dto/user-dto.interceptor';
 import { AuthService } from './auth.service';
+import { UpdatePasswordDto } from './dto';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { LoginDto } from './dto/login.dto';
 
@@ -70,11 +71,23 @@ export class AuthController extends BaseController {
       return this.OkResponse(await this.authService.findAccountById(user));
    }
 
+   @Patch('update-password')
+   @ApiOperation({ description: 'Feature update password' })
+   @ApiResponse({ status: '2XX', description: 'Update password successfully' })
+   @ApiResponse({ status: '5XX', description: 'Update password failed' })
+   @ApiBody({ type: UpdatePasswordDto })
+   @ApiBearerAuth()
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
-   @Get()
-   async get(@CurrentUser() user: CurrentUserDto) {
-      return user;
+   @HttpCode(200)
+   async get(@CurrentUser() user: CurrentUserDto, @Body() updatePasswordDto: UpdatePasswordDto) {
+      return this.OkResponse(
+         this.authService.updatePassword(
+            user,
+            updatePasswordDto.currentPassword,
+            updatePasswordDto.newPassword,
+         ),
+      );
    }
 
    @Get('test')
