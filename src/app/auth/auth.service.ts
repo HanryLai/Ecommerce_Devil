@@ -46,7 +46,7 @@ export class AuthService extends BaseService {
          });
          if (!role) role = 'customer';
          const roleFound = await this.roleService.findRoleByName(role);
-         this.emailService.sendUserConfirmation(foundAccount, '123');
+         await this.emailService.sendUserConfirmation(foundAccount, '123');
          return await this.registerTransaction(accountModel, roleFound);
       } catch (error) {
          this.ThrowError(error);
