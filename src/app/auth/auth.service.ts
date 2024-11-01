@@ -10,6 +10,7 @@ import { CreateAuthDto, LoginDto } from './dto';
 import { CurrentUserDto } from 'src/common/interceptor';
 import { BaseService } from 'src/common/base';
 import { CloudinaryService } from '../../utils/cloudinary/cloudinary.service';
+import { EmailService } from 'src/utils/email/email.service';
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
@@ -18,6 +19,7 @@ export class AuthService extends BaseService {
       private jwtService: JWTService,
       @Inject() private readonly fileService: CloudinaryService,
       @Inject() private readonly roleService: RoleService,
+      @Inject() private readonly emailService: EmailService,
    ) {
       super();
    }
@@ -44,6 +46,7 @@ export class AuthService extends BaseService {
          });
          if (!role) role = 'customer';
          const roleFound = await this.roleService.findRoleByName(role);
+         await this.emailService.sendUserConfirmation(accountModel);
          return await this.registerTransaction(accountModel, roleFound);
       } catch (error) {
          this.ThrowError(error);
