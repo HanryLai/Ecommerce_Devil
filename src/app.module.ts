@@ -12,6 +12,7 @@ import { EmailModule } from './utils/email/email.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
 import { FavoriteEntity, ProductEntity } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
+import { ChatModule } from './app/chat/chat.module';
 
 @Module({
    imports: [
@@ -23,6 +24,7 @@ import { RunAllSeeder } from './seeders/run.seeder';
       ProductModule,
       EmailModule,
       FavoriteModule,
+      ChatModule,
    ],
    providers: [RunAllSeeder, RoleSeeder, AdminSeeder, ProductSeeder, FavoriteSeeder],
 })

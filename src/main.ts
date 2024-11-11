@@ -5,10 +5,12 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { GlobalExceptionFilter } from './common/filters/base';
+import { hostname } from 'node:os';
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
    const configService = app.get(ConfigService);
    const post = configService.get<number>('PORT') || 9999;
+   const hostname = configService.get<string>('HOST') || 'localhost';
    app.setGlobalPrefix('api');
 
    const config = new DocumentBuilder()
@@ -29,8 +31,8 @@ async function bootstrap() {
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalPipes(new ValidationPipe());
 
-   await app.listen(post, () => {
-      console.log('Server is running on port ' + post);
+   await app.listen(post, hostname, () => {
+      console.log('Server is running on port ' + post + hostname);
    });
 }
 bootstrap();

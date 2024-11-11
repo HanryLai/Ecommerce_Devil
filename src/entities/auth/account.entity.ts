@@ -3,6 +3,7 @@ import { IAccountEntity } from '../interfaces';
 import { BaseEntity } from '../base';
 import { DetailInformationEntity, RoleEntity } from '.';
 import { FavoriteEntity } from '../ecommerce/favorite.entity';
+import { ChatEntity } from '../chat';
 
 @Entity({ name: 'account' })
 export class AccountEntity extends BaseEntity<AccountEntity> implements IAccountEntity {
@@ -32,4 +33,13 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    @OneToOne(() => FavoriteEntity)
    @JoinColumn()
    favorite: FavoriteEntity;
+
+   @OneToMany(()=>ChatEntity, chat => chat.account_id)
+   account: ChatEntity;
+
+   @OneToMany(()=>ChatEntity, chat => chat.admin_id)
+   admin: ChatEntity;
+
+   @OneToMany(()=>ChatEntity, chat => chat.messages)
+   messages: ChatEntity;
 }
