@@ -1,18 +1,18 @@
-import { Entity, JoinColumn, ManyToOne } from "typeorm";
-import { BaseEntity } from "../base";
-import { AccountEntity } from "../auth";
-import { ChatEntity } from "./chat.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { AccountEntity } from '../auth';
+import { BaseEntity } from '../base';
+import { RoomEntity } from './room.entity';
+import { IMessage } from '../interfaces/message.entity.interface';
 
 @Entity({ name: 'message' })
-export class MessageEntity extends BaseEntity<MessageEntity> {
-    @ManyToOne(() => AccountEntity, (account) => account.account)
-    @JoinColumn({ name: 'sender_id' })
-    senderId: string;
+export class MessageEntity extends BaseEntity<IMessage> {
+   @Column({ type: 'text' })
+   content: string;
 
-    message: string;
+   @ManyToOne(() => AccountEntity, (account) => account.messages)
+   @JoinColumn({ name: 'account' })
+   account: AccountEntity;
 
-    @ManyToOne(() => ChatEntity, (chat) => chat.messages)
-    @JoinColumn({ name: 'chat_id' })
-    chat: ChatEntity
-
+   @ManyToOne(() => RoomEntity, (room) => room.messages)
+   room: RoomEntity;
 }

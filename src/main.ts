@@ -1,11 +1,11 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 import { GlobalExceptionFilter } from './common/filters/base';
-import { hostname } from 'node:os';
+import { WsAdapter } from '@nestjs/platform-ws';
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
    const configService = app.get(ConfigService);
@@ -30,7 +30,6 @@ async function bootstrap() {
 
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalPipes(new ValidationPipe());
-
    await app.listen(post, hostname, () => {
       console.log('Server is running on port ' + post + hostname);
    });

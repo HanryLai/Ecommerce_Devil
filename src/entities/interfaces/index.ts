@@ -6,3 +6,4 @@ export * from './product.entity.interface';
 export * from './favorite.entity.interface';
 export * from './chat.entity.interface';
 export * from './message.interface';
+export * from './room.entity.interface';
