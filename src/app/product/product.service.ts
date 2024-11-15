@@ -50,7 +50,7 @@ export class ProductService extends BaseService {
 
    async loadProduct(page: number) {
       try {
-         const limit = 10;
+         const limit = 20;
          const offset = (page - 1) * limit;
          const [listProduct, totalProduct] = await this.productRepository.findAndCount({
             take: limit,
