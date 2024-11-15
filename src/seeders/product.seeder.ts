@@ -19,11 +19,12 @@ export class ProductSeeder extends BaseService {
             },
          });
          if (!foundProduct) {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 1000; i++) {
                const product = this.productRepository.create({
                   name: `Product ${i}`,
                   description: `Description ${i}`,
-                  price: 1000 * i,
+                  price: Math.random(),
+                  image_url: 'https://picsum.photos/200/300',
                });
                await this.productRepository.save(product);
             }
