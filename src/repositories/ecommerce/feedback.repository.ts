@@ -1,3 +1,4 @@
+import { FeedbackEntity } from 'src/entities/ecommerce';
 import { BaseRepository } from '../base';
 
-export class FeedbackEntity extends BaseRepository<FeedbackEntity> {}
+export class FeedbackRepository extends BaseRepository<FeedbackEntity> {}
