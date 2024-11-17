@@ -8,7 +8,7 @@ import { MessageEntity } from './message.entity';
 export class RoomEntity extends BaseEntity<IRoom> {
    @Column({ name: 'room_name', unique: true })
    room_name: string;
-   @ManyToMany(() => AccountEntity)
+   @ManyToMany(() => AccountEntity, (account) => account.rooms)
    @JoinTable({ name: 'room_account' })
    accounts: AccountEntity[];
 

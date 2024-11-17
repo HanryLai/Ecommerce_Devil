@@ -7,6 +7,7 @@ import { RoomEntity } from 'src/entities/chat';
 import { BaseService } from 'src/common/base';
 import { In } from 'typeorm';
 import { AuthService } from 'src/app/auth';
+import { CurrentUserDto } from 'src/common/interceptor';
 
 @Injectable()
 export class RoomService extends BaseService {
@@ -28,9 +29,18 @@ export class RoomService extends BaseService {
       }
    }
 
-   async findAllByAdmin(idAdmin: string) {
+   async findAllByAdmin(user: CurrentUserDto) {
       try {
-      } catch (error) {}
+         const foundAdmin = await this.authService.findAccountById(user.id);
+         if (!foundAdmin || foundAdmin.role.name != 'admin') {
+            this.ThrowError('Admin not found');
+         }
+         console.log('room', foundAdmin.rooms);
+         const rooms = foundAdmin.rooms;
+         return rooms;
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    async findOne(name: string) {
