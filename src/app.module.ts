@@ -10,12 +10,18 @@ import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
 import { ProductModule } from './app/product/product.module';
 import { EmailModule } from './utils/email/email.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
-import { FavoriteEntity, ProductEntity } from './entities/ecommerce';
+import { FavoriteEntity, FeedbackEntity, ProductEntity } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
 
 @Module({
    imports: [
-      TypeOrmModule.forFeature([RoleEntity, AccountEntity, ProductEntity, FavoriteEntity]),
+      TypeOrmModule.forFeature([
+         RoleEntity,
+         AccountEntity,
+         ProductEntity,
+         FavoriteEntity,
+         FeedbackEntity,
+      ]),
       DatabaseModule,
       AuthModule,
       RoleModule,

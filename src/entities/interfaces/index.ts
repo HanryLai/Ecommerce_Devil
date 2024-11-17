@@ -4,3 +4,4 @@ export * from './detail_information.interface';
 export * from './role.entity.interface';
 export * from './product.entity.interface';
 export * from './favorite.entity.interface';
+export * from './feedback.entity.interface';

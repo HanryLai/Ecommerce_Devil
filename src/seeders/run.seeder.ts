@@ -16,9 +16,9 @@ export class RunAllSeeder extends BaseService implements OnModuleInit {
       super();
    }
    async onModuleInit() {
-      await this.roleSeeder.run();
-      await this.adminSeeder.run();
+      // await this.roleSeeder.run();
+      // await this.adminSeeder.run();
       await this.productSeeder.run();
-      await this.favoriteSeer.run();
+      // await this.favoriteSeer.run();
    }
 }
