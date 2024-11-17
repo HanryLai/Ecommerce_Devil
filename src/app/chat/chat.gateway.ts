@@ -68,12 +68,28 @@ export class ChatGateway
       @MessageBody() data: CreateRoomDto,
       @ConnectedSocket() client: Socket,
    ): Promise<void> {
-      const idUser = await this.getToken(client);
-      const roomName = this.determineRoomName(data.userIdOrder, idUser.id);
-      client.join(roomName);
-      client.emit('joinedRoom', { roomName, message: 'Joined room successfully' });
-      this.server.to(roomName).emit('newMember', { message: `${client.id} joined the room` });
-      console.log(`Client ${client.id} joined room: ${roomName}`);
+      try {
+         const idUser = await this.getToken(client);
+         const foundUserCurrent = await this.authService.findAccountById(idUser.id);
+         const foundUserOrder = await this.authService.findAccountById(data.userIdOrder);
+         if (!foundUserCurrent || !foundUserOrder) {
+            this.NotFoundException('User not found');
+         }
+         const roomName = this.determineRoomName(data.userIdOrder, idUser.id);
+         const foundRoom = await this.RoomService.findOne(roomName);
+         if (!foundRoom) {
+            await this.RoomService.create({
+               accounts: [foundUserCurrent, foundUserOrder],
+               name: roomName,
+            });
+         }
+         client.join(roomName);
+         client.emit('joinedRoom', { roomName, message: 'Joined room successfully' });
+         this.server.to(roomName).emit('newMember', { message: `${client.id} joined the room` });
+         console.log(`Client ${client.id} joined room: ${roomName}`);
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    @SubscribeMessage('message')
@@ -81,10 +97,27 @@ export class ChatGateway
       @MessageBody() data: CreateChatDto,
       @ConnectedSocket() client: Socket,
    ): Promise<void> {
-      const idUser = await this.getToken(client);
-      const roomName = this.determineRoomName(data.userIdOrder, idUser.id);
-      console.log(`Received message: ${data.content} `);
-      this.server.to(roomName).emit('message', data.content);
+      try {
+         const idUser = await this.getToken(client);
+         const foundAccount = await this.authService.findAccountById(idUser.id);
+         if (!foundAccount) {
+            this.NotFoundException('Account not found');
+         }
+         const roomName = this.determineRoomName(data.userIdOrder, idUser.id);
+         const foundRoom = await this.RoomService.findOne(roomName);
+         if (!foundRoom) {
+            this.NotFoundException('Room not found');
+         }
+         await this.messageService.create({
+            content: data.content,
+            room: foundRoom,
+            account: foundAccount,
+         });
+         console.log(`Received message: ${data.content} `);
+         this.server.to(roomName).emit('message', data.content);
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    handleConfirmRoom(room: string, client: Socket) {

@@ -15,7 +15,7 @@ export class RoomService extends BaseService {
    async create(createRoomDto: CreateRoomDto) {
       return await this.roomRepository.save({
          room_name: createRoomDto.name,
-         accounts: [createRoomDto.account],
+         accounts: [...createRoomDto.accounts],
       });
    }
 
