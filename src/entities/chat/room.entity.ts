@@ -12,6 +12,10 @@ export class RoomEntity extends BaseEntity<IRoom> {
    @JoinTable({ name: 'room_account' })
    accounts: AccountEntity[];
 
+   // @ManyToMany(() => AccountEntity, (account) => account.rooms)
+   // @JoinTable({ name: 'room_account' })
+   // accounts: AccountEntity[];
+
    @OneToMany(() => MessageEntity, (message) => message.room)
    messages: MessageEntity[];
 }
