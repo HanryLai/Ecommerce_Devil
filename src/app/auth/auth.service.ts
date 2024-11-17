@@ -1,15 +1,16 @@
-import { Get, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { BaseService } from 'src/common/base';
+import { CurrentUserDto } from 'src/common/interceptor';
 import { AccountEntity, DetailInformationEntity, RoleEntity } from 'src/entities/auth';
 import { AccountRepository } from 'src/repositories/auth';
+import { EmailService } from 'src/utils/email/email.service';
 import { EntityManager } from 'typeorm';
-import { RoleService } from '../role/role.service';
-import { JWTService } from './jwt';
-import { CreateAuthDto, LoginDto } from './dto';
-import { CurrentUserDto } from 'src/common/interceptor';
-import { BaseService } from 'src/common/base';
 import { CloudinaryService } from '../../utils/cloudinary/cloudinary.service';
+import { RoleService } from '../role/role.service';
+import { CreateAuthDto, LoginDto } from './dto';
+import { JWTService } from './jwt';
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
@@ -18,6 +19,7 @@ export class AuthService extends BaseService {
       private jwtService: JWTService,
       @Inject() private readonly fileService: CloudinaryService,
       @Inject() private readonly roleService: RoleService,
+      @Inject() private readonly emailService: EmailService,
    ) {
       super();
    }
@@ -44,6 +46,7 @@ export class AuthService extends BaseService {
          });
          if (!role) role = 'customer';
          const roleFound = await this.roleService.findRoleByName(role);
+         // await this.emailService.sendUserConfirmation(accountModel);
          return await this.registerTransaction(accountModel, roleFound);
       } catch (error) {
          this.ThrowError(error);
@@ -118,15 +121,33 @@ export class AuthService extends BaseService {
       }
    }
 
-   public async findAccountById(user: CurrentUserDto): Promise<AccountEntity> {
+   public async findMyAccount(user: CurrentUserDto): Promise<AccountEntity> {
       try {
-         if (user.roleName !== 'admin')
-            this.UnauthorizedException('Not have permission find this account');
          const foundAccount = await this.accountRepository.findOne({
             where: { id: user.id },
          });
          if (!foundAccount) this.NotFoundException('Not found this account');
          return foundAccount;
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
+
+   public async updatePassword(
+      user: CurrentUserDto,
+      currentPassword: string,
+      newPassword: string,
+   ): Promise<AccountEntity> {
+      try {
+         const foundAccount = await this.findMyAccount(user);
+         if (!foundAccount?.id) this.BadRequestException('Not found this account');
+         const isPasswordValid = await bcrypt.compare(currentPassword, foundAccount.password);
+         if (isPasswordValid == false) this.NotFoundException('Current password is wrong !');
+         const salt = bcrypt.genSaltSync(10);
+         const newPassHash = bcrypt.hashSync(newPassword, salt);
+         foundAccount.password = newPassHash;
+         const result = await this.accountRepository.save(foundAccount);
+         return result;
       } catch (error) {
          this.ThrowError(error);
       }
