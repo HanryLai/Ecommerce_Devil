@@ -12,16 +12,24 @@ export class MessageService extends BaseService {
       super();
    }
    async create(createMessageDto: CreateMessageDto) {
-      return await this.messageRepository.save(createMessageDto);
+      try {
+         return await this.messageRepository.save(createMessageDto);
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    async findByRoomName(room_name: string) {
-      return await this.messageRepository.find({
-         where: {
-            room: {
-               room_name: room_name,
+      try {
+         return await this.messageRepository.find({
+            where: {
+               room: {
+                  room_name: room_name,
+               },
             },
-         },
-      });
+         });
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 }
