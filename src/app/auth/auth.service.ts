@@ -46,7 +46,7 @@ export class AuthService extends BaseService {
          });
          if (!role) role = 'customer';
          const roleFound = await this.roleService.findRoleByName(role);
-         await this.emailService.sendUserConfirmation(accountModel);
+         // await this.emailService.sendUserConfirmation(accountModel);
          return await this.registerTransaction(accountModel, roleFound);
       } catch (error) {
          this.ThrowError(error);
@@ -137,6 +137,7 @@ export class AuthService extends BaseService {
       try {
          const foundAccount = await this.accountRepository.findOne({
             where: { id: idUser },
+            relations: ['role', 'rooms', 'rooms.accounts'],
          });
          if (!foundAccount) this.NotFoundException('Not found this account');
          return foundAccount;

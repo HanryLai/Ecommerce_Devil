@@ -1,34 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, HttpCode, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BaseController } from 'src/common/base';
+import { CurrentUser } from 'src/common/decorators';
+import { AuthGuard } from 'src/common/guard';
+import { CurrentUserDto, CurrentUserInterceptor } from 'src/common/interceptor';
 import { RoomService } from './room.service';
-import { CreateRoomDto } from './dto/create-room.dto';
-import { UpdateRoomDto } from './dto/update-room.dto';
 
-@Controller('room')
-export class RoomController {
-   constructor(private readonly roomService: RoomService) {}
+@Controller('rooms')
+@ApiTags('Room')
+export class RoomController extends BaseController {
+   constructor(private readonly roomService: RoomService) {
+      super();
+   }
 
-   // @Post()
-   // create(@Body() createRoomDto: CreateRoomDto) {
-   //   return this.roomService.create(createRoomDto);
-   // }
-
-   // @Get()
-   // findAll() {
-   //   return this.roomService.findAll();
-   // }
-
-   // @Get(':id')
-   // findOne(@Param('id') id: string) {
-   //   return this.roomService.findOne(+id);
-   // }
-
-   // @Patch(':id')
-   // update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-   //   return this.roomService.update(+id, updateRoomDto);
-   // }
-
-   // @Delete(':id')
-   // remove(@Param('id') id: string) {
-   //   return this.roomService.remove(+id);
-   // }
+   @UseGuards(AuthGuard)
+   @UseInterceptors(CurrentUserInterceptor)
+   @Get()
+   @ApiOperation({ description: 'Feature find all room for admin' })
+   @ApiResponse({ status: '2XX', description: 'find all room successfully' })
+   @ApiResponse({ status: '5XX', description: 'find all room failed' })
+   @HttpCode(200)
+   async findAll(@CurrentUser() user: CurrentUserDto) {
+      return this.OkResponse(
+         await this.roomService.findAllByAdmin(user),
+         'find all room successfully',
+      );
+   }
 }
