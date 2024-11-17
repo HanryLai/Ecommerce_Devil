@@ -31,6 +31,7 @@ export class ProductController extends BaseController {
    public async loadProduct(@Param('page') page: string): Promise<MessageResponse> {
       return this.OkResponse(await this.productService.loadProduct(parseInt(page)));
    }
+   
 
    @Patch(':id')
    public async update(

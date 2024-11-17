@@ -1,6 +1,6 @@
 import { AccountEntity, DetailInformationEntity, RoleEntity } from './auth';
+import { MessageEntity, RoomEntity } from './chat';
 import { FavoriteEntity, ProductEntity } from './ecommerce';
-
 
 export const entities = [
    AccountEntity,
@@ -8,4 +8,6 @@ export const entities = [
    RoleEntity,
    ProductEntity,
    FavoriteEntity,
+   RoomEntity,
+   MessageEntity,
 ];

@@ -133,6 +133,18 @@ export class AuthService extends BaseService {
       }
    }
 
+   public async findAccountById(idUser: string): Promise<AccountEntity> {
+      try {
+         const foundAccount = await this.accountRepository.findOne({
+            where: { id: idUser },
+         });
+         if (!foundAccount) this.NotFoundException('Not found this account');
+         return foundAccount;
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
+
    public async updatePassword(
       user: CurrentUserDto,
       currentPassword: string,
