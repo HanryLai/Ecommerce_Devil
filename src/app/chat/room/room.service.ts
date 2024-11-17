@@ -1,43 +1,61 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { RoomRepository } from 'src/repositories/chat';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoomEntity } from 'src/entities/chat';
 import { BaseService } from 'src/common/base';
+import { In } from 'typeorm';
+import { AuthService } from 'src/app/auth';
 
 @Injectable()
 export class RoomService extends BaseService {
-   constructor(@InjectRepository(RoomEntity) private readonly roomRepository: RoomRepository) {
+   constructor(
+      @InjectRepository(RoomEntity) private readonly roomRepository: RoomRepository,
+      @Inject() private readonly authService: AuthService,
+   ) {
       super();
    }
 
    async create(createRoomDto: CreateRoomDto) {
-      return await this.roomRepository.save({
-         room_name: createRoomDto.name,
-         accounts: [...createRoomDto.accounts],
-      });
+      try {
+         return await this.roomRepository.save({
+            room_name: createRoomDto.name,
+            accounts: [...createRoomDto.accounts],
+         });
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
-   async findAll() {
-      return await this.roomRepository.find();
+   async findAllByAdmin(idAdmin: string) {
+      try {
+      } catch (error) {}
    }
 
    async findOne(name: string) {
-      return await this.roomRepository.findOne({
-         where: {
-            room_name: name,
-         },
-      });
+      try {
+         return await this.roomRepository.findOne({
+            where: {
+               room_name: name,
+            },
+         });
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    async update(updateRoomDto: UpdateRoomDto) {
-      const foundRoom = await this.roomRepository.findOne({
-         where: { room_name: updateRoomDto.name },
-      });
-      return this.roomRepository.update(foundRoom.id, {
-         accounts: [...foundRoom.accounts, ...updateRoomDto.accounts],
-      });
+      try {
+         const foundRoom = await this.roomRepository.findOne({
+            where: { room_name: updateRoomDto.name },
+         });
+         return this.roomRepository.update(foundRoom.id, {
+            accounts: [...foundRoom.accounts, ...updateRoomDto.accounts],
+         });
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    //  remove(id: number) {
