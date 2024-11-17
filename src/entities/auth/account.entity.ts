@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { IAccountEntity } from '../interfaces';
 import { BaseEntity } from '../base';
 import { DetailInformationEntity, RoleEntity } from '.';
@@ -37,6 +37,6 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    @OneToMany(() => MessageEntity, (message) => message.account)
    messages: MessageEntity[];
 
-   @OneToMany(() => RoomEntity, (room) => room.accounts)
+   @ManyToMany(() => RoomEntity, (room) => room.accounts)
    rooms: RoomEntity[];
 }
