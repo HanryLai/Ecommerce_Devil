@@ -38,10 +38,10 @@ export class ProductService extends BaseService {
       }
    }
 
-   async findOne(id: string) {
+   async findOne(productId: string) {
       try {
          return await this.productRepository.findOne({
-            where: { id },
+            where: { id: productId },
          });
       } catch (error) {
          throw error;
@@ -73,10 +73,10 @@ export class ProductService extends BaseService {
       }
    }
 
-   async update(id: string, updateProductDto: UpdateProductDto) {
+   async update(productId: string, updateProductDto: UpdateProductDto) {
       try {
          const product = await this.productRepository.findOne({
-            where: { id },
+            where: { id: productId },
          });
          if (!product) {
             return null;
@@ -90,10 +90,10 @@ export class ProductService extends BaseService {
       }
    }
 
-   async remove(id: string) {
+   async remove(productId: string) {
       try {
          const product = await this.productRepository.findOne({
-            where: { id },
+            where: { id: productId },
          });
          if (!product) {
             return null;

@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@ne
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { BaseController, MessageResponse } from 'src/common/base';
+import { BaseController, MESSAGERESPONSE, MessageResponse } from 'src/common/base';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Product')
-@Controller('product')
+@Controller('products')
 export class ProductController extends BaseController {
    constructor(private readonly productService: ProductService) {
       super();
@@ -14,7 +14,10 @@ export class ProductController extends BaseController {
 
    @Get('searchProduct/:keyword')
    public async searchProduct(@Param('keyword') keyword: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.searchProduct(keyword));
+      return this.OkResponse(
+         await this.productService.searchProduct(keyword),
+         MESSAGERESPONSE.QUERIED,
+      );
    }
 
    @Get()
@@ -22,27 +25,32 @@ export class ProductController extends BaseController {
       return this.OkResponse(await this.productService.findAll());
    }
 
-   @Get(':id')
-   public async findOne(@Param('id') id: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.findOne(id));
+   @Get(':productId')
+   public async findOne(@Param('productId') productId: string): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.findOne(productId), MESSAGERESPONSE.QUERIED);
    }
 
    @Get('loadProduct/:page')
    public async loadProduct(@Param('page') page: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.loadProduct(parseInt(page)));
+      return this.OkResponse(
+         await this.productService.loadProduct(parseInt(page)),
+         MESSAGERESPONSE.QUERIED,
+      );
    }
-   
 
-   @Patch(':id')
+   @Patch(':productId')
    public async update(
-      @Param('id') id: string,
+      @Param('productId') productId: string,
       @Body() updateProductDto: UpdateProductDto,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.update(id, updateProductDto));
+      return this.OkResponse(
+         await this.productService.update(productId, updateProductDto),
+         MESSAGERESPONSE.UPDATED,
+      );
    }
 
-   @Delete(':id')
-   public async remove(@Param('id') id: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.remove(id));
+   @Delete(':productId')
+   public async remove(@Param('productId') productId: string): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.remove(productId), MESSAGERESPONSE.DELETED);
    }
 }

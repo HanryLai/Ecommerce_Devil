@@ -1,12 +1,11 @@
-import { Entity, JoinColumn, OneToMany, PrimaryColumn } from "typeorm";
-import { CartItemEntity } from "./cart_item.entity";
+import { Entity, JoinColumn, OneToMany, PrimaryColumn } from 'typeorm';
+import { CartItemEntity } from './cart_item.entity';
 
-@Entity({name: 'option_cart'})
+@Entity({ name: 'option_cart' })
 export class OptionCart {
-    @PrimaryColumn()
-    id: string
+   @PrimaryColumn()
+   id: string;
 
-    @OneToMany(()=> CartItemEntity, cartItem => cartItem.cart)
-    @JoinColumn({name: 'id'})
-    cartItems: CartItemEntity[]
+   @OneToMany(() => CartItemEntity, (cartItem) => cartItem.cart)
+   cart_items: CartItemEntity[];
 }

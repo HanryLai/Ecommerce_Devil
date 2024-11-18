@@ -13,6 +13,7 @@ import { FavoriteModule } from './app/favorite/favorite.module';
 import { CartItemEntity, FavoriteEntity, OptionCart, ProductEntity, ShoppingCartEntity } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
 import { ChatModule } from './app/chat/chat.module';
+import { ShoppingCartModule } from './app/shopping_cart/shopping_cart.module';
 
 @Module({
    imports: [
@@ -33,6 +34,7 @@ import { ChatModule } from './app/chat/chat.module';
       EmailModule,
       FavoriteModule,
       ChatModule,
+      ShoppingCartModule,
    ],
    providers: [RunAllSeeder, RoleSeeder, AdminSeeder, ProductSeeder, FavoriteSeeder],
 })

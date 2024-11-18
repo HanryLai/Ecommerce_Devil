@@ -1,12 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
-import { BaseController, MESSAGERESPON, MessageResponse } from 'src/common/base';
+import { BaseController, MESSAGERESPONSE, MessageResponse } from 'src/common/base';
 import { AuthGuard } from 'src/common/guard';
 import { CurrentUserDto, CurrentUserInterceptor } from 'src/common/interceptor';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/common/decorators';
 
-@Controller('favorite')
+@ApiTags('Favorite')
+@Controller('favorites')
 export class FavoriteController extends BaseController {
    constructor(private readonly favoriteService: FavoriteService) {
       super();
@@ -21,31 +22,35 @@ export class FavoriteController extends BaseController {
    @UseInterceptors(CurrentUserInterceptor)
    @ApiBearerAuth()
    @Get()
-   public async findAllByAccount(
-      @CurrentUser() user: CurrentUserDto,
-   ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.findByAccount(user), MESSAGERESPON.QUERY);
+   public async findAllByAccount(@CurrentUser() user: CurrentUserDto): Promise<MessageResponse> {
+      return this.OkResponse(
+         await this.favoriteService.findByAccount(user),
+         MESSAGERESPONSE.QUERIED,
+      );
    }
 
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @ApiBearerAuth()
-   @Post(':product')
+   @Post(':productId')
    public async addFavorite(
       @CurrentUser() user: CurrentUserDto,
-      @Param('product') product: string,
+      @Param('productId') productId: string,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.addFavorite(user, product));
+      return this.OkResponse(await this.favoriteService.addFavorite(user, productId));
    }
 
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @ApiBearerAuth()
-   @Delete(':product')
+   @Delete(':productId')
    public async removeFavorite(
       @CurrentUser() user: CurrentUserDto,
-      @Param('product') product: string
+      @Param('productId') productId: string,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.removeFavorite(user, product), MESSAGERESPON.DELETED );
+      return this.OkResponse(
+         await this.favoriteService.removeFavorite(user, productId),
+         MESSAGERESPONSE.DELETED,
+      );
    }
 }

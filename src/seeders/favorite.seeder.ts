@@ -31,16 +31,16 @@ export class FavoriteSeeder extends BaseService {
          const product2 = products[1];
          const product3 = products[2];
          const favorite1 = this.favoriteRepository.save({
-            userId: account1.id,
-            productId: product1.id,
+            user_id: account1.id,
+            product_id: product1.id,
          });
          const favorite2 = this.favoriteRepository.save({
-            userId: account1.id,
-            productId: product2.id,
+            user_id: account1.id,
+            product_id: product2.id,
          });
          const favorite3 = this.favoriteRepository.save({
-            userId: account1.id,
-            productId: product3.id,
+            user_id: account1.id,
+            product_id: product3.id,
          });
          console.log("FavoriteSeeder: Done");
       } catch (error) {

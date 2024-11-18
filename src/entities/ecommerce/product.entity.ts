@@ -28,5 +28,5 @@ export class ProductEntity extends BaseEntity<ProductEntity> {
    favorites: FavoriteEntity[];
 
    @OneToMany(() => CartItemEntity, (cartItem) => cartItem.item)
-   cartItem: CartItemEntity[];
+   cart_items: CartItemEntity[];
 }

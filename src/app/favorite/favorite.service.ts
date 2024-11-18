@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FavoriteRepository } from 'src/repositories/ecommerce/favorite.repository';
 import { EntityManager } from 'typeorm';
 import { BaseService } from 'src/common/base';
-import { number } from 'joi';
 import { CurrentUserDto } from 'src/common/interceptor';
 
 @Injectable()
@@ -28,7 +27,7 @@ export class FavoriteService extends BaseService {
       try {
          return await this.productRepository.find({
             where: {
-               userId: idAccount.id,
+               user_id: idAccount.id,
             },
          });
       } catch (error) {
@@ -36,11 +35,11 @@ export class FavoriteService extends BaseService {
       }
    }
 
-   async addFavorite(user: CurrentUserDto, product: string) {
+   async addFavorite(user: CurrentUserDto, productId: string) {
       try {
          const favorite = this.productRepository.save({
-            userId: user.id,
-            productId: product,
+            user_id: user.id,
+            product_id: productId,
          });
          return favorite;
       } catch (error) {
@@ -48,11 +47,11 @@ export class FavoriteService extends BaseService {
       }
    }
 
-   async removeFavorite(user: CurrentUserDto, product: string) {
+   async removeFavorite(user: CurrentUserDto, productId: string) {
       try {
          await this.productRepository.delete({
-            userId: user.id,
-            productId: product,
+            user_id: user.id,
+            product_id: productId,
          });
          return 'Remove favorite successfully';
       } catch (error) {
