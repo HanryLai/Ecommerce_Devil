@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from 'src/repositories/ecommerce';
 import { BaseService } from 'src/common/base';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from 'src/entities/ecommerce';
 
@@ -23,8 +23,9 @@ export class ProductService extends BaseService {
       }
 
       try {
-         const query = `SELECT * FROM product WHERE LOWER(name) LIKE LOWER('%${keyword}%')`;
-         return await this.entityManager.query(query);
+         return await this.productRepository.find({
+            where: { name: Like(`%${keyword}%`) },
+         });
       } catch (error) {
          throw error;
       }
