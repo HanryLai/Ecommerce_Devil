@@ -9,7 +9,7 @@ import { WsAdapter } from '@nestjs/platform-ws';
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
    const configService = app.get(ConfigService);
-   const post = configService.get<number>('PORT') || 9999;
+   const port = configService.get<number>('PORT') || 9999;
    const hostname = configService.get<string>('HOST') || 'localhost';
    app.setGlobalPrefix('api');
 
@@ -30,8 +30,24 @@ async function bootstrap() {
 
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalPipes(new ValidationPipe());
-   await app.listen(post, hostname, () => {
-      console.log('Server is running on port ' + post + hostname);
+   await app.listen(port, hostname, () => {
+      console.log(
+         '---------------------------------------------------------------------------\n',
+      );
+      console.log(
+         '\x1b[42m Server is running\x1b[0m' +
+            ' ' +
+            '\x1b[42m' +
+            hostname +
+            '\x1b[0m' +
+            ' ' +
+            '\x1b[42m' +
+            port +
+            '\x1b[0m',
+      );
+      console.log(
+         '\n---------------------------------------------------------------------------',
+      );
    });
 }
 bootstrap();

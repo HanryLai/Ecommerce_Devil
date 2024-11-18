@@ -7,3 +7,5 @@ export * from './favorite.entity.interface';
 export * from './chat.entity.interface';
 export * from './message.interface';
 export * from './room.entity.interface';
+export * from './cart_item.entity.interface'
+export * from './shopping_cart.entity.interface';

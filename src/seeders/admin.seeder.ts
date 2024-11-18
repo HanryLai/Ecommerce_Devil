@@ -31,6 +31,8 @@ export class AdminSeeder extends BaseService {
             console.log('REGISTER NEW ADMIN: ', admin);
             console.log('You can login account admin');
          }
+
+         console.log('AdminSeeder: Done');
       } catch (error) {
          this.ThrowError(error);
       }

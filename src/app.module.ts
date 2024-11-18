@@ -10,14 +10,23 @@ import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
 import { ProductModule } from './app/product/product.module';
 import { EmailModule } from './utils/email/email.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
-import { FavoriteEntity, ProductEntity } from './entities/ecommerce';
+import { CartItemEntity, FavoriteEntity, OptionCart, ProductEntity, ShoppingCartEntity } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
 import { ChatModule } from './app/chat/chat.module';
+import { CartModule } from './app/cart/cart.module';
 import { DetailInformationModule } from './app/detail-information/detail-information.module';
 
 @Module({
    imports: [
-      TypeOrmModule.forFeature([RoleEntity, AccountEntity, ProductEntity, FavoriteEntity]),
+      TypeOrmModule.forFeature([
+         RoleEntity,
+         AccountEntity,
+         ProductEntity,
+         FavoriteEntity,
+         ShoppingCartEntity,
+         CartItemEntity,
+         OptionCart,
+      ]),
       DatabaseModule,
       AuthModule,
       RoleModule,
@@ -26,6 +35,7 @@ import { DetailInformationModule } from './app/detail-information/detail-informa
       EmailModule,
       FavoriteModule,
       ChatModule,
+      CartModule,
       DetailInformationModule,
    ],
    providers: [RunAllSeeder, RoleSeeder, AdminSeeder, ProductSeeder, FavoriteSeeder],

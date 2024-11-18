@@ -27,6 +27,7 @@ export class RoleSeeder extends BaseService {
                await this.roleRepository.save(roleModel);
             }
          }
+         console.log('RoleSeeder: Done');
       } catch (error) {
          throw error;
       }

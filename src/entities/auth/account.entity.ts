@@ -31,7 +31,6 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    role: RoleEntity;
 
    @OneToOne(() => FavoriteEntity)
-   @JoinColumn()
    favorite: FavoriteEntity;
 
    @OneToMany(() => MessageEntity, (message) => message.account)
