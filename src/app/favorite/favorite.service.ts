@@ -1,6 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 import { FavoriteEntity } from 'src/entities/ecommerce';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FavoriteRepository } from 'src/repositories/ecommerce/favorite.repository';
@@ -26,27 +24,13 @@ export class FavoriteService extends BaseService {
       }
    }
 
-   async findByAccount(idAccount: CurrentUserDto, page: number) {
+   async findByAccount(idAccount: CurrentUserDto) {
       try {
-         const limit = 10;
-         const offset = (page - 1) * limit;
-         const [listFavorite, totalFavorite] = await this.productRepository.findAndCount({
-            where: { userId: idAccount.id },
-            take: limit,
-            skip: offset,
-         });
-         const totalPage = Math.ceil(totalFavorite / limit);
-         const totalFavoriteOfPage = listFavorite.length;
-         return {
-            message: 'Found list favorite',
-            metadata: {
-               favorites: listFavorite,
-               numberPage: parseInt(page.toString()),
-               limit: limit,
-               totalPage: totalPage,
-               totalFavoriteOfPage: totalFavoriteOfPage,
+         return await this.productRepository.find({
+            where: {
+               userId: idAccount.id,
             },
-         };
+         });
       } catch (error) {
          this.ThrowError(error);
       }

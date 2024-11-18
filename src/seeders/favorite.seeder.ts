@@ -42,10 +42,7 @@ export class FavoriteSeeder extends BaseService {
             userId: account1.id,
             productId: product3.id,
          });
-
-         console.log('Favorite 1', favorite1);
-         console.log('Favorite 2', favorite2);
-         console.log('Favorite 3', favorite3);
+         console.log("FavoriteSeeder: Done");
       } catch (error) {
          this.ThrowError(error);
       }

@@ -30,7 +30,7 @@ export class ProductSeeder extends BaseService {
             }
          }
 
-         console.log('Product seeder done');
+         console.log('ProductSeeder: Done');
       } catch (error) {
          this.ThrowError(error);
       }

@@ -1,8 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
-import { BaseController, MessageResponse } from 'src/common/base';
+import { BaseController, MESSAGERESPON, MessageResponse } from 'src/common/base';
 import { AuthGuard } from 'src/common/guard';
 import { CurrentUserDto, CurrentUserInterceptor } from 'src/common/interceptor';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -22,12 +20,11 @@ export class FavoriteController extends BaseController {
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @ApiBearerAuth()
-   @Get(':page')
-   public async findByAccount(
+   @Get()
+   public async findAllByAccount(
       @CurrentUser() user: CurrentUserDto,
-      @Param('page') page: number,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.findByAccount(user, page));
+      return this.OkResponse(await this.favoriteService.findByAccount(user), MESSAGERESPON.QUERY);
    }
 
    @UseGuards(AuthGuard)
@@ -40,6 +37,7 @@ export class FavoriteController extends BaseController {
    ): Promise<MessageResponse> {
       return this.OkResponse(await this.favoriteService.addFavorite(user, product));
    }
+
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @ApiBearerAuth()
@@ -48,6 +46,6 @@ export class FavoriteController extends BaseController {
       @CurrentUser() user: CurrentUserDto,
       @Param('product') product: string
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.removeFavorite(user, product));
+      return this.OkResponse(await this.favoriteService.removeFavorite(user, product), MESSAGERESPON.DELETED );
    }
 }
