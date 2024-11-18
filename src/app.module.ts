@@ -14,6 +14,7 @@ import { CartItemEntity, FavoriteEntity, OptionCart, ProductEntity, ShoppingCart
 import { RunAllSeeder } from './seeders/run.seeder';
 import { ChatModule } from './app/chat/chat.module';
 import { CartModule } from './app/cart/cart.module';
+import { DetailInformationModule } from './app/detail-information/detail-information.module';
 
 @Module({
    imports: [
@@ -35,6 +36,7 @@ import { CartModule } from './app/cart/cart.module';
       FavoriteModule,
       ChatModule,
       CartModule,
+      DetailInformationModule,
    ],
    providers: [RunAllSeeder, RoleSeeder, AdminSeeder, ProductSeeder, FavoriteSeeder],
 })
