@@ -62,7 +62,6 @@ export class AuthController extends BaseController {
    @ApiOperation({ description: 'Feature logout' })
    @ApiResponse({ status: '2XX', description: 'Logout successfully' })
    @ApiResponse({ status: '5XX', description: 'Logout failed' })
-   @ApiBody({ type: LoginDto })
    @ApiBearerAuth()
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
