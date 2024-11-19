@@ -5,11 +5,11 @@ export class UpdateCategoryDto {
    @ApiProperty()
    @IsString()
    @IsNotEmpty()
-   title: string;
+   title?: string;
    @ApiProperty()
    @IsString()
-   image: string;
+   image?: string;
    @ApiProperty()
    @IsString()
-   description: string;
+   description?: string;
 }
