@@ -20,29 +20,30 @@ export class FavoriteSeeder extends BaseService {
 
    async run() {
       try {
-         // getAll account
+         // random account
          const accounts = await this.accountRepository.find();
-         // getAll product
          const products = await this.productRepository.find();
 
-         // account 1 favorite product 1,2,3
-         const account1 = accounts[0];
-         const product1 = products[0];
-         const product2 = products[1];
-         const product3 = products[2];
-         const favorite1 = this.favoriteRepository.save({
-            user_id: account1.id,
-            product_id: product1.id,
-         });
-         const favorite2 = this.favoriteRepository.save({
-            user_id: account1.id,
-            product_id: product2.id,
-         });
-         const favorite3 = this.favoriteRepository.save({
-            user_id: account1.id,
-            product_id: product3.id,
-         });
-         console.log("FavoriteSeeder: Done");
+         for (const account of accounts) {
+            const favorite = await this.favoriteRepository.findOne({
+               where: {
+                  user_id: account.id,
+               },
+            });
+            if (!favorite) {
+               // random 7 - 9 product from products
+               for (const product of products.slice(0, Math.floor(Math.random() * 3) + 7)) {
+                  if (!favorite) {
+                     await this.favoriteRepository.save({
+                        user_id: account.id,
+                        product_id: product.id,
+                     });
+                  }
+               }
+            }
+         }
+
+         console.log('FavoriteSeeder: Done');
       } catch (error) {
          this.ThrowError(error);
       }

@@ -15,6 +15,7 @@ import { RunAllSeeder } from './seeders/run.seeder';
 import { ChatModule } from './app/chat/chat.module';
 import { CartModule } from './app/cart/cart.module';
 import { DetailInformationModule } from './app/detail-information/detail-information.module';
+import { FakerModule } from './utils/faker/faker.module';
 
 @Module({
    imports: [
@@ -37,6 +38,7 @@ import { DetailInformationModule } from './app/detail-information/detail-informa
       ChatModule,
       CartModule,
       DetailInformationModule,
+      FakerModule,
    ],
    providers: [RunAllSeeder, RoleSeeder, AdminSeeder, ProductSeeder, FavoriteSeeder],
 })
