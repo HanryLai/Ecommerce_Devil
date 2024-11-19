@@ -45,7 +45,7 @@ export class CategoryService extends BaseService {
       return `This action returns a #${id} category`;
    }
 
-   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
       return await this.categoryRepository.update(id, updateCategoryDto);
    }
 

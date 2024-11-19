@@ -6,9 +6,16 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JWTModule } from './jwt/jwt.module';
 import { CloudinaryModule } from '../../utils/cloudinary/cloudinary.module';
+import { EmailModule } from 'src/utils/email/email.module';
 
 @Module({
-   imports: [TypeOrmModule.forFeature([AccountEntity]), RoleModule, JWTModule, CloudinaryModule],
+   imports: [
+      TypeOrmModule.forFeature([AccountEntity]),
+      RoleModule,
+      JWTModule,
+      CloudinaryModule,
+      EmailModule,
+   ],
    controllers: [AuthController],
    providers: [AuthService],
    exports: [AuthService],
