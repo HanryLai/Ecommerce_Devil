@@ -15,13 +15,11 @@ export class ProductSeeder extends BaseService {
 
    async run() {
       try {
-         const foundProduct = await this.productRepository.findOne({
-            where: {
-               name: 'Product 1',
-            },
+         const foundProduct = await this.productRepository.find({
+            take: 1,
          });
-         if (!foundProduct) {
-            const products = await this.fakerService.generateProduct(10);
+         if (foundProduct.length == 0) {
+            const products = await this.fakerService.generateProduct(200);
            for (const product of products) {
                await this.productRepository.save(product);
            }
