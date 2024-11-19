@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateListOptionDto } from './dto/create-list-option.dto';
 import { UpdateListOptionDto } from './dto/update-list-option.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ListOptionRepository } from 'src/repositories/ecommerce';
+import { ListOptionEntity } from 'src/entities/ecommerce';
+import { BaseService } from 'src/common/base';
 
 @Injectable()
-export class ListOptionService {
-  create(createListOptionDto: CreateListOptionDto) {
-    return 'This action adds a new listOption';
-  }
+export class ListOptionService extends BaseService {
+   constructor(
+      @InjectRepository(ListOptionEntity)
+      private listOptionRepository: ListOptionRepository,
+   ) {
+      super();
+   }
 
-  findAll() {
-    return `This action returns all listOption`;
-  }
+   async findAll() {
+      return await this.listOptionRepository.find();
+   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} listOption`;
-  }
-
-  update(id: number, updateListOptionDto: UpdateListOptionDto) {
-    return `This action updates a #${id} listOption`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} listOption`;
-  }
+   async findListOptionOfProduct(productId: string) {
+      return '';
+   }
 }

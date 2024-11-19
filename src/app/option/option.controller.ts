@@ -58,4 +58,12 @@ export class OptionController extends BaseController {
    public async findOne(@Param('id') id: string): Promise<MessageResponse> {
       return this.createSuccessResponse(await this.optionService.findById(id), 'Option found');
    }
+
+   @Get('product/:id')
+   public async findOptionsOfProduct(@Param('id') productId: string): Promise<MessageResponse> {
+      return this.createSuccessResponse(
+         await this.optionService.findOptionsOfProduct(productId),
+         'Options found',
+      );
+   }
 }

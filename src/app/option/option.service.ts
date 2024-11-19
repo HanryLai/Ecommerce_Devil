@@ -36,6 +36,14 @@ export class OptionService extends BaseService {
       }
    }
 
+   async remove(id: string) {
+      try {
+         return await this.optionRepository.delete(id);
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
+
    async findAll() {
       try {
          return await this.optionRepository.find();
@@ -49,6 +57,20 @@ export class OptionService extends BaseService {
          return await this.optionRepository.findOne({
             where: { id },
          });
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
+
+   async findOptionsOfProduct(productId: string) {
+      try {
+         const product = await this.productRepository.findOne({
+            where: { id: productId },
+            relations: ['options'],
+         });
+         console.log('name:', product.name);
+
+         return product != null ? product.options : 'Product not found';
       } catch (error) {
          this.ThrowError(error);
       }
