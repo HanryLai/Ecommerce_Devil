@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/common/base';
 import { MessageEntity } from 'src/entities/chat';
 import { MessageRepository } from 'src/repositories/chat';
-import { BaseService } from 'src/common/base';
+import { CreateMessageDto } from './dto/create-message.dto';
 
 @Injectable()
 export class MessageService extends BaseService {
@@ -26,6 +25,10 @@ export class MessageService extends BaseService {
                room: {
                   room_name: room_name,
                },
+            },
+            relations: ['room'],
+            order: {
+               createdAt: 'DESC',
             },
          });
       } catch (error) {

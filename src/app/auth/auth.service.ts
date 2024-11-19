@@ -76,8 +76,8 @@ export class AuthService extends BaseService {
          const identifier = loginDto.identifier;
          const foundAccount = await this.accountRepository.findOne({
             where: [{ username: identifier }, { email: identifier }],
-            select: ['id', 'username', 'email', 'password', 'role'],
-            relations: ['role'],
+            select: ['id', 'username', 'email', 'password', 'role', 'detailInformation'],
+            relations: ['role', 'detailInformation'],
          });
 
          if (!foundAccount) this.NotFoundException('Wrong account or password');

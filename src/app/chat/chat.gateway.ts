@@ -92,7 +92,14 @@ export class ChatGateway
             });
          }
          client.join(roomName);
+         const listMessage = await this.messageService.findByRoomName(roomName);
+
          client.emit('joinedRoom', { roomName, message: 'Joined room successfully' });
+         listMessage.forEach((message) => {
+            client.emit('message', {
+               message: message,
+            });
+         });
          this.server.to(roomName).emit('newMember', { message: `${client.id} joined the room` });
          console.log(`Client ${client.id} joined room: ${roomName}`);
       } catch (error) {

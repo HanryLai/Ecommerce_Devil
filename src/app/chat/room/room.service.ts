@@ -49,6 +49,7 @@ export class RoomService extends BaseService {
             where: {
                room_name: name,
             },
+            relations: ['accounts'],
          });
       } catch (error) {
          this.ThrowError(error);
