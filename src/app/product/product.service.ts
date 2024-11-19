@@ -60,7 +60,6 @@ export class ProductService extends BaseService {
          const totalPage = Math.ceil(totalProduct / limit);
          const totalFavoriteOfPage = listProduct.length;
          return {
-            message: 'Found list favorite',
             metadata: {
                favorites: listProduct,
                numberPage: parseInt(page.toString()),

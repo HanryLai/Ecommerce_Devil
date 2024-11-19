@@ -41,9 +41,13 @@ export class ChatGateway
    }
 
    async getToken(client: Socket) {
-      const token = client.handshake.headers.authorization;
-      const decoded = await this.jwtService.verifyToken(token);
-      return decoded;
+      try {
+         const token = client.handshake.headers.authorization;
+         const decoded = await this.jwtService.verifyToken(token);
+         return decoded;
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    @UseGuards(AuthGuard)
@@ -59,8 +63,12 @@ export class ChatGateway
    }
 
    determineRoomName(idUser: string, idOrder: string): string {
-      console.log(idUser > idOrder ? `${idUser}SOCKET${idOrder}` : `${idOrder}SOCKET${idUser}`);
-      return idUser > idOrder ? `${idUser}SOCKET${idOrder}` : `${idOrder}SOCKET${idUser}`;
+      try {
+         console.log(idUser > idOrder ? `${idUser}SOCKET${idOrder}` : `${idOrder}SOCKET${idUser}`);
+         return idUser > idOrder ? `${idUser}SOCKET${idOrder}` : `${idOrder}SOCKET${idUser}`;
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    @SubscribeMessage('joinRoom')
@@ -121,6 +129,10 @@ export class ChatGateway
    }
 
    handleConfirmRoom(room: string, client: Socket) {
-      client.join(room);
+      try {
+         client.join(room);
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 }
