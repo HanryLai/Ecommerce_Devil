@@ -16,13 +16,15 @@ import { RoleModule } from './app/role';
 import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
 import { ProductModule } from './app/product/product.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
-import { CartItemEntity, FavoriteEntity, OptionCart, ProductEntity, ShoppingCartEntity } from './entities/ecommerce';
 import {
+   CartItemEntity,
    CategoryEntity,
    FavoriteEntity,
    ListOptionEntity,
+   OptionCart,
    OptionEntity,
    ProductEntity,
+   ShoppingCartEntity,
 } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
 import { ChatModule } from './app/chat/chat.module';

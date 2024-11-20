@@ -1,8 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, Table } from 'typeorm';
+import {
+   Column,
+   Entity,
+   JoinColumn,
+   JoinTable,
+   ManyToMany,
+   ManyToOne,
+   OneToMany,
+   Table,
+} from 'typeorm';
 import { BaseEntity } from '../base';
-import { AccountEntity } from '../auth';
 import { FavoriteEntity } from './favorite.entity';
 import { CartItemEntity } from './cart_item.entity';
+import { CategoryEntity } from './category.entity';
+import { OptionEntity } from './option.entity';
 
 @Entity({ name: 'product' })
 export class ProductEntity extends BaseEntity<ProductEntity> {
@@ -12,10 +22,8 @@ export class ProductEntity extends BaseEntity<ProductEntity> {
    @Column({ type: 'nvarchar' })
    description: string;
 
-
    @Column({ type: 'nvarchar', default: null })
    image_url: string;
-
 
    @Column({ type: 'double' })
    price: number;
@@ -25,9 +33,11 @@ export class ProductEntity extends BaseEntity<ProductEntity> {
 
    @OneToMany(() => CartItemEntity, (cartItem) => cartItem.item)
    cart_items: CartItemEntity[];
+
    @ManyToMany(() => CategoryEntity)
    @JoinTable({ name: 'products_categories' })
    categories: CategoryEntity[];
+
    @OneToMany(() => OptionEntity, (option) => option.product)
    options: OptionEntity[];
 }

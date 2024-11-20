@@ -1,12 +1,14 @@
 import { AccountEntity, DetailInformationEntity, RoleEntity } from './auth';
 import { MessageEntity, RoomEntity } from './chat';
-import { FavoriteEntity, ProductEntity, CartItemEntity, ShoppingCartEntity, OptionCart } from './ecommerce';
 import {
+   CartItemEntity,
    CategoryEntity,
    FavoriteEntity,
    ListOptionEntity,
+   OptionCart,
    OptionEntity,
    ProductEntity,
+   ShoppingCartEntity,
 } from './ecommerce';
 
 export const entities = [
@@ -19,7 +21,7 @@ export const entities = [
    MessageEntity,
    ShoppingCartEntity,
    CartItemEntity,
-   OptionCart
+   OptionCart,
    CategoryEntity,
    OptionEntity,
    ListOptionEntity,
