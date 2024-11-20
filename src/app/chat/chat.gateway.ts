@@ -32,6 +32,7 @@ export class ChatGateway
    ) {
       super();
    }
+   private listAdminOnline: string[] = [];
 
    @WebSocketServer()
    server: Server;
@@ -50,16 +51,30 @@ export class ChatGateway
       }
    }
 
-   @UseGuards(AuthGuard)
    async handleConnection(client: Socket) {
       try {
-         await this.getToken(client);
+         const decoded = await this.getToken(client);
+         console.log('decode', decoded);
+         if (decoded.roleName === 'admin') {
+            this.listAdminOnline.push(decoded.id);
+         }
+         console.log('listAdminOnline: ', this.listAdminOnline);
+         client.emit('admins', { admins: this.listAdminOnline });
       } catch (error) {
          this.ThrowError(error);
       }
    }
-   handleDisconnect(client: Socket) {
-      console.log('handleDisconnect );' + client.id);
+   async handleDisconnect(client: Socket) {
+      try {
+         const decoded = await this.getToken(client);
+         if (decoded.roleName === 'admin') {
+            this.listAdminOnline.splice(this.listAdminOnline.indexOf(decoded.id));
+         }
+         console.log('listAdminOnline: ', this.listAdminOnline);
+         console.log('handleDisconnect );' + client.id);
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    determineRoomName(idUser: string, idOrder: string): string {
