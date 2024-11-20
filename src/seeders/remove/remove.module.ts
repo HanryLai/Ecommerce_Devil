@@ -1,11 +1,11 @@
 import { RoleEntity } from '@/entities/auth';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RoleService } from './role.service';
+import { RemoveAllSeeder } from './remove.seeder';
 
 @Module({
    imports: [TypeOrmModule.forFeature([RoleEntity])],
-   providers: [RoleService],
-   exports: [RoleService],
+   providers: [RemoveAllSeeder],
+   exports: [RemoveAllSeeder],
 })
-export class RoleModule {}
+export class RemoveAllDatabaseModule {}
