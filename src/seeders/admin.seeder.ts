@@ -52,7 +52,7 @@ export class AdminSeeder extends BaseService {
             const customer = await this.authService.register(
                {
                   email: 'customer@gmail.com',
-                  username: 'admin2',
+                  username: 'customer',
                   password: '123',
                },
                'customer',
@@ -60,7 +60,23 @@ export class AdminSeeder extends BaseService {
             console.log('REGISTER NEW CUSTOMER: ', customer);
             console.log('You can login account customer');
          }
-
+         const foundAccount3 = await this.accountRepository.findOne({
+            where: {
+               email: 'admin@gmail.com',
+            },
+         });
+         if (!foundAccount3) {
+            const customer = await this.authService.register(
+               {
+                  email: 'admin@gmail.com',
+                  username: 'admin2',
+                  password: '123',
+               },
+               'admin',
+            );
+            console.log('REGISTER NEW CUSTOMER: ', customer);
+            console.log('You can login account customer');
+         }
          console.log('AdminSeeder: Done');
       } catch (error) {
          this.ThrowError(error);
