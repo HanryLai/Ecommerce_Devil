@@ -18,10 +18,10 @@ import { ProductModule } from './app/product/product.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
 import {
    CartItemEntity,
-   CategoryEntity,
    FavoriteEntity,
-   ListOptionEntity,
    OptionCart,
+   CategoryEntity,
+   ListOptionEntity,
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
@@ -30,6 +30,7 @@ import { RunAllSeeder } from './seeders/run.seeder';
 import { ChatModule } from './app/chat/chat.module';
 import { CartModule } from './app/cart/cart.module';
 import { DetailInformationModule } from './app/detail-information/detail-information.module';
+import { RemoveAllDatabaseModule } from './seeders/remove/remove.module';
 import { FakerModule } from './utils/faker/faker.module';
 import { FavoriteSeeder } from './seeders/favorite.seeder';
 import { CategoryModule } from './app/category/category.module';
@@ -65,6 +66,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       ChatModule,
       CartModule,
       DetailInformationModule,
+      RemoveAllDatabaseModule,
       FakerModule,
       CategoryModule,
       OptionModule,
