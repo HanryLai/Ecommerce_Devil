@@ -1,17 +1,14 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
-import { BaseEntity } from "../base";
 import { ProductEntity } from "./product.entity";
 import { AccountEntity } from "../auth";
-import { extend } from "joi";
-import { IFavoriteEntity } from "../interfaces/favorite.entity.interface";
 
 @Entity({name: 'favorite'})
 export class FavoriteEntity{
    @PrimaryColumn()
-   userId: string;
+   user_id: string;
 
    @PrimaryColumn()
-   productId: string;
+   product_id: string;
 
    @CreateDateColumn()
    createdAt: Date;
@@ -19,11 +16,11 @@ export class FavoriteEntity{
    updatedAt: Date;
 
    @ManyToOne(() => ProductEntity, product => product.favorites)
-   @JoinColumn({name: 'productId'})
+   @JoinColumn({name: 'product_id'})
    product: ProductEntity;
 
    @OneToOne(() => AccountEntity, account => account.favorite)
-   @JoinColumn({name: 'userId'})
+   @JoinColumn({name: 'user_id'})
    user: AccountEntity;
 
    
