@@ -33,15 +33,15 @@ async function bootstrap() {
    await app.listen(port, hostname, () => {
       console.log('---------------------------------------------------------------------------\n');
       console.log(
-         '\x1b[42m Server is running\x1b[0m' +
+         '\x1b[42m    Server is running   \x1b[0m' +
             ' ' +
-            '\x1b[42m' +
+            '\x1b[42m   ' +
             hostname +
-            '\x1b[0m' +
+            '   \x1b[0m   ' +
             ' ' +
-            '\x1b[42m' +
+            '\x1b[42m   ' +
             port +
-            '\x1b[0m',
+            '   \x1b[0m   ',
       );
       console.log('\n---------------------------------------------------------------------------');
    });
