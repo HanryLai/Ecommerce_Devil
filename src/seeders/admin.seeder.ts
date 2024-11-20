@@ -32,6 +32,24 @@ export class AdminSeeder extends BaseService {
             console.log('You can login account admin');
          }
 
+         const foundAccount2 = await this.accountRepository.findOne({
+            where: {
+               email: 'customer@gmail.com',
+            },
+         });
+         if (!foundAccount2) {
+            const customer = await this.authService.register(
+               {
+                  email: 'customer@gmail.com',
+                  username: 'admin2',
+                  password: '123',
+               },
+               'customer',
+            );
+            console.log('REGISTER NEW CUSTOMER: ', customer);
+            console.log('You can login account customer');
+         }
+
          console.log('AdminSeeder: Done');
       } catch (error) {
          this.ThrowError(error);
