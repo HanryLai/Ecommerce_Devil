@@ -27,7 +27,7 @@ export class FavoriteService extends BaseService {
       try {
          return await this.productRepository.find({
             where: {
-               user_id: idAccount.id,
+               userId: idAccount.id,
             },
          });
       } catch (error) {
@@ -38,8 +38,8 @@ export class FavoriteService extends BaseService {
    async addFavorite(user: CurrentUserDto, productId: string) {
       try {
          const favorite = this.productRepository.save({
-            user_id: user.id,
-            product_id: productId,
+            userId: user.id,
+            productId: productId,
          });
          return favorite;
       } catch (error) {
@@ -50,8 +50,8 @@ export class FavoriteService extends BaseService {
    async removeFavorite(user: CurrentUserDto, productId: string) {
       try {
          await this.productRepository.delete({
-            user_id: user.id,
-            product_id: productId,
+            userId: user.id,
+            productId: productId,
          });
          return 'Remove favorite successfully';
       } catch (error) {

@@ -4,11 +4,11 @@ import { AccountEntity } from "../auth";
 
 @Entity({name: 'favorite'})
 export class FavoriteEntity{
-   @PrimaryColumn()
-   user_id: string;
+   @PrimaryColumn({name: 'user_id'})
+   userId: string;
 
-   @PrimaryColumn()
-   product_id: string;
+   @PrimaryColumn({name: 'product_id'})
+   productId: string;
 
    @CreateDateColumn()
    createdAt: Date;

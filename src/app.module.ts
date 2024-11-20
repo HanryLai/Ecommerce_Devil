@@ -21,7 +21,7 @@ import {
    CategoryEntity,
    FavoriteEntity,
    ListOptionEntity,
-   OptionCart,
+   OptionCartEntity,
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
@@ -45,7 +45,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
          FavoriteEntity,
          ShoppingCartEntity,
          CartItemEntity,
-         OptionCart,
+         OptionCartEntity,
       ]),
       TypeOrmModule.forFeature([
          RoleEntity,
