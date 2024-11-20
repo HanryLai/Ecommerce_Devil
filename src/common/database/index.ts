@@ -20,6 +20,7 @@ import { entities } from 'src/entities';
                database: config.get<string>('DATABASE_NAME'),
                autoLoadEntities: true,
                synchronize: true,
+               dropSchema: true,
                entities: entities,
             };
          },

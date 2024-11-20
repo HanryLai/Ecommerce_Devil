@@ -5,7 +5,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/base';
-import { RemoveAllSeeder } from './seeders/remove/remove.seeder';
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
    const configService = app.get(ConfigService);
@@ -45,10 +44,5 @@ async function bootstrap() {
       );
       console.log('\n---------------------------------------------------------------------------');
    });
-
-   if (process.env.REMOVE == 'true') {
-      const seeder = app.get(RemoveAllSeeder);
-      await seeder.removeAllDatabase();
-   }
 }
 bootstrap();
