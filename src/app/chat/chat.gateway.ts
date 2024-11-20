@@ -31,8 +31,9 @@ export class ChatGateway
       @Inject() private readonly messageService: MessageService,
    ) {
       super();
+      this.listAdminOnline = [];
    }
-   private listAdminOnline: string[] = [];
+   public listAdminOnline: string[];
 
    @WebSocketServer()
    server: Server;
@@ -58,8 +59,8 @@ export class ChatGateway
          if (decoded.roleName === 'admin') {
             this.listAdminOnline.push(decoded.id);
          }
-         console.log('listAdminOnline: ', this.listAdminOnline);
          client.emit('admins', { admins: this.listAdminOnline });
+         console.log('listAdminOnline: ', this.listAdminOnline);
       } catch (error) {
          this.ThrowError(error);
       }
@@ -70,6 +71,7 @@ export class ChatGateway
          if (decoded.roleName === 'admin') {
             this.listAdminOnline.splice(this.listAdminOnline.indexOf(decoded.id));
          }
+         client.emit('admins', { admins: this.listAdminOnline });
          console.log('listAdminOnline: ', this.listAdminOnline);
          console.log('handleDisconnect );' + client.id);
       } catch (error) {
