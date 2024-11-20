@@ -6,7 +6,6 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JWTModule } from './jwt/jwt.module';
 import { CloudinaryModule } from '../../utils/cloudinary/cloudinary.module';
-import { EmailService } from 'src/utils/email/email.service';
 import { EmailModule } from 'src/utils/email/email.module';
 
 @Module({
