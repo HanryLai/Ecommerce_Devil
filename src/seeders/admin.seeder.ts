@@ -2,13 +2,15 @@ import { Inject, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/app/auth';
 import { BaseService } from 'src/common/base';
-import { AccountEntity } from 'src/entities/auth';
-import { AccountRepository } from 'src/repositories/auth';
+import { AccountEntity, DetailInformationEntity } from 'src/entities/auth';
+import { AccountRepository, DetailInformationRepository } from 'src/repositories/auth';
 
 export class AdminSeeder extends BaseService {
    constructor(
       @Inject() private authService: AuthService,
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
+      @InjectRepository(DetailInformationEntity)
+      private detailInformationRepository: DetailInformationRepository,
    ) {
       super();
    }
@@ -28,6 +30,7 @@ export class AdminSeeder extends BaseService {
                },
                'admin',
             );
+
             console.log('REGISTER NEW ADMIN: ', admin);
             console.log('You can login account admin');
 
