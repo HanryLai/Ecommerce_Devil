@@ -39,4 +39,37 @@ export class FeedbacksService extends BaseService {
          this.ThrowError(error);
       }
    }
+
+   async findByAccount(idAccount: CurrentUserDto) {
+      try {
+         return await this.feedbackRepository.find({
+            where: {
+               account: idAccount,
+            },
+            relations: ['product'],
+         });
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
+
+   async findByProduct(idProduct: string) {
+      try {
+         const feedbacks = await this.feedbackRepository.find({
+            where: {
+               product: {
+                  id: idProduct, // Đảm bảo `product` được liên kết qua ID
+               },
+            },
+         });
+
+         if (!feedbacks.length) {
+            throw new Error(`No feedback found for product with ID: ${idProduct}`);
+         }
+
+         return feedbacks;
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
 }

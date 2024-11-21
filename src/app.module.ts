@@ -6,6 +6,7 @@ import { LoggerMiddleware } from './middleware';
 import {
    AdminSeeder,
    CategorySeeder,
+   FeedbackSeeder,
    ListOptionSeeder,
    OptionSeeder,
    ProductSeeder,
@@ -91,6 +92,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       CategorySeeder,
       OptionSeeder,
       ListOptionSeeder,
+      FeedbackSeeder,
    ],
 })
 export class AppModule implements NestModule {
