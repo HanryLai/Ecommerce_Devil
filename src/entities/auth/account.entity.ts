@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { IAccountEntity } from '../interfaces';
 import { BaseEntity } from '../base';
 import { DetailInformationEntity, RoleEntity } from '.';
 import { FavoriteEntity } from '../ecommerce/favorite.entity';
+import { MessageEntity, RoomEntity } from '../chat';
 import { FeedbackEntity } from '../ecommerce/feedback.entity';
 
 @Entity({ name: 'account' })
@@ -31,8 +32,13 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    role: RoleEntity;
 
    @OneToOne(() => FavoriteEntity)
-   @JoinColumn()
    favorite: FavoriteEntity;
+
+   @OneToMany(() => MessageEntity, (message) => message.account)
+   messages: MessageEntity[];
+
+   @ManyToMany(() => RoomEntity, (room) => room.accounts)
+   rooms: RoomEntity[];
 
    @OneToMany(() => FeedbackEntity, (fav) => fav.account)
    feedbacks: FeedbackEntity[];

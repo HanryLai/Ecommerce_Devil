@@ -2,46 +2,80 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@ne
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { BaseController, MessageResponse } from 'src/common/base';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BaseController, MESSAGERESPONSE, MessageResponse } from 'src/common/base';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Product')
-@Controller('product')
+@Controller('products')
 export class ProductController extends BaseController {
    constructor(private readonly productService: ProductService) {
       super();
    }
 
    @Get('searchProduct/:keyword')
+   @ApiResponse({ status: '2XX', description: 'Search product by keyword' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
    public async searchProduct(@Param('keyword') keyword: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.searchProduct(keyword));
+      return this.OkResponse(
+         await this.productService.searchProduct(keyword),
+         MESSAGERESPONSE.QUERIED,
+      );
    }
 
    @Get()
+   @ApiResponse({ status: '2XX', description: 'Get all products' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
    public async findAll(): Promise<MessageResponse> {
       return this.OkResponse(await this.productService.findAll());
    }
 
-   @Get(':id')
-   public async findOne(@Param('id') id: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.findOne(id));
+   @Get(':productId')
+   @ApiResponse({ status: '2XX', description: 'Get product by id' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
+   public async findOne(@Param('productId') productId: string): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.findOne(productId), MESSAGERESPONSE.QUERIED);
    }
 
-   @Get('loadProduct/:page')
+   @Get('paginate/:page')
+   @ApiResponse({ status: '2XX', description: 'Load product by page' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
    public async loadProduct(@Param('page') page: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.loadProduct(parseInt(page)));
+      return this.OkResponse(
+         await this.productService.loadProduct(parseInt(page)),
+         MESSAGERESPONSE.QUERIED,
+      );
    }
 
-   @Patch(':id')
+   @Patch(':productId')
+   @ApiResponse({ status: '2XX', description: 'Update product by id' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @ApiBody({ type: UpdateProductDto })
+   @HttpCode(201)
    public async update(
-      @Param('id') id: string,
+      @Param('productId') productId: string,
       @Body() updateProductDto: UpdateProductDto,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.update(id, updateProductDto));
+      return this.OkResponse(
+         await this.productService.update(productId, updateProductDto),
+         MESSAGERESPONSE.UPDATED,
+      );
    }
 
-   @Delete(':id')
-   public async remove(@Param('id') id: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.remove(id));
+   @Delete(':productId')
+   @ApiResponse({ status: '2XX', description: 'Delete product by id' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(201)
+   public async remove(@Param('productId') productId: string): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.remove(productId), MESSAGERESPONSE.DELETED);
    }
 }

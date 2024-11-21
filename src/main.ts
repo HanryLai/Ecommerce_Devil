@@ -1,14 +1,15 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 import { GlobalExceptionFilter } from './common/filters/base';
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
    const configService = app.get(ConfigService);
-   const post = configService.get<number>('PORT') || 9999;
+   const port = configService.get<number>('PORT') || 9999;
+   const hostname = configService.get<string>('HOST') || 'localhost';
    app.setGlobalPrefix('api');
 
    const config = new DocumentBuilder()
@@ -28,9 +29,20 @@ async function bootstrap() {
 
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalPipes(new ValidationPipe());
-
-   await app.listen(post, () => {
-      console.log('Server is running on port ' + post);
+   await app.listen(port, hostname, () => {
+      console.log('---------------------------------------------------------------------------\n');
+      console.log(
+         '\x1b[42m    Server is running   \x1b[0m' +
+            ' ' +
+            '\x1b[42m   ' +
+            hostname +
+            '   \x1b[0m   ' +
+            ' ' +
+            '\x1b[42m   ' +
+            port +
+            '   \x1b[0m   ',
+      );
+      console.log('\n---------------------------------------------------------------------------');
    });
 }
 bootstrap();

@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from 'src/repositories/ecommerce';
 import { BaseService } from 'src/common/base';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from 'src/entities/ecommerce';
 
@@ -23,8 +23,9 @@ export class ProductService extends BaseService {
       }
 
       try {
-         const query = `SELECT * FROM product WHERE LOWER(name) LIKE LOWER('%${keyword}%')`;
-         return await this.entityManager.query(query);
+         return await this.productRepository.find({
+            where: { name: Like(`%${keyword}%`) },
+         });
       } catch (error) {
          throw error;
       }
@@ -38,10 +39,10 @@ export class ProductService extends BaseService {
       }
    }
 
-   async findOne(id: string) {
+   async findOne(productId: string) {
       try {
          return await this.productRepository.findOne({
-            where: { id },
+            where: { id: productId },
          });
       } catch (error) {
          throw error;
@@ -50,7 +51,7 @@ export class ProductService extends BaseService {
 
    async loadProduct(page: number) {
       try {
-         const limit = 10;
+         const limit = 20;
          const offset = (page - 1) * limit;
          const [listProduct, totalProduct] = await this.productRepository.findAndCount({
             take: limit,
@@ -59,7 +60,6 @@ export class ProductService extends BaseService {
          const totalPage = Math.ceil(totalProduct / limit);
          const totalFavoriteOfPage = listProduct.length;
          return {
-            message: 'Found list favorite',
             metadata: {
                favorites: listProduct,
                numberPage: parseInt(page.toString()),
@@ -73,10 +73,10 @@ export class ProductService extends BaseService {
       }
    }
 
-   async update(id: string, updateProductDto: UpdateProductDto) {
+   async update(productId: string, updateProductDto: UpdateProductDto) {
       try {
          const product = await this.productRepository.findOne({
-            where: { id },
+            where: { id: productId },
          });
          if (!product) {
             return null;
@@ -90,10 +90,10 @@ export class ProductService extends BaseService {
       }
    }
 
-   async remove(id: string) {
+   async remove(productId: string) {
       try {
          const product = await this.productRepository.findOne({
-            where: { id },
+            where: { id: productId },
          });
          if (!product) {
             return null;

@@ -1,53 +1,72 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
-import { BaseController, MessageResponse } from 'src/common/base';
+import { BaseController, MESSAGERESPONSE, MessageResponse } from 'src/common/base';
 import { AuthGuard } from 'src/common/guard';
 import { CurrentUserDto, CurrentUserInterceptor } from 'src/common/interceptor';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/common/decorators';
 
-@Controller('favorite')
+@ApiTags('Favorite')
+@Controller('favorites')
 export class FavoriteController extends BaseController {
    constructor(private readonly favoriteService: FavoriteService) {
       super();
    }
 
    @Get()
+   @ApiOperation({ description: 'Get all favorite products' })
+   @ApiResponse({ status: '2XX', description: 'Get all favorite products successfully' })
+   @ApiResponse({ status: '5XX', description: 'Get all favorite products failed' })
+   @HttpCode(200)
    public async findAll(): Promise<MessageResponse> {
       return this.OkResponse(await this.favoriteService.findAll());
    }
-
+   
+   @Get()
+   @ApiOperation({ description: 'Get all favorite products by account' })
+   @ApiResponse({ status: '2XX', description: 'Get all favorite products by account successfully' })
+   @ApiResponse({ status: '5XX', description: 'Get all favorite products by account failed' })
+   @HttpCode(200)
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @ApiBearerAuth()
-   @Get(':page')
-   public async findByAccount(
-      @CurrentUser() user: CurrentUserDto,
-      @Param('page') page: number,
-   ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.findByAccount(user, page));
+   public async findAllByAccount(@CurrentUser() user: CurrentUserDto): Promise<MessageResponse> {
+      return this.OkResponse(
+         await this.favoriteService.findByAccount(user),
+         MESSAGERESPONSE.QUERIED,
+      );
    }
 
+   @Post(':productId')
+   @ApiOperation({ description: 'Add product to favorite' })
+   @ApiResponse({ status: '2XX', description: 'Add product to favorite successfully' })
+   @ApiResponse({ status: '5XX', description: 'Add product to favorite failed' })
+   @HttpCode(201)
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @ApiBearerAuth()
-   @Post(':product')
    public async addFavorite(
       @CurrentUser() user: CurrentUserDto,
-      @Param('product') product: string,
+      @Param('productId') productId: string,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.addFavorite(user, product));
+      return this.OkResponse(await this.favoriteService.addFavorite(user, productId));
    }
+
+   @Delete(':productId')
+   @ApiOperation({ description: 'Remove product from favorite' })
+   @ApiResponse({ status: '2XX', description: 'Remove product from favorite successfully' })
+   @ApiResponse({ status: '5XX', description: 'Remove product from favorite failed' })
+   @HttpCode(200)
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @ApiBearerAuth()
-   @Delete(':product')
    public async removeFavorite(
       @CurrentUser() user: CurrentUserDto,
-      @Param('product') product: string
+      @Param('productId') productId: string,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.removeFavorite(user, product));
+      return this.OkResponse(
+         await this.favoriteService.removeFavorite(user, productId),
+         MESSAGERESPONSE.DELETED,
+      );
    }
 }
