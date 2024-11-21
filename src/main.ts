@@ -5,7 +5,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/base';
-import { WsAdapter } from '@nestjs/platform-ws';
 async function bootstrap() {
    const app = await NestFactory.create(AppModule);
    const configService = app.get(ConfigService);
@@ -31,9 +30,7 @@ async function bootstrap() {
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalPipes(new ValidationPipe());
    await app.listen(port, hostname, () => {
-      console.log(
-         '---------------------------------------------------------------------------\n',
-      );
+      console.log('---------------------------------------------------------------------------\n');
       console.log(
          '\x1b[42m    Server is running   \x1b[0m' +
             ' ' +
@@ -45,9 +42,7 @@ async function bootstrap() {
             port +
             '   \x1b[0m   ',
       );
-      console.log(
-         '\n---------------------------------------------------------------------------',
-      );
+      console.log('\n---------------------------------------------------------------------------');
    });
 }
 bootstrap();

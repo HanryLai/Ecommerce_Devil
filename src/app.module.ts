@@ -18,15 +18,17 @@ import { ProductModule } from './app/product/product.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
 import {
    CartItemEntity,
-   CategoryEntity,
    FavoriteEntity,
+   CategoryEntity,
    ListOptionEntity,
    OptionCartEntity,
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
+   FeedbackEntity,
 } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
+import { FeedbacksModule } from './app/feedbacks/feedbacks.module';
 import { ChatModule } from './app/chat/chat.module';
 import { CartModule } from './app/cart/cart.module';
 import { DetailInformationModule } from './app/detail-information/detail-information.module';
@@ -38,6 +40,13 @@ import { ListOptionModule } from './app/list-option/list-option.module';
 
 @Module({
    imports: [
+      TypeOrmModule.forFeature([
+         RoleEntity,
+         AccountEntity,
+         ProductEntity,
+         FavoriteEntity,
+         FeedbackEntity,
+      ]),
       TypeOrmModule.forFeature([
          RoleEntity,
          AccountEntity,
@@ -64,6 +73,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       CloudinaryModule,
       ProductModule,
       FavoriteModule,
+      FeedbacksModule,
       ChatModule,
       CartModule,
       DetailInformationModule,
