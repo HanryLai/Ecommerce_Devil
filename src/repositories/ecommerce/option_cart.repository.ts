@@ -1,4 +1,4 @@
-import { OptionCart } from "src/entities/ecommerce";
+import { OptionCartEntity } from "src/entities/ecommerce";
 import { BaseRepository } from "../base";
 
-export class OptionCartRepository extends BaseRepository<OptionCart> {}
+export class OptionCartRepository extends BaseRepository<OptionCartEntity> {}

@@ -27,7 +27,7 @@ export class FavoriteSeeder extends BaseService {
          for (const account of accounts) {
             const favorite = await this.favoriteRepository.findOne({
                where: {
-                  user_id: account.id,
+                  userId: account.id,
                },
             });
             if (!favorite) {
@@ -35,8 +35,8 @@ export class FavoriteSeeder extends BaseService {
                for (const product of products.slice(0, Math.floor(Math.random() * 3) + 7)) {
                   if (!favorite) {
                      await this.favoriteRepository.save({
-                        user_id: account.id,
-                        product_id: product.id,
+                        userId: account.id,
+                        productId: product.id,
                      });
                   }
                }
