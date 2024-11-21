@@ -16,7 +16,6 @@ import { RoleModule } from './app/role';
 import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
 import { ProductModule } from './app/product/product.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
-import { FavoriteEntity, FeedbackEntity, ProductEntity } from './entities/ecommerce';
 import {
    CartItemEntity,
    FavoriteEntity,
@@ -26,6 +25,7 @@ import {
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
+   FeedbackEntity,
 } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
 import { FeedbacksModule } from './app/feedbacks/feedbacks.module';

@@ -4,13 +4,13 @@ import {
    CartItemEntity,
    CategoryEntity,
    FavoriteEntity,
+   FeedbackEntity,
    ListOptionEntity,
    OptionCartEntity,
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
 } from './ecommerce';
-import { FavoriteEntity, ProductEntity, FeedbackEntity } from './ecommerce';
 
 export const entities = [
    AccountEntity,
