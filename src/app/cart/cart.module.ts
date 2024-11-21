@@ -26,5 +26,6 @@ import { JWTModule } from '../auth/jwt';
    ],
    controllers: [CartController],
    providers: [CartService],
+   exports: [CartService],
 })
 export class CartModule {}
