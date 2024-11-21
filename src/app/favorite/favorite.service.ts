@@ -29,6 +29,7 @@ export class FavoriteService extends BaseService {
             where: {
                userId: idAccount.id,
             },
+            relations: ['product'],
          });
       } catch (error) {
          this.ThrowError(error);
