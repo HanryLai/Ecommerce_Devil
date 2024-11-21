@@ -37,4 +37,11 @@ export class FeedbacksController extends BaseController {
       console.log('asd');
       return this.OkResponse(await this.feedbacksService.addFavorite(user, createFeedbackDto));
    }
+
+   @Get(':productId')
+   public async GetFeedbackByProductId(
+      @Param('productId') productId: string,
+   ): Promise<MessageResponse> {
+      return this.OkResponse(await this.feedbacksService.findByProduct(productId));
+   }
 }

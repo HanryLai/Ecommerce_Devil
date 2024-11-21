@@ -18,8 +18,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
-@ApiTags('Category')
-@Controller('category')
+@ApiTags('Categories')
+@Controller('categories')
 export class CategoryController extends BaseController {
    constructor(private readonly categoryService: CategoryService) {
       super();
@@ -56,9 +56,9 @@ export class CategoryController extends BaseController {
    }
 
    @Get(':id')
-   public async findCategoriesOfProduct(@Param('id') productId: string): Promise<MessageResponse> {
+   public async findProductByCategory(@Param('id') productId: string): Promise<MessageResponse> {
       return this.createSuccessResponse(
-         await this.categoryService.findCategoriesOfProduct(productId),
+         await this.categoryService.findProductsByCategory(productId),
          'Categories of product has been found',
       );
    }

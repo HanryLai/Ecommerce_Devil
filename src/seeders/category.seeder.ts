@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/base';
 import { CategoryEntity } from 'src/entities/ecommerce';
@@ -18,9 +19,9 @@ export class CategorySeeder extends BaseService {
          if (!foundCategory) {
             for (let i = 0; i < 10; i++) {
                const category = this.categoryRepository.create({
-                  title: `Category ${i}`,
-                  description: `Description ${i}`,
-                  image: 'no-image.jpg',
+                  title: faker.commerce.productName(),
+                  description: faker.commerce.productDescription(),
+                  image: faker.image.urlLoremFlickr(),
                });
                await this.categoryRepository.save(category);
             }

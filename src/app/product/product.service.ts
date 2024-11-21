@@ -50,6 +50,20 @@ export class ProductService extends BaseService {
       }
    }
 
+   async relationProduct () {
+      try {
+         const product = await this.productRepository.find({
+            relations: ['categories', 'options', 'options.listOptions', 'feedbacks'],
+         });
+
+         // random 20 product
+         const randomProduct = product.sort(() => Math.random() - Math.random()).slice(0, 20);
+         return randomProduct;
+      } catch (error) {
+         throw error;
+      }
+   }
+
    async loadProduct(page: number) {
       try {
          const limit = 20;
