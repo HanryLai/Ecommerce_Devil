@@ -6,13 +6,13 @@ import { CartItemEntity } from "./cart_item.entity";
 
 @Entity({ name: 'shopping_cart' })
 export class ShoppingCartEntity extends BaseEntity<ShoppingCartEntity> {
-   @Column()
-   user_id: string;
+   @Column({name: 'user_id'})
+   userId: string;
 
    @OneToOne(() => AccountEntity)
    @JoinColumn({name: "user_id"})
    account: AccountEntity;
 
    @OneToMany(() => CartItemEntity, (cartItem) => cartItem.cart)
-   cart_items: CartItemEntity[];
+   cartItems: CartItemEntity[];
 }

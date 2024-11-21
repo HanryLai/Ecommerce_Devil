@@ -9,20 +9,15 @@ import {
 } from 'typeorm';
 import { ProductEntity } from './product.entity';
 import { ShoppingCartEntity } from './shopping_cart.entity';
-import { OptionCart } from './option_cart.entity';
+import { OptionCartEntity,  } from './option_cart.entity';
+import { BaseEntity } from '../base';
 
 @Entity({ name: 'cart_item' })
-export class CartItemEntity {
-   @PrimaryColumn()
-   cart_id: string;
-
-   @PrimaryColumn()
-   item_id: string;
-
+export class CartItemEntity extends BaseEntity<CartItemEntity> {
    @Column({ type: 'int' })
    quantity: number;
 
-   @ManyToOne(() => ShoppingCartEntity, (shoppingCart) => shoppingCart.cart_items)
+   @ManyToOne(() => ShoppingCartEntity, (shoppingCart) => shoppingCart.cartItems)
    @JoinColumn({ name: 'cart_id' })
    cart: ShoppingCartEntity;
 
@@ -30,6 +25,6 @@ export class CartItemEntity {
    @JoinColumn({ name: 'item_id' })
    item: ProductEntity;
 
-   @OneToMany(() => OptionCart, (option) => option.cart_items)
-   options: OptionCart[];
+   @OneToMany(() => OptionCartEntity, (option) => option.cartItems)
+   options: OptionCartEntity[];
 }

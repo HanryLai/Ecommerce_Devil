@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { JWTModule } from './jwt/jwt.module';
 import { CloudinaryModule } from '../../utils/cloudinary/cloudinary.module';
 import { EmailModule } from 'src/utils/email/email.module';
+import { CartModule } from '../cart/cart.module';
 
 @Module({
    imports: [
@@ -15,6 +16,7 @@ import { EmailModule } from 'src/utils/email/email.module';
       JWTModule,
       CloudinaryModule,
       EmailModule,
+      CartModule,
    ],
    controllers: [AuthController],
    providers: [AuthService],

@@ -18,10 +18,10 @@ import { ProductModule } from './app/product/product.module';
 import { FavoriteModule } from './app/favorite/favorite.module';
 import {
    CartItemEntity,
-   CategoryEntity,
    FavoriteEntity,
+   CategoryEntity,
    ListOptionEntity,
-   OptionCart,
+   OptionCartEntity,
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
@@ -45,7 +45,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
          FavoriteEntity,
          ShoppingCartEntity,
          CartItemEntity,
-         OptionCart,
+         OptionCartEntity,
       ]),
       TypeOrmModule.forFeature([
          RoleEntity,

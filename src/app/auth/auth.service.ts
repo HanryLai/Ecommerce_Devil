@@ -1,16 +1,18 @@
+import { BaseService } from '@/common/base';
+import { AccountEntity, DetailInformationEntity, RoleEntity } from '@/entities/auth';
+import { AccountRepository } from '@/repositories/auth';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { BaseService } from 'src/common/base';
-import { CurrentUserDto } from 'src/common/interceptor';
-import { AccountEntity, DetailInformationEntity, RoleEntity } from 'src/entities/auth';
-import { AccountRepository } from 'src/repositories/auth';
-import { EmailService } from 'src/utils/email/email.service';
 import { EntityManager } from 'typeorm';
-import { CloudinaryService } from '../../utils/cloudinary/cloudinary.service';
-import { RoleService } from '../role/role.service';
-import { CreateAuthDto, LoginDto } from './dto';
 import { JWTService } from './jwt';
+import { CloudinaryService } from '@/utils/cloudinary/cloudinary.service';
+import { RoleService } from '../role';
+import { EmailService } from '@/utils/email/email.service';
+import { CartService } from '../cart/cart.service';
+import { CreateAuthDto, LoginDto } from './dto';
+import { CurrentUserDto } from '@/common/interceptor';
+
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
@@ -20,6 +22,7 @@ export class AuthService extends BaseService {
       @Inject() private readonly fileService: CloudinaryService,
       @Inject() private readonly roleService: RoleService,
       @Inject() private readonly emailService: EmailService,
+      @Inject() private readonly cartService: CartService,
    ) {
       super();
    }
@@ -64,6 +67,7 @@ export class AuthService extends BaseService {
                role: role,
             });
             const accountSave = await entityManager.save(accountCreate);
+            this.cartService.createNewCart({ id: accountSave.id } as unknown as CurrentUserDto);
             return accountSave;
          });
       } catch (error) {
