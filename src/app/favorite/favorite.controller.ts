@@ -22,7 +22,7 @@ export class FavoriteController extends BaseController {
       return this.OkResponse(await this.favoriteService.findAll());
    }
    
-   @Get()
+   @Get("/my-favorites")
    @ApiOperation({ description: 'Get all favorite products by account' })
    @ApiResponse({ status: '2XX', description: 'Get all favorite products by account successfully' })
    @ApiResponse({ status: '5XX', description: 'Get all favorite products by account failed' })
