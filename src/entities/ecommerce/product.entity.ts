@@ -1,18 +1,12 @@
-import {
-   Column,
-   Entity,
-   JoinColumn,
-   JoinTable,
-   ManyToMany,
-   ManyToOne,
-   OneToMany,
-   Table,
-} from 'typeorm';
-import { BaseEntity } from '../base';
-import { FavoriteEntity } from './favorite.entity';
+
 import { CartItemEntity } from './cart_item.entity';
 import { CategoryEntity } from './category.entity';
 import { OptionEntity } from './option.entity';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, Table } from 'typeorm';
+import { BaseEntity } from '../base';
+import { AccountEntity } from '../auth';
+import { FavoriteEntity } from './favorite.entity';
+import { FeedbackEntity } from './feedback.entity';
 
 @Entity({ name: 'product' })
 export class ProductEntity extends BaseEntity<ProductEntity> {
@@ -25,14 +19,14 @@ export class ProductEntity extends BaseEntity<ProductEntity> {
    @Column({ type: 'nvarchar', default: null })
    image_url: string;
 
-   @Column({ type: 'double' })
-   price: number;
-
    @OneToMany(() => FavoriteEntity, (favorite) => favorite.product)
    favorites: FavoriteEntity[];
 
+
    @OneToMany(() => CartItemEntity, (cartItem) => cartItem.item)
    cart_items: CartItemEntity[];
+   @Column({ type: 'double' })
+   price: number;
 
    @ManyToMany(() => CategoryEntity)
    @JoinTable({ name: 'products_categories' })
@@ -40,4 +34,7 @@ export class ProductEntity extends BaseEntity<ProductEntity> {
 
    @OneToMany(() => OptionEntity, (option) => option.product)
    options: OptionEntity[];
+
+   @OneToMany(() => FeedbackEntity, (feedback) => feedback.product)
+   feedbacks: AccountEntity[];
 }
