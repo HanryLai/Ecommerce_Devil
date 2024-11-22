@@ -33,16 +33,12 @@ export class CategoryService extends BaseService {
       }
    }
 
-   async findCategoriesOfProduct(productId: string) {
-      const product = await this.productRepository.findOne({
-         where: { id: productId },
-         relations: ['categories'],
-      });
-      return product != null ? product.categories : 'Product not found';
-   }
-
-   findOne(id: number) {
-      return `This action returns a #${id} category`;
+   async findProductsByCategory(categoryId: string) {
+      try {
+         return await this.productRepository.find({ where: { categories: { id: categoryId } } });
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
    async update(id: string, updateCategoryDto: UpdateCategoryDto) {

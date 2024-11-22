@@ -19,7 +19,7 @@ export class ProductSeeder extends BaseService {
             take: 1,
          });
          if (foundProduct.length == 0) {
-            const products = await this.fakerService.generateProduct(5);
+            const products = await this.fakerService.generateProduct(200);
            for (const product of products) {
                await this.productRepository.save(product);
            }
