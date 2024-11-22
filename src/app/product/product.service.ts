@@ -63,7 +63,12 @@ export class ProductService extends BaseService {
       try {
          return await this.productRepository.findOne({
             where: { id: productId },
-            relations: ['categories', 'options', 'options.listOptions', 'feedbacks'],
+            relations: [
+               'categories',
+               'options',
+               'options.listOptions',
+               'feedbacks.account.detailInformation',
+            ],
          });
       } catch (error) {
          throw error;
