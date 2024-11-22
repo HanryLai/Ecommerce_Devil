@@ -61,6 +61,7 @@ export class FeedbacksService extends BaseService {
                   id: idProduct, // Đảm bảo `product` được liên kết qua ID
                },
             },
+            relations: ['account.detailInformation'],
          });
 
          if (!feedbacks.length) {
