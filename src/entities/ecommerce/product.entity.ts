@@ -21,9 +21,7 @@ export class ProductEntity extends BaseEntity<ProductEntity> {
 
    @OneToMany(() => FavoriteEntity, (favorite) => favorite.product)
    favorites: FavoriteEntity[];
-   
-   @Column({ type: 'nvarchar', default: null })
-   option_id: string;
+
 
    @OneToMany(() => CartItemEntity, (cartItem) => cartItem.item)
    cart_items: CartItemEntity[];
