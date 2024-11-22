@@ -21,9 +21,6 @@ export class RoomController extends BaseController {
    @ApiResponse({ status: '5XX', description: 'find all room failed' })
    @HttpCode(200)
    async findAll(@CurrentUser() user: CurrentUserDto) {
-      return this.OkResponse(
-         await this.roomService.findAllByAdmin(user),
-         'find all room successfully',
-      );
+      return this.OkResponse(await this.roomService.findAll(user), 'find all room successfully');
    }
 }
