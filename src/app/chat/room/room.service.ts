@@ -19,54 +19,58 @@ export class RoomService extends BaseService {
    }
 
    async create(createRoomDto: CreateRoomDto) {
-      try {
-         return await this.roomRepository.save({
-            room_name: createRoomDto.name,
-            accounts: [...createRoomDto.accounts],
-         });
-      } catch (error) {
-         this.ThrowError(error);
-      }
+      // try {
+      //    return await this.roomRepository.save({
+      //       room_name: createRoomDto.name,
+      //       accounts: [...createRoomDto.accounts],
+      //    });
+      // } catch (error) {
+      //    this.ThrowError(error);
+      // }
+      return null;
    }
 
    async findAllByAdmin(user: CurrentUserDto) {
-      try {
-         const foundAdmin = await this.authService.findAccountById(user.id);
-         if (!foundAdmin || foundAdmin.role.name != 'admin') {
-            this.ThrowError('Admin not found');
-         }
-         console.log('room', foundAdmin.rooms);
-         const rooms = foundAdmin.rooms;
-         return rooms;
-      } catch (error) {
-         this.ThrowError(error);
-      }
+      // try {
+      //    const foundAdmin = await this.authService.findAccountById(user.id);
+      //    if (!foundAdmin || foundAdmin.role.name != 'admin') {
+      //       this.ThrowError('Admin not found');
+      //    }
+      //    console.log('room', foundAdmin.room);
+      //    const rooms = foundAdmin.room;
+      //    return rooms;
+      // } catch (error) {
+      //    this.ThrowError(error);
+      // }
+      return null;
    }
 
    async findOne(name: string) {
-      try {
-         return await this.roomRepository.findOne({
-            where: {
-               room_name: name,
-            },
-            relations: ['accounts'],
-         });
-      } catch (error) {
-         this.ThrowError(error);
-      }
+      // try {
+      //    return await this.roomRepository.findOne({
+      //       where: {
+      //          room_name: name,
+      //       },
+      //       relations: ['accounts'],
+      //    });
+      // } catch (error) {
+      //    this.ThrowError(error);
+      // }
+      return null;
    }
 
    async update(updateRoomDto: UpdateRoomDto) {
-      try {
-         const foundRoom = await this.roomRepository.findOne({
-            where: { room_name: updateRoomDto.name },
-         });
-         return this.roomRepository.update(foundRoom.id, {
-            accounts: [...foundRoom.accounts, ...updateRoomDto.accounts],
-         });
-      } catch (error) {
-         this.ThrowError(error);
-      }
+      // try {
+      //    const foundRoom = await this.roomRepository.findOne({
+      //       where: { room_name: updateRoomDto.name },
+      //    });
+      //    return this.roomRepository.update(foundRoom.id, {
+      //       accounts: [...foundRoom.accounts, ...updateRoomDto.accounts],
+      //    });
+      // } catch (error) {
+      //    this.ThrowError(error);
+      // }
+      return null;
    }
 
    //  remove(id: number) {
