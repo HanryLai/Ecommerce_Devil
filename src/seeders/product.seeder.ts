@@ -1,4 +1,3 @@
-
 import { InjectRepository } from '@nestjs/typeorm';
 import { FakerService } from 'src/utils/faker/faker.service';
 
@@ -7,9 +6,10 @@ import { ProductEntity } from 'src/entities/ecommerce';
 import { ProductRepository } from 'src/repositories/ecommerce';
 
 export class ProductSeeder extends BaseService {
-   constructor(@InjectRepository(ProductEntity) private productRepository: ProductRepository,
-   private readonly fakerService: FakerService,
-) {
+   constructor(
+      @InjectRepository(ProductEntity) private productRepository: ProductRepository,
+      private readonly fakerService: FakerService,
+   ) {
       super();
    }
 
@@ -20,9 +20,9 @@ export class ProductSeeder extends BaseService {
          });
          if (foundProduct.length == 0) {
             const products = await this.fakerService.generateProduct(200);
-           for (const product of products) {
+            for (const product of products) {
                await this.productRepository.save(product);
-           }
+            }
          }
 
          console.log('ProductSeeder: Done');

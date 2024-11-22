@@ -20,4 +20,35 @@ export class FakerService extends BaseService {
       }
       return products;
    }
+
+   generateOption(count: number) {
+      const options = [];
+      for (let i = 0; i < count; i++) {
+         options.push({
+            name: faker.helpers.arrayElement(['Color', 'Size', 'Memory', 'Material']),
+            description: faker.commerce.productDescription(),
+         });
+      }
+      return options;
+   }
+
+   generateListOption(optionName: string, count: number) {
+      const listOptions = [];
+      const values = {
+         Color: ['Yellow', 'Red', 'Black'],
+         Size: ['M', 'L', 'XL'],
+         Memory: ['8GB', '16GB', '32GB', '64GB'],
+         Material: ['Plastic', 'Metal'],
+      };
+
+      const optionValues = values[optionName] || [];
+
+      for (let i = 0; i < count; i++) {
+         listOptions.push({
+            name: faker.helpers.arrayElement(optionValues),
+            description: faker.commerce.productDescription(),
+         });
+      }
+      return listOptions;
+   }
 }
