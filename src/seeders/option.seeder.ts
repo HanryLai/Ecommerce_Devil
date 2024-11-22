@@ -14,7 +14,7 @@ export class OptionSeeder extends BaseService {
    async run() {
       try {
          const foundOption = await this.optionRepository.findOne({
-            where: {
+            where: { 
                name: 'Option 1',
             },
          });
@@ -24,8 +24,8 @@ export class OptionSeeder extends BaseService {
             for (let i = 0; i < 10; i++) {
                const randomProduct = products[Math.floor(Math.random() * products.length)];
                const option = this.optionRepository.create({
-                  name: `Option ${i}`,
-                  description: `Description ${i}`,
+                  name: `Option ${i + 1}`,
+                  description: `Description ${i + 1}`,
                   orderIndex: i + 1,
                   product: randomProduct,
                });

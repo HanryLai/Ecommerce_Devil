@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FeedbackRepository, ProductRepository } from 'src/repositories/ecommerce';
 import { BaseService } from 'src/common/base';
-import { EntityManager, Like } from 'typeorm';
+import { Between, EntityManager, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FeedbackEntity, ProductEntity } from 'src/entities/ecommerce';
 
@@ -27,6 +27,16 @@ export class ProductService extends BaseService {
       try {
          return await this.productRepository.find({
             where: { name: Like(`%${keyword}%`) },
+         });
+      } catch (error) {
+         throw error;
+      }
+   }
+
+   async searchProductByPriceRange(minPrice: number, maxPrice: number) {
+      try {
+         return await this.productRepository.find({
+            where: { price: Between(minPrice, maxPrice) },
          });
       } catch (error) {
          throw error;
