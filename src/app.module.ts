@@ -6,6 +6,7 @@ import { LoggerMiddleware } from './middleware';
 import {
    AdminSeeder,
    CategorySeeder,
+   FeedbackSeeder,
    ListOptionSeeder,
    OptionSeeder,
    ProductSeeder,
@@ -25,8 +26,10 @@ import {
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
+   FeedbackEntity,
 } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
+import { FeedbacksModule } from './app/feedbacks/feedbacks.module';
 import { ChatModule } from './app/chat/chat.module';
 import { CartModule } from './app/cart/cart.module';
 import { DetailInformationModule } from './app/detail-information/detail-information.module';
@@ -35,6 +38,7 @@ import { FavoriteSeeder } from './seeders/favorite.seeder';
 import { CategoryModule } from './app/category/category.module';
 import { OptionModule } from './app/option/option.module';
 import { ListOptionModule } from './app/list-option/list-option.module';
+import { CartSeeder } from './seeders/cart.seeder';
 
 @Module({
    imports: [
@@ -50,6 +54,8 @@ import { ListOptionModule } from './app/list-option/list-option.module';
          CategoryEntity,
          OptionEntity,
          ListOptionEntity,
+         FeedbackEntity,
+         DetailInformationEntity,
       ]),
 
       DatabaseModule,
@@ -58,6 +64,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       CloudinaryModule,
       ProductModule,
       FavoriteModule,
+      FeedbacksModule,
       ChatModule,
       CartModule,
       DetailInformationModule,
@@ -75,6 +82,8 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       CategorySeeder,
       OptionSeeder,
       ListOptionSeeder,
+      FeedbackSeeder,
+      CartSeeder,
    ],
 })
 export class AppModule implements NestModule {

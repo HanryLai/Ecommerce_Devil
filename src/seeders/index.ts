@@ -4,3 +4,4 @@ export * from './product.seeder';
 export * from './category.seeder';
 export * from './option.seeder';
 export * from './list-option.seeder';
+export * from './feedback.seeder';

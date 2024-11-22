@@ -4,6 +4,7 @@ import {
    CartItemEntity,
    CategoryEntity,
    FavoriteEntity,
+   FeedbackEntity,
    ListOptionEntity,
    OptionCartEntity,
    OptionEntity,
@@ -25,4 +26,5 @@ export const entities = [
    CategoryEntity,
    OptionEntity,
    ListOptionEntity,
+   FeedbackEntity,
 ];

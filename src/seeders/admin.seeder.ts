@@ -48,6 +48,19 @@ export class AdminSeeder extends BaseService {
                },
                'customer',
             );
+            const detailInformation2 = await this.detailInformationRepository.findOne({
+               where: {
+                  id: user.detailInformation.id,
+               },
+            });
+
+            const update2 = await this.detailInformationRepository.update(detailInformation2.id, {
+               full_name: 'KhachHang',
+               phone: '0123456789',
+               address: 'HCM',
+               avatar_url:
+                  'https://i.pinimg.com/736x/92/bd/ff/92bdff348aea123776a54c9f6a37e01d.jpg',
+            });
             console.log('REGISTER NEW USER: ', user);
             console.log('You can login account user1');
          }

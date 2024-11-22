@@ -8,6 +8,8 @@ import { EntityManager } from 'typeorm';
 import { ListOptionSeeder } from './list-option.seeder';
 import { CategorySeeder } from './category.seeder';
 import { OptionSeeder } from './option.seeder';
+import { FeedbackSeeder } from './feedback.seeder';
+import { CartSeeder } from './cart.seeder';
 
 @Injectable()
 export class RunAllSeeder extends BaseService implements OnModuleInit {
@@ -20,6 +22,8 @@ export class RunAllSeeder extends BaseService implements OnModuleInit {
       private categorySeeder: CategorySeeder,
       private optionSeeder: OptionSeeder,
       private listOptionSeeder: ListOptionSeeder,
+      private feedbackSeeder: FeedbackSeeder,
+      private cartSeeder: CartSeeder,
    ) {
       super();
    }
@@ -32,5 +36,7 @@ export class RunAllSeeder extends BaseService implements OnModuleInit {
       await this.categorySeeder.run();
       await this.optionSeeder.run();
       await this.listOptionSeeder.run();
+      await this.feedbackSeeder.run();
+      await this.cartSeeder.run();
    }
 }
