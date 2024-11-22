@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductRepository } from 'src/repositories/ecommerce';
+import { FeedbackRepository, ProductRepository } from 'src/repositories/ecommerce';
 import { BaseService } from 'src/common/base';
 import { EntityManager, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from 'src/entities/ecommerce';
+import { FeedbackEntity, ProductEntity } from 'src/entities/ecommerce';
 
 @Injectable()
 export class ProductService extends BaseService {
    constructor(
       @InjectRepository(ProductEntity)
       private productRepository: ProductRepository,
+      @InjectRepository(FeedbackEntity)
+      private feedbackRepository: FeedbackRepository,
       private entityManager: EntityManager,
    ) {
       super();
@@ -33,7 +35,27 @@ export class ProductService extends BaseService {
 
    async findAll() {
       try {
-         return await this.productRepository.find();
+         const products = await this.productRepository.find({});
+
+         if (!products) {
+            return [];
+         }
+
+         const feedback = await this.feedbackRepository.find({
+            relations: ['product'],
+         });
+
+         return products.map((product) => {
+            const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
+            // avgRating round 1 decimal
+            const roundRating = Math.round(avgRating * 10) / 10;
+
+            return {
+               ...product,
+               rating: roundRating,
+            };
+         });
       } catch (error) {
          throw error;
       }
@@ -43,7 +65,12 @@ export class ProductService extends BaseService {
       try {
          return await this.productRepository.findOne({
             where: { id: productId },
-            relations: ['categories', 'options', 'options.listOptions', 'feedbacks'],
+            relations: [
+               'categories',
+               'options',
+               'options.listOptions',
+               'feedbacks.account.detailInformation',
+            ],
          });
       } catch (error) {
          throw error;

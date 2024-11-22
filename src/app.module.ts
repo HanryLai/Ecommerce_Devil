@@ -38,6 +38,7 @@ import { FavoriteSeeder } from './seeders/favorite.seeder';
 import { CategoryModule } from './app/category/category.module';
 import { OptionModule } from './app/option/option.module';
 import { ListOptionModule } from './app/list-option/list-option.module';
+import { CartSeeder } from './seeders/cart.seeder';
 
 @Module({
    imports: [
@@ -93,6 +94,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       OptionSeeder,
       ListOptionSeeder,
       FeedbackSeeder,
+      CartSeeder,
    ],
 })
 export class AppModule implements NestModule {
