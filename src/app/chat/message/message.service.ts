@@ -11,30 +11,28 @@ export class MessageService extends BaseService {
       super();
    }
    async create(createMessageDto: CreateMessageDto) {
-      // try {
-      //    return await this.messageRepository.save(createMessageDto);
-      // } catch (error) {
-      //    this.ThrowError(error);
-      // }
-      return null;
+      try {
+         return await this.messageRepository.save(createMessageDto);
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 
-   async findByRoomName(room_name: string) {
-      // try {
-      //    return await this.messageRepository.find({
-      //       where: {
-      //          room: {
-      //             room_name: room_name,
-      //          },
-      //       },
-      //       relations: ['room'],
-      //       order: {
-      //          createdAt: 'DESC',
-      //       },
-      //    });
-      // } catch (error) {
-      //    this.ThrowError(error);
-      // }
-      return null;
+   async findByRoom(roomId: string) {
+      try {
+         return await this.messageRepository.find({
+            where: {
+               room: {
+                  id: roomId,
+               },
+            },
+            relations: ['room', 'account'],
+            order: {
+               createdAt: 'DESC',
+            },
+         });
+      } catch (error) {
+         this.ThrowError(error);
+      }
    }
 }

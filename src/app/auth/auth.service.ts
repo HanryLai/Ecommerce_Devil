@@ -142,7 +142,7 @@ export class AuthService extends BaseService {
       try {
          const foundAccount = await this.accountRepository.findOne({
             where: { id: idUser },
-            relations: ['role', 'rooms', 'rooms.accounts'],
+            relations: ['role', 'room'],
          });
          if (!foundAccount) this.NotFoundException('Not found this account');
          return foundAccount;
