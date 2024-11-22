@@ -42,6 +42,15 @@ export class ProductController extends BaseController {
       return this.OkResponse(await this.productService.findOne(productId), MESSAGERESPONSE.QUERIED);
    }
 
+   @Get('relationProduct')
+   @ApiResponse({ status: '2XX', description: 'Get relation product' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
+   public async relationProduct(): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.relationProduct());
+   }
+
    @Get('paginate/:page')
    @ApiResponse({ status: '2XX', description: 'Load product by page' })
    @ApiResponse({ status: '4XX', description: 'Product not found' })

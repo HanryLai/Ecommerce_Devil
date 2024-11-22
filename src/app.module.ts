@@ -1,11 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from './common/database';
-import { AccountEntity, RoleEntity } from './entities/auth';
+import { AccountEntity, DetailInformationEntity, RoleEntity } from './entities/auth';
 import { LoggerMiddleware } from './middleware';
 import {
    AdminSeeder,
    CategorySeeder,
+   FeedbackSeeder,
    ListOptionSeeder,
    OptionSeeder,
    ProductSeeder,
@@ -25,8 +26,10 @@ import {
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
+   FeedbackEntity,
 } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
+import { FeedbacksModule } from './app/feedbacks/feedbacks.module';
 import { ChatModule } from './app/chat/chat.module';
 import { CartModule } from './app/cart/cart.module';
 import { DetailInformationModule } from './app/detail-information/detail-information.module';
@@ -43,9 +46,17 @@ import { ListOptionModule } from './app/list-option/list-option.module';
          AccountEntity,
          ProductEntity,
          FavoriteEntity,
+         FeedbackEntity,
+      ]),
+      TypeOrmModule.forFeature([
+         RoleEntity,
+         AccountEntity,
+         ProductEntity,
+         FavoriteEntity,
          ShoppingCartEntity,
          CartItemEntity,
          OptionCartEntity,
+         DetailInformationEntity,
       ]),
       TypeOrmModule.forFeature([
          RoleEntity,
@@ -55,6 +66,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
          CategoryEntity,
          OptionEntity,
          ListOptionEntity,
+         DetailInformationEntity,
       ]),
       DatabaseModule,
       AuthModule,
@@ -62,6 +74,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       CloudinaryModule,
       ProductModule,
       FavoriteModule,
+      FeedbacksModule,
       ChatModule,
       CartModule,
       DetailInformationModule,
@@ -79,6 +92,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       CategorySeeder,
       OptionSeeder,
       ListOptionSeeder,
+      FeedbackSeeder,
    ],
 })
 export class AppModule implements NestModule {
