@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from './common/database';
-import { AccountEntity, RoleEntity } from './entities/auth';
+import { AccountEntity, DetailInformationEntity, RoleEntity } from './entities/auth';
 import { LoggerMiddleware } from './middleware';
 import {
    AdminSeeder,
@@ -46,16 +46,12 @@ import { ListOptionModule } from './app/list-option/list-option.module';
          ShoppingCartEntity,
          CartItemEntity,
          OptionCartEntity,
-      ]),
-      TypeOrmModule.forFeature([
-         RoleEntity,
-         AccountEntity,
-         ProductEntity,
-         FavoriteEntity,
+         DetailInformationEntity,
          CategoryEntity,
          OptionEntity,
          ListOptionEntity,
       ]),
+
       DatabaseModule,
       AuthModule,
       RoleModule,

@@ -1,4 +1,4 @@
-
+import { DetailInformationEntity } from '@/entities/auth';
 import { faker } from '@faker-js/faker';
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/base';
@@ -20,5 +20,13 @@ export class FakerService extends BaseService {
          });
       }
       return products;
+   }
+
+   generateDetailInformation(detailInformation: DetailInformationEntity): DetailInformationEntity {
+      detailInformation.address = faker.address.streetAddress();
+      detailInformation.phone = faker.phone.number();
+      detailInformation.full_name = faker.name.fullName();
+      detailInformation.avatar_url = faker.image.avatar();
+      return detailInformation;
    }
 }

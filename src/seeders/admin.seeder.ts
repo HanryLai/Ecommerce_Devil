@@ -1,14 +1,19 @@
+import { FakerService } from '@/utils/faker/faker.service';
+import { faker } from '@faker-js/faker';
 import { Inject, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/app/auth';
 import { BaseService } from 'src/common/base';
-import { AccountEntity } from 'src/entities/auth';
-import { AccountRepository } from 'src/repositories/auth';
+import { AccountEntity, DetailInformationEntity } from 'src/entities/auth';
+import { AccountRepository, DetailInformationRepository } from 'src/repositories/auth';
 
 export class AdminSeeder extends BaseService {
    constructor(
       @Inject() private authService: AuthService,
+      @Inject() private fakerService: FakerService,
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
+      @InjectRepository(DetailInformationEntity)
+      private detailInformationRepository: DetailInformationRepository,
    ) {
       super();
    }
@@ -28,9 +33,13 @@ export class AdminSeeder extends BaseService {
                },
                'admin',
             );
+
             console.log('REGISTER NEW ADMIN: ', admin);
             console.log('You can login account admin');
-
+            const detailInformation = this.fakerService.generateDetailInformation(
+               admin.detailInformation,
+            );
+            await this.detailInformationRepository.save(detailInformation);
             const user = await this.authService.register(
                {
                   email: 'user1@gmail.com',
@@ -57,6 +66,10 @@ export class AdminSeeder extends BaseService {
                },
                'customer',
             );
+            const detailInformation = this.fakerService.generateDetailInformation(
+               customer.detailInformation,
+            );
+            await this.detailInformationRepository.save(detailInformation);
             console.log('REGISTER NEW CUSTOMER: ', customer);
             console.log('You can login account customer');
          }
@@ -66,7 +79,7 @@ export class AdminSeeder extends BaseService {
             },
          });
          if (!foundAccount3) {
-            const customer = await this.authService.register(
+            const admin = await this.authService.register(
                {
                   email: 'admin@gmail.com',
                   username: 'admin2',
@@ -74,9 +87,14 @@ export class AdminSeeder extends BaseService {
                },
                'admin',
             );
-            console.log('REGISTER NEW CUSTOMER: ', customer);
+            const detailInformation = this.fakerService.generateDetailInformation(
+               admin.detailInformation,
+            );
+            await this.detailInformationRepository.save(detailInformation);
+            console.log('REGISTER NEW admin: ', admin);
             console.log('You can login account customer');
          }
+
          console.log('AdminSeeder: Done');
       } catch (error) {
          this.ThrowError(error);
