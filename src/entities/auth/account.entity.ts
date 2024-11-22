@@ -37,8 +37,8 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
    @OneToMany(() => MessageEntity, (message) => message.account)
    messages: MessageEntity[];
 
-   @ManyToMany(() => RoomEntity, (room) => room.accounts)
-   rooms: RoomEntity[];
+   @OneToOne(() => RoomEntity, (room) => room.account)
+   room: RoomEntity;
 
    @OneToMany(() => FeedbackEntity, (fav) => fav.account)
    feedbacks: FeedbackEntity[];
