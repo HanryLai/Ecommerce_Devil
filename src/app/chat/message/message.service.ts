@@ -28,7 +28,7 @@ export class MessageService extends BaseService {
             },
             relations: ['room', 'account'],
             order: {
-               createdAt: 'DESC',
+               createdAt: 'ASC',
             },
          });
       } catch (error) {
