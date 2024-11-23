@@ -13,7 +13,7 @@ export class FeedbackSeeder extends BaseService {
    constructor(
       @InjectRepository(ProductEntity) private productRepository: ProductRepository,
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
-      @InjectRepository(FeedbackEntity) private FeedbackRepository: FeedbackRepository,
+      @InjectRepository(FeedbackEntity) private feedbackRepository: FeedbackRepository,
       private entityManager: EntityManager,
    ) {
       super();
@@ -22,11 +22,20 @@ export class FeedbackSeeder extends BaseService {
    async run() {
       try {
          // random account
+
+         const foundFeedback = await this.feedbackRepository.find({
+            take: 1,
+         });
          const accounts = await this.accountRepository.find();
          const products = await this.productRepository.find();
 
+         if (foundFeedback && foundFeedback.length >= 0) {
+            console.log('FeedbackSeeder: Done');
+            return;
+         }
+
          for (const account of accounts) {
-            const Feedback = await this.FeedbackRepository.findOne({
+            const Feedback = await this.feedbackRepository.findOne({
                where: {
                   account: account,
                },
@@ -35,7 +44,7 @@ export class FeedbackSeeder extends BaseService {
                // const productlenth = products.length;
                for (const product of products) {
                   if (!Feedback) {
-                     await this.FeedbackRepository.save({
+                     await this.feedbackRepository.save({
                         account: account,
                         product: product,
                         //faker data feednack

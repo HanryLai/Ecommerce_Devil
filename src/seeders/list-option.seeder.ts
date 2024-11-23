@@ -15,13 +15,11 @@ export class ListOptionSeeder extends BaseService {
 
    async run() {
       try {
-         const foundListOption = await this.listOptionRepository.findOne({
-            where: {
-               name: 'List Option 1',
-            },
+         const foundListOption = await this.listOptionRepository.find({
+            take: 1,
          });
 
-         if (!foundListOption) {
+         if (foundListOption && foundListOption.length >= 0) {
             const options = await this.optionRepository.find();
 
             for (const option of options) {

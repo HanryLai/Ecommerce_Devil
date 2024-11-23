@@ -29,21 +29,24 @@ export class ProductService extends BaseService {
             where: { name: Like(`%${keyword}%`) },
          });
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
    async searchProductByPriceRange(minPrice: number, maxPrice: number) {
       try {
-         return await this.productRepository.find({
+         const result = await this.productRepository.find({
             where: { price: Between(minPrice, maxPrice) },
          });
+         if (!result) {
+            return [];
+         }
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
-   async findAll() {
+   async getAll() {
       try {
          const products = await this.productRepository.find({});
 
@@ -67,13 +70,13 @@ export class ProductService extends BaseService {
             };
          });
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
    async findOne(productId: string) {
       try {
-         return await this.productRepository.findOne({
+         const result = await this.productRepository.findOne({
             where: { id: productId },
             relations: [
                'categories',
@@ -82,22 +85,30 @@ export class ProductService extends BaseService {
                'feedbacks.account.detailInformation',
             ],
          });
+         if (!result) {
+            this.NotFoundException('Product not found');
+         }
+         return result;
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
-   async relationProduct () {
+   async relationProduct() {
       try {
          const product = await this.productRepository.find({
             relations: ['categories', 'options', 'options.listOptions', 'feedbacks'],
          });
+         if (!product) {
+            return [];
+         }
 
          // random 20 product
          const randomProduct = product.sort(() => Math.random() - Math.random()).slice(0, 20);
+
          return randomProduct;
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
@@ -121,7 +132,7 @@ export class ProductService extends BaseService {
             },
          };
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
@@ -131,14 +142,14 @@ export class ProductService extends BaseService {
             where: { id: productId },
          });
          if (!product) {
-            return null;
+            this.NotFoundException('Product not found');
          }
          return await this.productRepository.save({
             ...product,
             ...updateProductDto,
          });
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
@@ -148,11 +159,11 @@ export class ProductService extends BaseService {
             where: { id: productId },
          });
          if (!product) {
-            return null;
+            this.NotFoundException('Product not found');
          }
          return await this.productRepository.remove(product);
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 }

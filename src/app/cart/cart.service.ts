@@ -65,7 +65,7 @@ export class CartService extends BaseService {
             where: { userId: user.id },
          });
          if (!userCart) {
-            this.ThrowError('Cart not found');
+            this.NotFoundException('Cart not found');
          }
 
          const product = await this.productRepository.findOne({
@@ -162,7 +162,7 @@ export class CartService extends BaseService {
 
    async findCartByUser(user: CurrentUserDto) {
       try {
-         return await this.shoppingCartRepository.findOne({
+         const cart =  await this.shoppingCartRepository.findOne({
             where: { userId: user.id },
             relations: [
                'cartItems',
@@ -171,6 +171,10 @@ export class CartService extends BaseService {
                'cartItems.options.listOption',
             ],
          });
+         if (!cart) {
+            this.NotFoundException('Cart not found');
+         }
+         return cart;
       } catch (err) {
          this.ThrowError(err);
       }
@@ -187,7 +191,7 @@ export class CartService extends BaseService {
          });
 
          if (!cartItem) {
-            this.ThrowError('Cart item not found');
+            this.NotFoundException('Cart item not found');
          }
 
          cartItem.quantity = updateCartItemDto.quantity;
@@ -214,7 +218,7 @@ export class CartService extends BaseService {
          });
 
          if (!cartItem) {
-            this.ThrowError('Cart item not found');
+            this.NotFoundException('Cart item not found');
          }
 
          const optionCarts = await this.optionCartRepository.find({
