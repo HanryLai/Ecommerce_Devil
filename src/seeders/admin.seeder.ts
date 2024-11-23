@@ -33,9 +33,6 @@ export class AdminSeeder extends BaseService {
                },
                'admin',
             );
-
-            console.log('REGISTER NEW ADMIN: ', admin);
-            console.log('You can login account admin');
             const detailInformation = this.fakerService.generateDetailInformation(
                admin.detailInformation,
             );
@@ -61,8 +58,6 @@ export class AdminSeeder extends BaseService {
                avatar_url:
                   'https://i.pinimg.com/736x/92/bd/ff/92bdff348aea123776a54c9f6a37e01d.jpg',
             });
-            console.log('REGISTER NEW USER: ', user);
-            console.log('You can login account user1');
          }
 
          const foundAccount2 = await this.accountRepository.findOne({
@@ -83,8 +78,6 @@ export class AdminSeeder extends BaseService {
                customer.detailInformation,
             );
             await this.detailInformationRepository.save(detailInformation);
-            console.log('REGISTER NEW CUSTOMER: ', customer);
-            console.log('You can login account customer');
          }
          const foundAccount3 = await this.accountRepository.findOne({
             where: {
@@ -104,8 +97,6 @@ export class AdminSeeder extends BaseService {
                admin.detailInformation,
             );
             await this.detailInformationRepository.save(detailInformation);
-            console.log('REGISTER NEW admin: ', admin);
-            console.log('You can login account customer');
          }
 
          console.log('AdminSeeder: Done');
