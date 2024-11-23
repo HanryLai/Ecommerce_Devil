@@ -21,48 +21,60 @@ export class RoomService extends BaseService {
    async create(createRoomDto: CreateRoomDto) {
       try {
          return await this.roomRepository.save({
-            room_name: createRoomDto.name,
-            accounts: [...createRoomDto.accounts],
+            account: createRoomDto.account,
          });
       } catch (error) {
          this.ThrowError(error);
       }
    }
 
-   async findAllByAdmin(user: CurrentUserDto) {
+   async findAll(user: CurrentUserDto) {
       try {
          const foundAdmin = await this.authService.findAccountById(user.id);
          if (!foundAdmin || foundAdmin.role.name != 'admin') {
             this.ThrowError('Admin not found');
          }
-         console.log('room', foundAdmin.rooms);
-         const rooms = foundAdmin.rooms;
+         const rooms = await this.roomRepository.find();
+         if (rooms.length == 0) {
+            this.NotFoundException('Rooms not found');
+         }
+
          return rooms;
       } catch (error) {
          this.ThrowError(error);
       }
    }
 
-   async findOne(name: string) {
+   // async findOneByOwnerId(idOwner: string) {
+   //    try {
+   //       return await this.roomRepository.findOne({
+   //          where: {
+   //             account: {
+   //                id: idOwner,
+   //             },
+   //          },
+   //          relations: ['account'],
+   //       });
+   //    } catch (error) {
+   //       this.ThrowError(error);
+   //    }
+   // }
+
+   async findOneByOwner(idOwner: string): Promise<RoomEntity> {
       try {
+         if (!idOwner) {
+            this.BadRequestException('Id owner is required');
+         }
          return await this.roomRepository.findOne({
             where: {
-               room_name: name,
+               account: {
+                  id: idOwner,
+                  role: {
+                     name: 'customer',
+                  },
+               },
             },
-            relations: ['accounts'],
-         });
-      } catch (error) {
-         this.ThrowError(error);
-      }
-   }
-
-   async update(updateRoomDto: UpdateRoomDto) {
-      try {
-         const foundRoom = await this.roomRepository.findOne({
-            where: { room_name: updateRoomDto.name },
-         });
-         return this.roomRepository.update(foundRoom.id, {
-            accounts: [...foundRoom.accounts, ...updateRoomDto.accounts],
+            relations: ['account', 'account.role'],
          });
       } catch (error) {
          this.ThrowError(error);

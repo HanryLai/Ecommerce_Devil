@@ -58,10 +58,12 @@ export class ProductService extends BaseService {
          return products.map((product) => {
             const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
             const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
+            // avgRating round 1 decimal
+            const roundRating = Math.round(avgRating * 10) / 10;
 
             return {
                ...product,
-               rating: avgRating,
+               rating: roundRating,
             };
          });
       } catch (error) {

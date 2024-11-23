@@ -38,16 +38,10 @@ import { FavoriteSeeder } from './seeders/favorite.seeder';
 import { CategoryModule } from './app/category/category.module';
 import { OptionModule } from './app/option/option.module';
 import { ListOptionModule } from './app/list-option/list-option.module';
+import { CartSeeder } from './seeders/cart.seeder';
 
 @Module({
    imports: [
-      TypeOrmModule.forFeature([
-         RoleEntity,
-         AccountEntity,
-         ProductEntity,
-         FavoriteEntity,
-         FeedbackEntity,
-      ]),
       TypeOrmModule.forFeature([
          RoleEntity,
          AccountEntity,
@@ -57,17 +51,14 @@ import { ListOptionModule } from './app/list-option/list-option.module';
          CartItemEntity,
          OptionCartEntity,
          DetailInformationEntity,
-      ]),
-      TypeOrmModule.forFeature([
-         RoleEntity,
-         AccountEntity,
-         ProductEntity,
-         FavoriteEntity,
          CategoryEntity,
          OptionEntity,
          ListOptionEntity,
+         FeedbackEntity,
          DetailInformationEntity,
+         FeedbackEntity,
       ]),
+
       DatabaseModule,
       AuthModule,
       RoleModule,
@@ -82,6 +73,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       CategoryModule,
       OptionModule,
       ListOptionModule,
+      FeedbacksModule
    ],
    providers: [
       RunAllSeeder,
@@ -93,6 +85,7 @@ import { ListOptionModule } from './app/list-option/list-option.module';
       OptionSeeder,
       ListOptionSeeder,
       FeedbackSeeder,
+      CartSeeder,
    ],
 })
 export class AppModule implements NestModule {

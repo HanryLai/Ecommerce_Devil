@@ -40,7 +40,7 @@ export class ListOptionSeeder extends BaseService {
                      await this.listOptionRepository.save({
                         ...listOption,
                         orderIndex: i++,
-                        adjustPrice: 1000,
+                        adjustPrice: Math.floor(Math.random() * 100),
                         quantity: Math.floor(Math.random() * 10),
                         option: option,
                      });

@@ -12,11 +12,16 @@ import { EmailService } from '@/utils/email/email.service';
 import { CartService } from '../cart/cart.service';
 import { CreateAuthDto, LoginDto } from './dto';
 import { CurrentUserDto } from '@/common/interceptor';
+import { RoomService } from '../chat/room/room.service';
+import { RoomEntity } from '@/entities/chat';
+import { RoomRepository } from '@/repositories/chat';
 
 @Injectable()
 export class AuthService extends BaseService {
    constructor(
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
+      @InjectRepository(RoomEntity) private roomRepository: RoomRepository,
+
       private entityManager: EntityManager,
       private jwtService: JWTService,
       @Inject() private readonly fileService: CloudinaryService,
@@ -68,6 +73,14 @@ export class AuthService extends BaseService {
             });
             const accountSave = await entityManager.save(accountCreate);
             this.cartService.createNewCart({ id: accountSave.id } as unknown as CurrentUserDto);
+
+            if (role.name === 'customer') {
+               const roomModel = entityManager.create(RoomEntity, {
+                  name: accountSave.username,
+                  account: accountSave,
+               });
+               await entityManager.save(roomModel);
+            }
             return accountSave;
          });
       } catch (error) {
@@ -142,7 +155,7 @@ export class AuthService extends BaseService {
       try {
          const foundAccount = await this.accountRepository.findOne({
             where: { id: idUser },
-            relations: ['role', 'rooms', 'rooms.accounts'],
+            relations: ['role', 'room'],
          });
          if (!foundAccount) this.NotFoundException('Not found this account');
          return foundAccount;

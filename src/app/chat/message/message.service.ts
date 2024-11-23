@@ -18,17 +18,17 @@ export class MessageService extends BaseService {
       }
    }
 
-   async findByRoomName(room_name: string) {
+   async findByRoom(roomId: string) {
       try {
          return await this.messageRepository.find({
             where: {
                room: {
-                  room_name: room_name,
+                  id: roomId,
                },
             },
-            relations: ['room'],
+            relations: ['room', 'account'],
             order: {
-               createdAt: 'DESC',
+               createdAt: 'ASC',
             },
          });
       } catch (error) {
