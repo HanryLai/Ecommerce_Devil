@@ -51,11 +51,9 @@ export class CartSeeder extends BaseService {
                      relations: ['listOptions'],
                   });
                   const arrayListOptionId = options.map((option) => {
-                     console.log(option);
                      return option.listOptions[0].id;
                   });
 
-                  console.log(arrayListOptionId);
 
                   const account = await this.authService.findAccountById(user.id);
                   const addCart = await this.cartService.addProductToCart(
