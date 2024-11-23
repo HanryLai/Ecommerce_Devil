@@ -23,34 +23,29 @@ export class FeedbackSeeder extends BaseService {
       try {
          // random account
 
-         const foundFeedback = await this.feedbackRepository.find({
-            take: 1,
-         });
+         const foundFeedback = await this.feedbackRepository.find();
          const accounts = await this.accountRepository.find();
          const products = await this.productRepository.find();
 
-         if (foundFeedback && foundFeedback.length >= 0) {
-            console.log('FeedbackSeeder: Done');
-            return;
-         }
-
-         for (const account of accounts) {
-            const Feedback = await this.feedbackRepository.findOne({
-               where: {
-                  account: account,
-               },
-            });
-            if (!Feedback) {
-               // const productlenth = products.length;
-               for (const product of products) {
-                  if (!Feedback) {
-                     await this.feedbackRepository.save({
-                        account: account,
-                        product: product,
-                        //faker data feednack
-                        comment: faker.lorem.paragraph(),
-                        rating: Math.floor(Math.random() * 5) + 1,
-                     });
+         if (foundFeedback && foundFeedback.length === 0) {
+            for (const account of accounts) {
+               const Feedback = await this.feedbackRepository.findOne({
+                  where: {
+                     account: account,
+                  },
+               });
+               if (!Feedback) {
+                  // const productlenth = products.length;
+                  for (const product of products) {
+                     if (!Feedback) {
+                        await this.feedbackRepository.save({
+                           account: account,
+                           product: product,
+                           //faker data feednack
+                           comment: faker.lorem.paragraph(),
+                           rating: Math.floor(Math.random() * 5) + 1,
+                        });
+                     }
                   }
                }
             }

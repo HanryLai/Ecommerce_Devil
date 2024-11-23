@@ -11,12 +11,9 @@ export class CategorySeeder extends BaseService {
 
    async run() {
       try {
-         const foundCategory = await this.categoryRepository.findOne({
-            where: {
-               title: 'Category 1',
-            },
-         });
-         if (!foundCategory) {
+         const foundCategory = await this.categoryRepository.find()
+
+         if (foundCategory.length === 0) {
             for (let i = 0; i < 10; i++) {
                const category = this.categoryRepository.create({
                   title: faker.commerce.productName(),

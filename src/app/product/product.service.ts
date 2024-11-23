@@ -60,6 +60,12 @@ export class ProductService extends BaseService {
 
          return products.map((product) => {
             const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            if (feedbacks.length === 0) {
+               return {
+                  ...product,
+                  rating: 0,
+               };
+            }
             const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
             // avgRating round 1 decimal
             const roundRating = Math.round(avgRating * 10) / 10;
@@ -96,17 +102,37 @@ export class ProductService extends BaseService {
 
    async relationProduct() {
       try {
-         const product = await this.productRepository.find({
-            relations: ['categories', 'options', 'options.listOptions', 'feedbacks'],
+         const productsResult = await this.productRepository.find({
          });
-         if (!product) {
+
+         if (!productsResult) {
             return [];
          }
 
-         // random 20 product
-         const randomProduct = product.sort(() => Math.random() - Math.random()).slice(0, 20);
+         // random 20 products
+         const products = productsResult.sort(() => Math.random() - Math.random()).slice(0, 20);
 
-         return randomProduct;
+         const feedback = await this.feedbackRepository.find({
+            relations: ['product'],
+         });
+
+         return products.map((product) => {
+            const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            if (feedbacks.length === 0) {
+               return {
+                  ...product,
+                  rating: 0,
+               };
+            }
+            const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
+            // avgRating round 1 decimal
+            const roundRating = Math.round(avgRating * 10) / 10;
+
+            return {
+               ...product,
+               rating: roundRating,
+            };
+         });
       } catch (error) {
          this.ThrowError(error);
       }
@@ -122,9 +148,32 @@ export class ProductService extends BaseService {
          });
          const totalPage = Math.ceil(totalProduct / limit);
          const totalFavoriteOfPage = listProduct.length;
+
+         const feedback = await this.feedbackRepository.find({
+            relations: ['product'],
+         });
+
+         const productWithRating = listProduct.map((product) => {
+            const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            if (feedbacks.length === 0) {
+               return {
+                  ...product,
+                  rating: 0,
+               };
+            }
+            const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
+            // avgRating round 1 decimal
+            const roundRating = Math.round(avgRating * 10) / 10;
+
+            return {
+               ...product,
+               rating: roundRating,
+            };
+         });
+
          return {
+            data: productWithRating,
             metadata: {
-               favorites: listProduct,
                numberPage: parseInt(page.toString()),
                limit: limit,
                totalPage: totalPage,

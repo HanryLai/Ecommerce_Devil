@@ -36,5 +36,5 @@ export class ProductEntity extends BaseEntity<ProductEntity> {
    options: OptionEntity[];
 
    @OneToMany(() => FeedbackEntity, (feedback) => feedback.product)
-   feedbacks: AccountEntity[];
+   feedbacks: FeedbackEntity[];
 }
