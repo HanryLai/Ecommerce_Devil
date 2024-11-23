@@ -54,6 +54,7 @@ import { CartSeeder } from './seeders/cart.seeder';
          CategoryEntity,
          OptionEntity,
          ListOptionEntity,
+         FeedbackEntity,
          DetailInformationEntity,
          FeedbackEntity,
       ]),

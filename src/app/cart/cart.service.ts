@@ -161,15 +161,24 @@ export class CartService extends BaseService {
       try {
          return await this.shoppingCartRepository.findOne({
             where: { userId: user.id },
-            relations: ['cartItems', 'cartItems.item', 'cartItems.options'],
+            relations: [
+               'cartItems',
+               'cartItems.item',
+               'cartItems.options',
+               'cartItems.options.listOption',
+            ],
          });
       } catch (err) {
          this.ThrowError(err);
       }
    }
 
-   async updateCartItem(user: CurrentUserDto,cartItemId: string, updateCartItemDto: UpdateItemCartDto) {
-     try {
+   async updateCartItem(
+      user: CurrentUserDto,
+      cartItemId: string,
+      updateCartItemDto: UpdateItemCartDto,
+   ) {
+      try {
          const cartItem = await this.cartItemRepository.findOne({
             where: { id: cartItemId },
          });

@@ -1,3 +1,4 @@
+import { FakerService } from '@/utils/faker/faker.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/base';
 import { OptionEntity, ProductEntity } from 'src/entities/ecommerce';
@@ -7,6 +8,7 @@ export class OptionSeeder extends BaseService {
    constructor(
       @InjectRepository(OptionEntity) private optionRepository: OptionRepository,
       @InjectRepository(ProductEntity) private productRepository: ProductRepository,
+      private readonly fakerService: FakerService,
    ) {
       super();
    }
@@ -15,21 +17,32 @@ export class OptionSeeder extends BaseService {
       try {
          const foundOption = await this.optionRepository.findOne({
             where: {
-               name: 'Option 1',
+               name: '1',
             },
          });
 
          if (!foundOption) {
             const products = await this.productRepository.find();
-            for (let i = 0; i < 10; i++) {
-               const randomProduct = products[Math.floor(Math.random() * products.length)];
-               const option = this.optionRepository.create({
-                  name: `Option ${i}`,
-                  description: `Description ${i}`,
-                  orderIndex: i + 1,
-                  product: randomProduct,
+
+            for (const product of products) {
+               const existingOptions = await this.optionRepository.find({
+                  where: { product: product },
                });
-               await this.optionRepository.save(option);
+
+               const existingOptionNames = existingOptions.map((option) => option.name);
+               const options = await this.fakerService.generateOption(10);
+
+               let i = 1;
+               for (const option of options) {
+                  if (!existingOptionNames.includes(option.name)) {
+                     await this.optionRepository.save({
+                        ...option,
+                        orderIndex: i++,
+                        product: product,
+                     });
+                     existingOptionNames.push(option.name); // Add the new option name to the list
+                  }
+               }
             }
          }
          console.log('Option seeder done');

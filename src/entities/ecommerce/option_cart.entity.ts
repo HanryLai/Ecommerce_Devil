@@ -5,10 +5,10 @@ import { BaseEntity } from '../base';
 
 @Entity({ name: 'option_cart' })
 export class OptionCartEntity extends BaseEntity<OptionCartEntity> {
-   @Column({name: 'list_option_id'})
+   @Column({ name: 'list_option_id' })
    listOptionId: string;
 
-   @Column({name: 'cart_item_id'})
+   @Column({ name: 'cart_item_id' })
    cartItemId: string;
 
    @ManyToOne(() => CartItemEntity, (cartItem) => cartItem.cart)
