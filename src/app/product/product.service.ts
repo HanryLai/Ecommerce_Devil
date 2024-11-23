@@ -29,21 +29,24 @@ export class ProductService extends BaseService {
             where: { name: Like(`%${keyword}%`) },
          });
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
    async searchProductByPriceRange(minPrice: number, maxPrice: number) {
       try {
-         return await this.productRepository.find({
+         const result = await this.productRepository.find({
             where: { price: Between(minPrice, maxPrice) },
          });
+         if (!result) {
+            return [];
+         }
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
-   async findAll() {
+   async getAll() {
       try {
          const products = await this.productRepository.find({});
 
@@ -57,6 +60,12 @@ export class ProductService extends BaseService {
 
          return products.map((product) => {
             const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            if (feedbacks.length === 0) {
+               return {
+                  ...product,
+                  rating: 0,
+               };
+            }
             const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
             // avgRating round 1 decimal
             const roundRating = Math.round(avgRating * 10) / 10;
@@ -67,13 +76,13 @@ export class ProductService extends BaseService {
             };
          });
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
    async findOne(productId: string) {
       try {
-         return await this.productRepository.findOne({
+         const result = await this.productRepository.findOne({
             where: { id: productId },
             relations: [
                'categories',
@@ -82,22 +91,50 @@ export class ProductService extends BaseService {
                'feedbacks.account.detailInformation',
             ],
          });
+         if (!result) {
+            this.NotFoundException('Product not found');
+         }
+         return result;
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
-   async relationProduct () {
+   async relationProduct() {
       try {
-         const product = await this.productRepository.find({
-            relations: ['categories', 'options', 'options.listOptions', 'feedbacks'],
+         const productsResult = await this.productRepository.find({
          });
 
-         // random 20 product
-         const randomProduct = product.sort(() => Math.random() - Math.random()).slice(0, 20);
-         return randomProduct;
+         if (!productsResult) {
+            return [];
+         }
+
+         // random 20 products
+         const products = productsResult.sort(() => Math.random() - Math.random()).slice(0, 20);
+
+         const feedback = await this.feedbackRepository.find({
+            relations: ['product'],
+         });
+
+         return products.map((product) => {
+            const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            if (feedbacks.length === 0) {
+               return {
+                  ...product,
+                  rating: 0,
+               };
+            }
+            const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
+            // avgRating round 1 decimal
+            const roundRating = Math.round(avgRating * 10) / 10;
+
+            return {
+               ...product,
+               rating: roundRating,
+            };
+         });
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
@@ -111,9 +148,32 @@ export class ProductService extends BaseService {
          });
          const totalPage = Math.ceil(totalProduct / limit);
          const totalFavoriteOfPage = listProduct.length;
+
+         const feedback = await this.feedbackRepository.find({
+            relations: ['product'],
+         });
+
+         const productWithRating = listProduct.map((product) => {
+            const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            if (feedbacks.length === 0) {
+               return {
+                  ...product,
+                  rating: 0,
+               };
+            }
+            const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
+            // avgRating round 1 decimal
+            const roundRating = Math.round(avgRating * 10) / 10;
+
+            return {
+               ...product,
+               rating: roundRating,
+            };
+         });
+
          return {
+            data: productWithRating,
             metadata: {
-               favorites: listProduct,
                numberPage: parseInt(page.toString()),
                limit: limit,
                totalPage: totalPage,
@@ -121,7 +181,7 @@ export class ProductService extends BaseService {
             },
          };
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
@@ -131,14 +191,14 @@ export class ProductService extends BaseService {
             where: { id: productId },
          });
          if (!product) {
-            return null;
+            this.NotFoundException('Product not found');
          }
          return await this.productRepository.save({
             ...product,
             ...updateProductDto,
          });
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 
@@ -148,11 +208,11 @@ export class ProductService extends BaseService {
             where: { id: productId },
          });
          if (!product) {
-            return null;
+            this.NotFoundException('Product not found');
          }
          return await this.productRepository.remove(product);
       } catch (error) {
-         throw error;
+         this.ThrowError(error);
       }
    }
 }

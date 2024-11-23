@@ -52,12 +52,12 @@ export class CategoryController extends BaseController {
 
    @Get()
    public async findAll(): Promise<MessageResponse> {
-      return this.createSuccessResponse(await this.categoryService.findAll(), 'Categories found');
+      return this.OkResponse(await this.categoryService.findAll(), 'Categories found');
    }
 
    @Get(':id')
    public async findProductByCategory(@Param('id') productId: string): Promise<MessageResponse> {
-      return this.createSuccessResponse(
+      return this.OkResponse(
          await this.categoryService.findProductsByCategory(productId),
          'Categories of product has been found',
       );

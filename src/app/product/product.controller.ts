@@ -44,11 +44,11 @@ export class ProductController extends BaseController {
    @ApiResponse({ status: '4XX', description: 'Product not found' })
    @ApiResponse({ status: '5XX', description: 'Internal server error' })
    @HttpCode(200)
-   public async findAll(): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.findAll());
+   public async getAll(): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.getAll());
    }
 
-   @Get(':productId')
+   @Get('get/:productId')
    @ApiResponse({ status: '2XX', description: 'Get product by id' })
    @ApiResponse({ status: '4XX', description: 'Product not found' })
    @ApiResponse({ status: '5XX', description: 'Internal server error' })
@@ -57,13 +57,13 @@ export class ProductController extends BaseController {
       return this.OkResponse(await this.productService.findOne(productId), MESSAGERESPONSE.QUERIED);
    }
 
-   @Get('relationProduct')
+   @Get('relation-product')
    @ApiResponse({ status: '2XX', description: 'Get relation product' })
    @ApiResponse({ status: '4XX', description: 'Product not found' })
    @ApiResponse({ status: '5XX', description: 'Internal server error' })
    @HttpCode(200)
    public async relationProduct(): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.relationProduct());
+      return this.OkResponse(await this.productService.relationProduct(), MESSAGERESPONSE.QUERIED);
    }
 
    @Get('paginate/:page')
