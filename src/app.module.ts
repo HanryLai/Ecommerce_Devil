@@ -55,6 +55,7 @@ import { CartSeeder } from './seeders/cart.seeder';
          OptionEntity,
          ListOptionEntity,
          DetailInformationEntity,
+         FeedbackEntity,
       ]),
 
       DatabaseModule,
@@ -71,6 +72,7 @@ import { CartSeeder } from './seeders/cart.seeder';
       CategoryModule,
       OptionModule,
       ListOptionModule,
+      FeedbacksModule
    ],
    providers: [
       RunAllSeeder,

@@ -90,8 +90,10 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
          if (!foundRoom) this.NotFoundException('Room not found');
          const roomName = foundRoom.account.id;
 
+
+         // ERROR: ADMIN CAN'T JOIN ROOM WHEN USER IS NOT JOIN SOCKET
          if (user.roleName === 'admin') {
-            const quantityMember = this.server.sockets.adapter.rooms.get(roomName).size;
+            const quantityMember = this.server.sockets.adapter.rooms.get(roomName)?.size || 0;
             if (quantityMember >= 2) {
                console.log('Room is full');
                client.emit('error', { message: 'Room is full' });
@@ -103,11 +105,10 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
          console.log('roomName', roomName);
          client.join(roomName);
          client.emit('joined', { roomName, message: 'Joined room successfully' });
-         listMessage.forEach((message) => {
-            client.emit('message', {
-               message: message,
+
+            client.emit('oldMessages', {
+                  messages: listMessage,
             });
-         });
       } catch (error) {
          this.ThrowError(error);
       }
@@ -128,6 +129,7 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
             if (!foundRoom) {
                this.NotFoundException('Room not found');
             }
+            console.log("admin join room")
             roomName = foundRoom.account.id;
          }
          const foundRoom = await this.RoomService.findOneByOwner(roomName);
@@ -141,7 +143,10 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
                account: foundAccount,
             });
             console.log(`Received message: ${data.content} `);
-            this.server.to(roomName).emit('message', data.content);
+            this.server.to(roomName).emit('message', {
+               message: data.content,
+               sender: foundAccount,
+            });
          }
       } catch (error) {
          this.ThrowError(error);

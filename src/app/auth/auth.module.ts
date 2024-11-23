@@ -8,10 +8,12 @@ import { JWTModule } from './jwt/jwt.module';
 import { CloudinaryModule } from '../../utils/cloudinary/cloudinary.module';
 import { EmailModule } from 'src/utils/email/email.module';
 import { CartModule } from '../cart/cart.module';
+import { RoomModule } from '../chat/room/room.module';
+import { RoomEntity } from '@/entities/chat';
 
 @Module({
    imports: [
-      TypeOrmModule.forFeature([AccountEntity]),
+      TypeOrmModule.forFeature([AccountEntity, RoomEntity]),
       RoleModule,
       JWTModule,
       CloudinaryModule,

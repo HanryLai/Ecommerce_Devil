@@ -6,7 +6,7 @@ import { IMessage } from '../interfaces/message.entity.interface';
 
 @Entity({ name: 'message' })
 export class MessageEntity extends BaseEntity<IMessage> {
-   @Column({ type: 'text' })
+   @Column({ type: 'nvarchar' })
    content: string;
 
    @ManyToOne(() => AccountEntity, (account) => account.messages)
