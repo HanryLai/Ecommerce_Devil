@@ -1,3 +1,3 @@
 export class CreateRoomDto {
-   userIdOrder: string;
+   owner_id: string;
 }

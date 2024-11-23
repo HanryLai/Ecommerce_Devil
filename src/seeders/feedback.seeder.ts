@@ -1,18 +1,19 @@
+import { faker } from '@faker-js/faker';
 import { OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/base';
 import { AccountEntity } from 'src/entities/auth';
-import { FavoriteEntity, ProductEntity } from 'src/entities/ecommerce';
+import { FeedbackEntity, ProductEntity } from 'src/entities/ecommerce';
 import { AccountRepository } from 'src/repositories/auth';
 import { ProductRepository } from 'src/repositories/ecommerce';
-import { FavoriteRepository } from 'src/repositories/ecommerce/favorite.repository';
+import { FeedbackRepository } from 'src/repositories/ecommerce/Feedback.repository';
 import { EntityManager } from 'typeorm';
 
-export class FavoriteSeeder extends BaseService {
+export class FeedbackSeeder extends BaseService {
    constructor(
       @InjectRepository(ProductEntity) private productRepository: ProductRepository,
       @InjectRepository(AccountEntity) private accountRepository: AccountRepository,
-      @InjectRepository(FavoriteEntity) private favoriteRepository: FavoriteRepository,
+      @InjectRepository(FeedbackEntity) private FeedbackRepository: FeedbackRepository,
       private entityManager: EntityManager,
    ) {
       super();
@@ -25,25 +26,28 @@ export class FavoriteSeeder extends BaseService {
          const products = await this.productRepository.find();
 
          for (const account of accounts) {
-            const favorite = await this.favoriteRepository.findOne({
+            const Feedback = await this.FeedbackRepository.findOne({
                where: {
-                  userId: account.id,
+                  account: account,
                },
             });
-            if (!favorite) {
-               // random 7 - 9 product from products
-               for (const product of products.slice(0, Math.floor(Math.random() * 3) + 7)) {
-                  if (!favorite) {
-                     await this.favoriteRepository.save({
-                        userId: account.id,
-                        productId: product.id,
+            if (!Feedback) {
+               // const productlenth = products.length;
+               for (const product of products) {
+                  if (!Feedback) {
+                     await this.FeedbackRepository.save({
+                        account: account,
+                        product: product,
+                        //faker data feednack
+                        comment: faker.lorem.paragraph(),
+                        rating: Math.floor(Math.random() * 5) + 1,
                      });
                   }
                }
             }
          }
 
-         console.log('FavoriteSeeder: Done');
+         console.log('FeedbackSeeder: Done');
       } catch (error) {
          this.ThrowError(error);
       }

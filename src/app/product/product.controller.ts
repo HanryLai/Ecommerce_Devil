@@ -24,6 +24,21 @@ export class ProductController extends BaseController {
       );
    }
 
+   @Get('searchProductByPriceRange/:minPrice/:maxPrice')
+   @ApiResponse({ status: '2XX', description: 'Search product by price range' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
+   public async searchProductByPriceRange(
+      @Param('minPrice') minPrice: number,
+      @Param('maxPrice') maxPrice: number,
+   ): Promise<MessageResponse> {
+      return this.OkResponse(
+         await this.productService.searchProductByPriceRange(minPrice, maxPrice),
+         MESSAGERESPONSE.QUERIED,
+      );
+   }
+
    @Get()
    @ApiResponse({ status: '2XX', description: 'Get all products' })
    @ApiResponse({ status: '4XX', description: 'Product not found' })
@@ -40,6 +55,15 @@ export class ProductController extends BaseController {
    @HttpCode(200)
    public async findOne(@Param('productId') productId: string): Promise<MessageResponse> {
       return this.OkResponse(await this.productService.findOne(productId), MESSAGERESPONSE.QUERIED);
+   }
+
+   @Get('relationProduct')
+   @ApiResponse({ status: '2XX', description: 'Get relation product' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
+   public async relationProduct(): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.relationProduct());
    }
 
    @Get('paginate/:page')

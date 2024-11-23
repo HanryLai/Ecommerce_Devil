@@ -1,7 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../base';
 import { IListOptionEntity } from '../interfaces';
 import { OptionEntity } from './option.entity';
+import { OptionCartEntity } from './option_cart.entity';
 
 @Entity({ name: 'list_option' })
 export class ListOptionEntity extends BaseEntity<ListOptionEntity> implements IListOptionEntity {
@@ -21,6 +22,8 @@ export class ListOptionEntity extends BaseEntity<ListOptionEntity> implements IL
    quantity: number;
 
    @ManyToOne(() => OptionEntity, (option) => option.listOptions)
-   @JoinColumn({ name: 'option_id' })
    option: OptionEntity;
+
+   @OneToMany(() => OptionCartEntity, (optionCart) => optionCart.listOption)
+   optionCart: OptionCartEntity[];
 }
