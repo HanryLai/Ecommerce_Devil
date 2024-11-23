@@ -89,9 +89,9 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
          }
          if (!foundRoom) this.NotFoundException('Room not found');
          const roomName = foundRoom.account.id;
-
+         console.log('roomNameJoin', roomName);
          if (user.roleName === 'admin') {
-            const quantityMember = this.server.sockets.adapter.rooms.get(roomName).size;
+            const quantityMember = this.server.sockets.adapter.rooms.get(roomName)?.size;
             if (quantityMember >= 2) {
                console.log('Room is full');
                client.emit('error', { message: 'Room is full' });

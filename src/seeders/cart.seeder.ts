@@ -2,10 +2,15 @@ import { AuthService } from '@/app/auth';
 import { CartService } from '@/app/cart/cart.service';
 import { BaseService } from '@/common/base';
 import { AccountEntity } from '@/entities/auth';
-import { CartItemEntity, ListOptionEntity, OptionEntity, ProductEntity } from '@/entities/ecommerce';
+import {
+   CartItemEntity,
+   ListOptionEntity,
+   OptionEntity,
+   ProductEntity,
+} from '@/entities/ecommerce';
 import { AccountRepository } from '@/repositories/auth';
 import {
-    CartItemRepository,
+   CartItemRepository,
    ListOptionRepository,
    OptionRepository,
    ProductRepository,
@@ -29,7 +34,7 @@ export class CartSeeder extends BaseService {
 
    async run() {
       try {
-        const foundCart = await this.cartItemRepository.find();
+         const foundCart = await this.cartItemRepository.find();
          const users = await this.accountRepository.find();
          const products = await this.productRepository.find();
          if (foundCart.length === 0) {
@@ -39,15 +44,18 @@ export class CartSeeder extends BaseService {
                for (const product of randomProducts) {
                   const options = await this.optionRepository.find({
                      where: {
-                        product: product,
+                        product: {
+                           id: product.id,
+                        },
                      },
+                     relations: ['listOptions'],
                   });
-                  const listOptions = await this.listOptionRepository.find({
-                     where: {
-                        option: options,
-                     },
+                  const arrayListOptionId = options.map((option) => {
+                     console.log(option);
+                     return option.listOptions[0].id;
                   });
-                  const arrayListOptionId = listOptions.map((listOption) => listOption.id);
+
+                  console.log(arrayListOptionId);
 
                   const account = await this.authService.findAccountById(user.id);
                   const addCart = await this.cartService.addProductToCart(
@@ -66,7 +74,7 @@ export class CartSeeder extends BaseService {
                }
             }
          }
-            console.log('CartSeeder: Done');
+         console.log('CartSeeder: Done');
       } catch (error) {
          this.ThrowError(error);
       }
