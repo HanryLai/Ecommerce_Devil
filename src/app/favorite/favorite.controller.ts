@@ -40,7 +40,7 @@ export class FavoriteController extends BaseController {
       );
    }
 
-   @Post(':productId')
+   @Post('/:productId')
    @ApiOperation({ description: 'Add product to favorite' })
    @ApiResponse({ status: '2XX', description: 'Add product to favorite successfully' })
    @ApiResponse({ status: '5XX', description: 'Add product to favorite failed' })
@@ -58,7 +58,7 @@ export class FavoriteController extends BaseController {
       );
    }
 
-   @Delete(':productId')
+   @Delete('/:productId')
    @ApiOperation({ description: 'Remove product from favorite' })
    @ApiResponse({ status: '2XX', description: 'Remove product from favorite successfully' })
    @ApiResponse({ status: '5XX', description: 'Remove product from favorite failed' })
