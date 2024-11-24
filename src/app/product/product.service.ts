@@ -150,7 +150,6 @@ export class ProductService extends BaseService {
          const totalFavoriteOfPage = listProduct.length;
 
          const feedback = await this.feedbackRepository.find({
-            where: {isFeedback:true},
             relations: ['product'],
          });
 

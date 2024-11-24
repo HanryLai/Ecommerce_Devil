@@ -9,7 +9,7 @@ export class FeedbackEntity extends BaseEntity<FeedbackEntity> {
    @Column({ type: 'nvarchar', default: null })
    image_url: string;
 
-   @Column({ type: 'int', default: null })
+   @Column({ type: 'int', default: 0 })
    rating: number;
 
    @Column({ type: 'nvarchar', default: null })

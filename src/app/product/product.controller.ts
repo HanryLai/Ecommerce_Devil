@@ -48,7 +48,7 @@ export class ProductController extends BaseController {
       return this.OkResponse(await this.productService.getAll());
    }
 
-   @Get('get/:productId')
+   @Get(':productId')
    @ApiResponse({ status: '2XX', description: 'Get product by id' })
    @ApiResponse({ status: '4XX', description: 'Product not found' })
    @ApiResponse({ status: '5XX', description: 'Internal server error' })
