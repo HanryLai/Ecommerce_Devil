@@ -15,3 +15,6 @@ export * from './option.entity.interface';
 export * from './list-option.entity.interface';
 
 export * from './feedback.entity.interface';
+
+export * from './order_item.entity.interface';
+export * from './order.entity.interface';

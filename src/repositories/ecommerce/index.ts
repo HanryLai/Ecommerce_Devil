@@ -10,3 +10,5 @@ export * from './option.repository';
 export * from './list-option.repository';
 
 export * from './feedback.repository';
+export * from './order_item.repository';
+export * from './order.repository';
