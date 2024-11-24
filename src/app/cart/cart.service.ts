@@ -116,7 +116,6 @@ export class CartService extends BaseService {
                ],
             });
          } else {
-            let flag = false;
             for (const cartItem of cartItemsOfProduct) {
                const optionCarts = await this.optionCartRepository.find({
                   where: { cartItemId: cartItem.id },
@@ -142,7 +141,15 @@ export class CartService extends BaseService {
                if (isOptionCartExist) {
                   cartItem.quantity += addItemCartDto.quantity;
                   await this.cartItemRepository.update({ id: cartItem.id }, cartItem);
-                  flag = true;
+                  return await this.shoppingCartRepository.findOne({
+                     where: { userId: user.id },
+                     relations: [
+                        'cartItems',
+                        'cartItems.item',
+                        'cartItems.options',
+                        'cartItems.options.listOption',
+                     ],
+                  });
                }
             }
 
@@ -158,7 +165,7 @@ export class CartService extends BaseService {
                   listOptionId: singleListOptionId,
                });
             }
-            
+
             return await this.shoppingCartRepository.findOne({
                where: { userId: user.id },
                relations: [
