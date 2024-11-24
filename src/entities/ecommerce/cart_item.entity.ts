@@ -25,6 +25,6 @@ export class CartItemEntity extends BaseEntity<CartItemEntity> {
    @JoinColumn({ name: 'item_id' })
    item: ProductEntity;
 
-   @OneToMany(() => OptionCartEntity, (option) => option.cartItems)
+   @OneToMany(() => OptionCartEntity, (option) => option.cartItems, { cascade: true })
    options: OptionCartEntity[];
-}
+} 

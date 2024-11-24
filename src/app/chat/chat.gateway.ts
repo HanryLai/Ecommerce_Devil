@@ -90,7 +90,6 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
          if (!foundRoom) this.NotFoundException('Room not found');
          const roomName = foundRoom.account.id;
 
-
          // ERROR: ADMIN CAN'T JOIN ROOM WHEN USER IS NOT JOIN SOCKET
          if (user.roleName === 'admin') {
             const quantityMember = this.server.sockets.adapter.rooms.get(roomName)?.size || 0;
@@ -106,9 +105,9 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
          client.join(roomName);
          client.emit('joined', { roomName, message: 'Joined room successfully' });
 
-            client.emit('oldMessages', {
-                  messages: listMessage,
-            });
+         client.emit('oldMessages', {
+            messages: listMessage,
+         });
       } catch (error) {
          this.ThrowError(error);
       }
@@ -129,7 +128,7 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
             if (!foundRoom) {
                this.NotFoundException('Room not found');
             }
-            console.log("admin join room")
+            console.log('admin join room');
             roomName = foundRoom.account.id;
          }
          const foundRoom = await this.RoomService.findOneByOwner(roomName);
@@ -160,6 +159,7 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
    ): Promise<void> {
       try {
          const user = await this.getToken(client);
+         console.log("A User  LEave")
          let roomName = '';
          if (user.roleName === 'customer') roomName = user.id;
          if (user.roleName === 'admin') {
@@ -169,7 +169,11 @@ export class ChatGateway extends BaseService implements OnGatewayConnection, OnG
             }
             roomName = foundRoom.account.id;
          }
-         console.log('roomNameleave', roomName);
+         const getCountMember = this.server.sockets.adapter.rooms.get(roomName)?.size || 0;
+         const roomMemberCount = new Map<string, number>();
+
+         // Giảm số lượng thành viên và cập nhật biến
+         roomMemberCount.set(roomName, Math.max(0, getCountMember - 2));
          client.leave(roomName);
       } catch (error) {
          this.ThrowError(error);

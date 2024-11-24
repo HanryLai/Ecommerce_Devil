@@ -7,6 +7,7 @@ import { BaseEntity } from '../base';
 import { AccountEntity } from '../auth';
 import { FavoriteEntity } from './favorite.entity';
 import { FeedbackEntity } from './feedback.entity';
+import { OrderItemEntity } from './order_item.entity';
 
 @Entity({ name: 'product' })
 export class ProductEntity extends BaseEntity<ProductEntity> {
@@ -36,5 +37,8 @@ export class ProductEntity extends BaseEntity<ProductEntity> {
    options: OptionEntity[];
 
    @OneToMany(() => FeedbackEntity, (feedback) => feedback.product)
-   feedbacks: AccountEntity[];
+   feedbacks: FeedbackEntity[];
+
+   @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.products)
+   orderItems: OrderItemEntity[];
 }
