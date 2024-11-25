@@ -38,7 +38,7 @@ export class ProductService extends BaseService {
          }
 
          return products.map((product) => {
-            const feedbacks = product.feedbacks;
+            const feedbacks = product.feedbacks.filter((fb) => fb.isFeedback === true);
             if (feedbacks.length === 0) {
                return {
                   ...product,
@@ -48,19 +48,9 @@ export class ProductService extends BaseService {
             const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
             // avgRating round 1 decimal
             const roundRating = Math.round(avgRating * 10) / 10;
-            const productResult = {
-               id: product.id,
-               isActive: product.isActive,
-               createdAt: product.createdAt,
-               updatedAt: product.updatedAt,
-               name: product.name,
-               image_url: product.image_url,
-               price: product.price,
-               description: product.description,
-            };
 
             return {
-               ...productResult,
+               ...product,
                rating: roundRating,
             };
          });
@@ -95,6 +85,7 @@ export class ProductService extends BaseService {
          }
 
          const feedback = await this.feedbackRepository.find({
+            where: { isFeedback: true },
             relations: ['product'],
          });
 
@@ -150,6 +141,7 @@ export class ProductService extends BaseService {
 
 
          const feedback = await this.feedbackRepository.find({
+            where: { isFeedback: true },
             relations: ['product'],
          });
 
@@ -187,6 +179,7 @@ export class ProductService extends BaseService {
          const totalFavoriteOfPage = listProduct.length;
 
          const feedback = await this.feedbackRepository.find({
+            where: { isFeedback: true },
             relations: ['product'],
          });
 
