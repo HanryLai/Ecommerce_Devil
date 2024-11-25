@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
+import {
+   Controller,
+   Get,
+   Post,
+   Body,
+   Patch,
+   Param,
+   Delete,
+   Inject,
+   UseGuards,
+   UseInterceptors,
+   HttpCode,
+} from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { BaseController, MESSAGERESPONSE, MessageResponse } from 'src/common/base';
 import { AuthGuard } from 'src/common/guard';
@@ -13,16 +25,7 @@ export class FavoriteController extends BaseController {
       super();
    }
 
-   @Get()
-   @ApiOperation({ description: 'Get all favorite products' })
-   @ApiResponse({ status: '2XX', description: 'Get all favorite products successfully' })
-   @ApiResponse({ status: '5XX', description: 'Get all favorite products failed' })
-   @HttpCode(200)
-   public async findAll(): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.findAll());
-   }
-   
-   @Get("/my-favorites")
+   @Get('/my-favorites')
    @ApiOperation({ description: 'Get all favorite products by account' })
    @ApiResponse({ status: '2XX', description: 'Get all favorite products by account successfully' })
    @ApiResponse({ status: '5XX', description: 'Get all favorite products by account failed' })
@@ -37,7 +40,7 @@ export class FavoriteController extends BaseController {
       );
    }
 
-   @Post(':productId')
+   @Post('/:productId')
    @ApiOperation({ description: 'Add product to favorite' })
    @ApiResponse({ status: '2XX', description: 'Add product to favorite successfully' })
    @ApiResponse({ status: '5XX', description: 'Add product to favorite failed' })
@@ -49,10 +52,13 @@ export class FavoriteController extends BaseController {
       @CurrentUser() user: CurrentUserDto,
       @Param('productId') productId: string,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.favoriteService.addFavorite(user, productId));
+      return this.OkResponse(
+         await this.favoriteService.addFavorite(user, productId),
+         MESSAGERESPONSE.CREATED,
+      );
    }
 
-   @Delete(':productId')
+   @Delete('/:productId')
    @ApiOperation({ description: 'Remove product from favorite' })
    @ApiResponse({ status: '2XX', description: 'Remove product from favorite successfully' })
    @ApiResponse({ status: '5XX', description: 'Remove product from favorite failed' })

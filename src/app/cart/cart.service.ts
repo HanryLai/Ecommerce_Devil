@@ -61,19 +61,25 @@ export class CartService extends BaseService {
 
    async addProductToCart(user: CurrentUserDto, addItemCartDto: AddItemCartDto) {
       try {
+         console.log(addItemCartDto.listOptionId);
          const userCart = await this.shoppingCartRepository.findOne({
             where: { userId: user.id },
          });
          if (!userCart) {
-            this.ThrowError('Cart not found');
+            this.NotFoundException('Cart not found');
          }
 
          const product = await this.productRepository.findOne({
             where: { id: addItemCartDto.itemId },
+            relations: ['options', 'options.listOptions'],
          });
 
          if (!product) {
             this.ThrowError('Product not found');
+         }
+
+         if (product.options.length !== addItemCartDto.listOptionId.length) {
+            this.ThrowError('Please choose all options for this product');
          }
 
          const cartItemsOfProduct = await this.cartItemRepository.find({
@@ -90,30 +96,34 @@ export class CartService extends BaseService {
                quantity: addItemCartDto.quantity,
             });
 
-            for (const listOptionId of addItemCartDto.listOptionId) {
+            for (const singleListOptionId of addItemCartDto.listOptionId) {
                const listOption = await this.listOptionRepository.findOne({
-                  where: { id: listOptionId },
+                  where: { id: singleListOptionId },
                });
-
-               if (!listOption) {
-                  this.ThrowError('List option not found');
-               }
 
                await this.optionCartRepository.save({
                   cartItemId: cartAdd.id,
                   listOptionId: listOption.id,
                });
-
-               return await this.shoppingCartRepository.findOne({
-                  where: { userId: user.id },
-                  relations: ['cartItems', 'cartItems.item', 'cartItems.options'],
-               });
             }
+            return await this.shoppingCartRepository.findOne({
+               where: { userId: user.id },
+               relations: [
+                  'cartItems',
+                  'cartItems.item',
+                  'cartItems.options',
+                  'cartItems.options.listOption',
+               ],
+            });
          } else {
             for (const cartItem of cartItemsOfProduct) {
                const optionCarts = await this.optionCartRepository.find({
                   where: { cartItemId: cartItem.id },
                });
+
+               if (optionCarts.length !== addItemCartDto.listOptionId.length) {
+                  this.ThrowError('Please choose all options for this product');
+               }
 
                const listOptionIdOfOptionCartOfCartItem = optionCarts.map(
                   (optionCart) => optionCart.listOptionId,
@@ -130,27 +140,41 @@ export class CartService extends BaseService {
 
                if (isOptionCartExist) {
                   cartItem.quantity += addItemCartDto.quantity;
-                  await this.cartItemRepository.save(cartItem);
-               } else {
-                  const newCartItem = await this.cartItemRepository.save({
-                     cart: userCart,
-                     item: product,
-                     quantity: addItemCartDto.quantity,
+                  await this.cartItemRepository.update({ id: cartItem.id }, cartItem);
+                  return await this.shoppingCartRepository.findOne({
+                     where: { userId: user.id },
+                     relations: [
+                        'cartItems',
+                        'cartItems.item',
+                        'cartItems.options',
+                        'cartItems.options.listOption',
+                     ],
                   });
-
-                  for (const listOptionId of addItemCartDto.listOptionId) {
-                     await this.optionCartRepository.save({
-                        cartItemId: newCartItem.id,
-                        listOptionId: listOptionId,
-                     });
-                  }
                }
+            }
 
-               return await this.shoppingCartRepository.findOne({
-                  where: { userId: user.id },
-                  relations: ['cartItems', 'cartItems.item', 'cartItems.options'],
+            const newCartItem = await this.cartItemRepository.save({
+               cart: userCart,
+               item: product,
+               quantity: addItemCartDto.quantity,
+            });
+
+            for (const singleListOptionId of addItemCartDto.listOptionId) {
+               await this.optionCartRepository.save({
+                  cartItemId: newCartItem.id,
+                  listOptionId: singleListOptionId,
                });
             }
+
+            return await this.shoppingCartRepository.findOne({
+               where: { userId: user.id },
+               relations: [
+                  'cartItems',
+                  'cartItems.item',
+                  'cartItems.options',
+                  'cartItems.options.listOption',
+               ],
+            });
          }
       } catch (err) {
          this.ThrowError(err);
@@ -159,7 +183,7 @@ export class CartService extends BaseService {
 
    async findCartByUser(user: CurrentUserDto) {
       try {
-         return await this.shoppingCartRepository.findOne({
+         const cart = await this.shoppingCartRepository.findOne({
             where: { userId: user.id },
             relations: [
                'cartItems',
@@ -168,6 +192,10 @@ export class CartService extends BaseService {
                'cartItems.options.listOption',
             ],
          });
+         if (!cart) {
+            this.NotFoundException('Cart not found');
+         }
+         return cart;
       } catch (err) {
          this.ThrowError(err);
       }
@@ -184,7 +212,7 @@ export class CartService extends BaseService {
          });
 
          if (!cartItem) {
-            this.ThrowError('Cart item not found');
+            this.NotFoundException('Cart item not found');
          }
 
          cartItem.quantity = updateCartItemDto.quantity;
@@ -192,7 +220,12 @@ export class CartService extends BaseService {
 
          return await this.shoppingCartRepository.findOne({
             where: { userId: user.id },
-            relations: ['cartItems', 'cartItems.item', 'cartItems.options'],
+            relations: [
+               'cartItems',
+               'cartItems.item',
+               'cartItems.options',
+               'cartItems.options.listOption',
+            ],
          });
       } catch (err) {
          this.ThrowError(err);
@@ -206,7 +239,7 @@ export class CartService extends BaseService {
          });
 
          if (!cartItem) {
-            this.ThrowError('Cart item not found');
+            this.NotFoundException('Cart item not found');
          }
 
          const optionCarts = await this.optionCartRepository.find({
@@ -221,7 +254,12 @@ export class CartService extends BaseService {
 
          return await this.shoppingCartRepository.findOne({
             where: { userId: user.id },
-            relations: ['cartItems', 'cartItems.item', 'cartItems.options'],
+            relations: [
+               'cartItems',
+               'cartItems.item',
+               'cartItems.options',
+               'cartItems.options.listOption',
+            ],
          });
       } catch (err) {
          this.ThrowError(err);

@@ -15,13 +15,9 @@ export class OptionSeeder extends BaseService {
 
    async run() {
       try {
-         const foundOption = await this.optionRepository.findOne({
-            where: {
-               name: '1',
-            },
-         });
+         const foundOption = await this.optionRepository.find();
 
-         if (!foundOption) {
+         if (foundOption && foundOption.length === 0) {
             const products = await this.productRepository.find();
 
             for (const product of products) {
