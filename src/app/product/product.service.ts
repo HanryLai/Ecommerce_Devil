@@ -25,9 +25,49 @@ export class ProductService extends BaseService {
       }
 
       try {
-         return await this.productRepository.find({
-            where: { name: Like(`%${keyword}%`) },
+         // Lowercase keyword like lowercase name of product
+         const products = await this.productRepository.find({
+            where: { name: Like(`%${keyword.toLowerCase()}%`) },
+            relations: ['feedbacks'],
          });
+
+
+
+         if (!products) {
+            return [];
+         }
+
+         return products.map((product) => {
+            const feedbacks = product.feedbacks;
+            if (feedbacks.length === 0) {
+               return {
+                  ...product,
+                  rating: 0,
+               };
+            }
+            const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
+            // avgRating round 1 decimal
+            const roundRating = Math.round(avgRating * 10) / 10;
+            const productResult = {
+               id: product.id,
+               isActive: product.isActive,
+               createdAt: product.createdAt,
+               updatedAt: product.updatedAt,
+               name: product.name,
+               image_url: product.image_url,
+               price: product.price,
+               description: product.description,
+            };
+
+            return {
+               ...productResult,
+               rating: roundRating,
+            };
+         });
+
+
+
+        
       } catch (error) {
          this.ThrowError(error);
       }
@@ -102,21 +142,18 @@ export class ProductService extends BaseService {
 
    async relationProduct() {
       try {
-         const productsResult = await this.productRepository.find({
-         });
+         const productsResult = await this.productRepository.find({take: 20});
 
          if (!productsResult) {
             return [];
          }
 
-         // random 20 products
-         const products = productsResult.sort(() => Math.random() - Math.random()).slice(0, 20);
 
          const feedback = await this.feedbackRepository.find({
             relations: ['product'],
          });
 
-         return products.map((product) => {
+         return productsResult.map((product) => {
             const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
             if (feedbacks.length === 0) {
                return {
@@ -225,15 +262,19 @@ export class ProductService extends BaseService {
          if (!product) {
             this.NotFoundException('Product not found');
          }
-         let listOptionOfOption = []
+         let listOptionOfOption = [];
 
-         for (const option of product.options){
+         for (const option of product.options) {
             // random 1 listOption of listOptions of option
-            const listOptions = option.listOptions.sort(() => Math.random() - Math.random()).slice(0, 1);
+            const listOptions = option.listOptions
+               .sort(() => Math.random() - Math.random())
+               .slice(0, 1);
 
-            listOptionOfOption.push(listOptions.map((listOption) => {
-               return listOption.id;
-            }));
+            listOptionOfOption.push(
+               listOptions.map((listOption) => {
+                  return listOption.id;
+               }),
+            );
          }
 
          const listOptionStringArray = listOptionOfOption.map((listOption) => {
@@ -242,8 +283,8 @@ export class ProductService extends BaseService {
 
          return {
             productId: product.id,
-            listOptions: listOptionStringArray
-         }
+            listOptions: listOptionStringArray,
+         };
       } catch (error) {
          this.ThrowError(error);
       }

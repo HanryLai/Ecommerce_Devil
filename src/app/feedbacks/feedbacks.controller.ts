@@ -44,4 +44,13 @@ export class FeedbacksController extends BaseController {
    ): Promise<MessageResponse> {
       return this.OkResponse(await this.feedbacksService.findByProduct(productId));
    }
+
+   @Get()
+   @UseGuards(AuthGuard)
+   @UseInterceptors(CurrentUserInterceptor)
+   public async GetFeedbackByAccount(
+      @CurrentUser() user: CurrentUserDto,
+   ): Promise<MessageResponse> {
+      return this.OkResponse(await this.feedbacksService.findByAccount(user));
+   }
 }

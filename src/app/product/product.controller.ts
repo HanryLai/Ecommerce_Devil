@@ -12,7 +12,7 @@ export class ProductController extends BaseController {
       super();
    }
 
-   @Get('searchProduct/:keyword')
+   @Get('search/:keyword')
    @ApiResponse({ status: '2XX', description: 'Search product by keyword' })
    @ApiResponse({ status: '4XX', description: 'Product not found' })
    @ApiResponse({ status: '5XX', description: 'Internal server error' })
@@ -48,15 +48,6 @@ export class ProductController extends BaseController {
       return this.OkResponse(await this.productService.getAll());
    }
 
-   @Get(':productId')
-   @ApiResponse({ status: '2XX', description: 'Get product by id' })
-   @ApiResponse({ status: '4XX', description: 'Product not found' })
-   @ApiResponse({ status: '5XX', description: 'Internal server error' })
-   @HttpCode(200)
-   public async findOne(@Param('productId') productId: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.findOne(productId), MESSAGERESPONSE.QUERIED);
-   }
-
    @Get('relation-product')
    @ApiResponse({ status: '2XX', description: 'Get relation product' })
    @ApiResponse({ status: '4XX', description: 'Product not found' })
@@ -76,6 +67,15 @@ export class ProductController extends BaseController {
          await this.productService.loadProduct(parseInt(page)),
          MESSAGERESPONSE.QUERIED,
       );
+   }
+
+   @Get(':productId')
+   @ApiResponse({ status: '2XX', description: 'Get product by id' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
+   public async findOne(@Param('productId') productId: string): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.findOne(productId), MESSAGERESPONSE.QUERIED);
    }
 
    @Patch(':productId')
@@ -109,6 +109,9 @@ export class ProductController extends BaseController {
    @ApiResponse({ status: '5XX', description: 'Internal server error' })
    @HttpCode(200)
    public async getListOptions(@Param('productId') productId: string): Promise<MessageResponse> {
-      return this.OkResponse(await this.productService.getProductListOption(productId), MESSAGERESPONSE.QUERIED);
+      return this.OkResponse(
+         await this.productService.getProductListOption(productId),
+         MESSAGERESPONSE.QUERIED,
+      );
    }
 }

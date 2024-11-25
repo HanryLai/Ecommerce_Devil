@@ -44,7 +44,8 @@ export class FeedbacksService extends BaseService {
       try {
          return await this.feedbackRepository.find({
             where: {
-               account: idAccount,
+               account: { id: idAccount.id },
+               isFeedback: false
             },
             relations: ['product'],
          });
