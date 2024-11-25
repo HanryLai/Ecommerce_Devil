@@ -102,4 +102,13 @@ export class ProductController extends BaseController {
    public async remove(@Param('productId') productId: string): Promise<MessageResponse> {
       return this.OkResponse(await this.productService.remove(productId), MESSAGERESPONSE.DELETED);
    }
+
+   @Get('getList/:productId')
+   @ApiResponse({ status: '2XX', description: 'Get product by id' })
+   @ApiResponse({ status: '4XX', description: 'Product not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
+   public async getListOptions(@Param('productId') productId: string): Promise<MessageResponse> {
+      return this.OkResponse(await this.productService.getProductListOption(productId), MESSAGERESPONSE.QUERIED);
+   }
 }

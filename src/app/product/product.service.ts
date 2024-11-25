@@ -215,4 +215,37 @@ export class ProductService extends BaseService {
          this.ThrowError(error);
       }
    }
+
+   async getProductListOption(productId: string) {
+      try {
+         const product = await this.productRepository.findOne({
+            where: { id: productId },
+            relations: ['options', 'options.listOptions'],
+         });
+         if (!product) {
+            this.NotFoundException('Product not found');
+         }
+         let listOptionOfOption = []
+
+         for (const option of product.options){
+            // random 1 listOption of listOptions of option
+            const listOptions = option.listOptions.sort(() => Math.random() - Math.random()).slice(0, 1);
+
+            listOptionOfOption.push(listOptions.map((listOption) => {
+               return listOption.id;
+            }));
+         }
+
+         const listOptionStringArray = listOptionOfOption.map((listOption) => {
+            return listOption.join(',');
+         });
+
+         return {
+            productId: product.id,
+            listOptions: listOptionStringArray
+         }
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
 }
