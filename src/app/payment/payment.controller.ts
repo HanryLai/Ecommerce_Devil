@@ -22,8 +22,6 @@ export class PaymentController extends BaseController {
       super();
    }
 
-   @UseGuards(AuthGuard)
-   @UseInterceptors(CurrentUserInterceptor)
    @Get('successfully')
    @ApiResponse({ status: '2XX', description: 'Payment successfylly' })
    @ApiResponse({ status: '4XX', description: 'Order not found' })
@@ -50,6 +48,6 @@ export class PaymentController extends BaseController {
       @Param('orderId') orderId: string,
       @CurrentUser() user: CurrentUserDto,
    ): Promise<MessageResponse> {
-      return this.OkResponse(await this.paymentService.pay(user, orderId), 'Payment successfylly');
+      return this.OkResponse(await this.paymentService.pay(user, orderId), 'Payment successfully');
    }
 }

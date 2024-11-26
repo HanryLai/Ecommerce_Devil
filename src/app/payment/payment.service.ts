@@ -32,7 +32,7 @@ export class PaymentService extends BaseService {
       var redirectUrl = 'http://localhost:3030/api/payment/successfully?orderId=' + orderId;
       var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
       var requestType = 'payWithMethod';
-      var amount = '50000';
+      var amount = amountMoney;
       var orderId = partnerCode + new Date().getTime();
       var requestId = orderId;
       var extraData = '';
