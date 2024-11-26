@@ -10,6 +10,8 @@ import {
    OptionEntity,
    ProductEntity,
    ShoppingCartEntity,
+   OrderEntity,
+   OrderItemEntity
 } from './ecommerce';
 
 export const entities = [
@@ -27,4 +29,6 @@ export const entities = [
    OptionEntity,
    ListOptionEntity,
    FeedbackEntity,
+   OrderEntity,
+   OrderItemEntity
 ];

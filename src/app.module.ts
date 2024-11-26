@@ -27,6 +27,8 @@ import {
    ProductEntity,
    ShoppingCartEntity,
    FeedbackEntity,
+   OrderEntity,
+   OrderItemEntity,
 } from './entities/ecommerce';
 import { RunAllSeeder } from './seeders/run.seeder';
 import { FeedbacksModule } from './app/feedbacks/feedbacks.module';
@@ -39,6 +41,7 @@ import { CategoryModule } from './app/category/category.module';
 import { OptionModule } from './app/option/option.module';
 import { ListOptionModule } from './app/list-option/list-option.module';
 import { CartSeeder } from './seeders/cart.seeder';
+import { OrderModule } from './app/order/order.module';
 
 @Module({
    imports: [
@@ -57,6 +60,8 @@ import { CartSeeder } from './seeders/cart.seeder';
          FeedbackEntity,
          DetailInformationEntity,
          FeedbackEntity,
+         OrderEntity,
+         OrderItemEntity,
       ]),
 
       DatabaseModule,
@@ -73,7 +78,8 @@ import { CartSeeder } from './seeders/cart.seeder';
       CategoryModule,
       OptionModule,
       ListOptionModule,
-      FeedbacksModule
+      FeedbacksModule,
+      OrderModule,
    ],
    providers: [
       RunAllSeeder,

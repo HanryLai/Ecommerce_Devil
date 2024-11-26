@@ -44,7 +44,8 @@ export class FeedbacksService extends BaseService {
       try {
          return await this.feedbackRepository.find({
             where: {
-               account: idAccount,
+               account: { id: idAccount.id },
+               isFeedback: false
             },
             relations: ['product'],
          });
@@ -60,11 +61,13 @@ export class FeedbacksService extends BaseService {
                product: {
                   id: idProduct, // Đảm bảo `product` được liên kết qua ID
                },
+               isFeedback: true,
             },
+            relations: ['account.detailInformation'],
          });
 
          if (!feedbacks.length) {
-            throw new Error(`No feedback found for product with ID: ${idProduct}`);
+            []
          }
 
          return feedbacks;

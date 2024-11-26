@@ -5,6 +5,7 @@ import { DetailInformationEntity, RoleEntity } from '.';
 import { FavoriteEntity } from '../ecommerce/favorite.entity';
 import { MessageEntity, RoomEntity } from '../chat';
 import { FeedbackEntity } from '../ecommerce/feedback.entity';
+import { OrderEntity } from '../ecommerce';
 
 @Entity({ name: 'account' })
 export class AccountEntity extends BaseEntity<AccountEntity> implements IAccountEntity {
@@ -42,4 +43,7 @@ export class AccountEntity extends BaseEntity<AccountEntity> implements IAccount
 
    @OneToMany(() => FeedbackEntity, (fav) => fav.account)
    feedbacks: FeedbackEntity[];
+
+   @OneToMany(() => OrderEntity, (order) => order.account)
+   orders: OrderEntity[];
 }

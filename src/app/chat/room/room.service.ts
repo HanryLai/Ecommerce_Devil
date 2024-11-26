@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
-import { RoomRepository } from 'src/repositories/chat';
+import { MessageRepository, RoomRepository } from 'src/repositories/chat';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RoomEntity } from 'src/entities/chat';
+import { MessageEntity, RoomEntity } from 'src/entities/chat';
 import { BaseService } from 'src/common/base';
 import { In } from 'typeorm';
 import { AuthService } from 'src/app/auth';
@@ -13,6 +13,7 @@ import { CurrentUserDto } from 'src/common/interceptor';
 export class RoomService extends BaseService {
    constructor(
       @InjectRepository(RoomEntity) private readonly roomRepository: RoomRepository,
+      @InjectRepository(MessageEntity) private readonly messageRepository: MessageRepository,
       @Inject() private readonly authService: AuthService,
    ) {
       super();
@@ -30,16 +31,67 @@ export class RoomService extends BaseService {
 
    async findAll(user: CurrentUserDto) {
       try {
-         const foundAdmin = await this.authService.findAccountById(user.id);
-         if (!foundAdmin || foundAdmin.role.name != 'admin') {
-            this.ThrowError('Admin not found');
-         }
-         const rooms = await this.roomRepository.find();
-         if (rooms.length == 0) {
+         const rooms = await this.roomRepository.find({
+            relations: ['account.detailInformation'],
+         });
+         if (!rooms) {
             this.NotFoundException('Rooms not found');
          }
+         if (rooms.length === 0) {
+            return [];
+         }
 
-         return rooms;
+         let result: {
+            roomId: string;
+            userId: string;
+            avatar: string;
+            name: string;
+            lastMessage: {
+               message: string;
+               senderId: string;
+            };
+         }[] = [];
+
+         for (const room of rooms) {
+            const messages = await this.messageRepository.find({
+               where: {
+                  room: {
+                     id: room.id,
+                  },
+               },
+               order: {
+                  createdAt: 'DESC',
+               },
+               take: 1,
+               relations: ['account'],
+            });
+
+            if (messages.length > 0) {
+               result.push({
+                  roomId: room.id,
+                  userId: room.account.id,
+                  avatar: room.account.detailInformation.avatar_url,
+                  name: room.account.detailInformation.full_name,
+                  lastMessage: {
+                     message: messages[0].content,
+                     senderId: messages[0].account.id,
+                  },
+               });
+            } else {
+               result.push({
+                  roomId: room.id,
+                  userId: room.account.id,
+                  avatar: room.account.detailInformation.avatar_url,
+                  name: room.account.detailInformation.full_name,
+                  lastMessage: {
+                     message: '',
+                     senderId: '',
+                  },
+               });
+            }
+         }
+
+         return result;
       } catch (error) {
          this.ThrowError(error);
       }
