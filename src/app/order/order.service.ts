@@ -11,7 +11,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '../auth';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { EntityManager } from 'typeorm';
+import { EntityManager, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class OrderService extends BaseService {
@@ -139,6 +139,7 @@ export class OrderService extends BaseService {
 
    async getOrderById(user: CurrentUserDto, orderId: string) {
       try {
+         console.log('getbyoprder', orderId);
          const order = await this.orderRepository.findOne({
             where: { id: orderId, account_id: user.id },
             relations: ['orderItems', 'orderItems.products'],
@@ -173,11 +174,11 @@ export class OrderService extends BaseService {
       }
    }
 
-   async updateOrderById(orderId: string, status: boolean) {
+   async updateOrderById(orderId: string, status: boolean): Promise<UpdateResult> {
       try {
-         await this.orderRepository.update({ id: orderId }, { isActive: status });
+         return await this.orderRepository.update({ id: orderId }, { isActive: status });
       } catch (error) {
-         return this.ThrowError(error);
+         this.ThrowError(error);
       }
    }
 }
