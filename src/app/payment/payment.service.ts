@@ -4,32 +4,30 @@ import { OrderService } from '../order/order.service';
 import { BaseService } from '@/common/base';
 import { MoMoRequest } from './interfaces/momo-request.interface';
 import { CurrentUserDto } from '@/common/interceptor';
+import { JWTService } from '../auth/jwt';
 @Injectable()
 export class PaymentService extends BaseService {
-   constructor(@Inject() private readonly orderService: OrderService) {
+   constructor(
+      @Inject() private readonly orderService: OrderService,
+      @Inject() private readonly jwtService: JWTService,
+   ) {
       super();
    }
-   private MoMoRequestContent(amountMoney: number, orderId: string): MoMoRequest {
-      //   var accessKey = 'F8BBA842ECF85';
-      //   var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
-      //   var orderInfo = 'pay with MoMo';
-      //   var partnerCode = 'MOMO';
-      //   var redirectUrl = `http://${process.env.HOST}:${process.env.PORT}/api/payment/successfully?orderId=`;
 
-      //   var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
-      //   var requestType = 'payWithMethod';
-      //   var amount = amountMoney;
-      //   var orderId = partnerCode + new Date().getTime();
-      //   var requestId = orderId;
-      //   var extraData = '';
-      //   var orderGroupId = '';
-      //   var autoCapture = true;
-      //   var lang = 'vi';
+   private generateJwtTokenPayment(orderId: string) {
+      return this.jwtService.generatePaymentToken({ orderId });
+   }
+
+   private MoMoRequestContent(amountMoney: number, orderId: string): MoMoRequest {
+      const host = process.env.HOST || 'localhost';
+      const port = process.env.PORT || '3030';
       var accessKey = 'F8BBA842ECF85';
       var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
       var orderInfo = 'pay with MoMo';
       var partnerCode = 'MOMO';
-      var redirectUrl = 'http://localhost:3030/api/payment/successfully?orderId=' + orderId;
+      var redirectUrl =
+         `http://${host}:${port}/api/payment/successfully?orderId=` +
+         this.generateJwtTokenPayment(orderId);
       var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
       var requestType = 'payWithMethod';
       var amount = amountMoney;
@@ -118,8 +116,9 @@ export class PaymentService extends BaseService {
       }
    }
 
-   async informPayment(user: CurrentUserDto, orderId: string) {
+   async informPayment(user: CurrentUserDto, orderIdEnCoded: string) {
       try {
+         const orderId = (await this.jwtService.verifyToken(orderIdEnCoded)).orderId;
          const order = await this.orderService.getOrderById(user, orderId);
          if (!order) {
             return this.NotFoundException('Order not found');
