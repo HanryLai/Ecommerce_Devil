@@ -37,10 +37,22 @@ export class PaymentController extends BaseController {
       );
    }
 
+   @Post('callback')
+   @ApiResponse({ status: '2XX', description: 'Payment successfylly' })
+   @ApiResponse({ status: '4XX', description: 'Order not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @HttpCode(200)
+   async callback(@Body() dataReturn): Promise<MessageResponse> {
+      return this.OkResponse(
+         await this.paymentService.returnCallBack(dataReturn),
+         'Payment successfylly',
+      );
+   }
+
    @UseGuards(AuthGuard)
    @UseInterceptors(CurrentUserInterceptor)
    @Post(':orderId')
-   @ApiResponse({ status: '2XX', description: 'Payment successfylly' })
+   @ApiResponse({ status: '2XX', description: 'Payment successfully' })
    @ApiResponse({ status: '4XX', description: 'Order not found' })
    @ApiResponse({ status: '5XX', description: 'Internal server error' })
    @HttpCode(200)
