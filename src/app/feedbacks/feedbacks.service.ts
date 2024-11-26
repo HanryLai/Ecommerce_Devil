@@ -73,4 +73,23 @@ export class FeedbacksService extends BaseService {
          this.ThrowError(error);
       }
    }
+
+   async updateFeedback(id: string, updateFeedbackDto: UpdateFeedbackDto) {
+      try {
+         const feedback = await this.feedbackRepository.findOne({ where: { id } });
+
+         if (!feedback) {
+            throw new Error(`Feedback with ID: ${id} not found`);
+         }
+
+         const updatedFeedback = await this.feedbackRepository.save({
+            ...feedback,
+            ...updateFeedbackDto,
+         });
+
+         return updatedFeedback;
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
 }
