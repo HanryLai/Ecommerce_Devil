@@ -105,7 +105,10 @@ export class OrderService extends BaseService {
 
          // Delete all cart items
          for (const cartItem of cartItems) {
-            const cartItemDelete = await this.cartItemRepository.findOne({ where: { id: cartItem.id }, relations: ['options'] });
+            const cartItemDelete = await this.cartItemRepository.findOne({
+               where: { id: cartItem.id },
+               relations: ['options'],
+            });
             for (const option of cartItemDelete.options) {
                await this.entityManager.remove(option);
             }
@@ -165,6 +168,14 @@ export class OrderService extends BaseService {
          await this.orderRepository.delete({ id: orderId });
 
          return { message: 'Cancel order successfully' };
+      } catch (error) {
+         return this.ThrowError(error);
+      }
+   }
+
+   async updateOrderById(orderId: string, status: boolean) {
+      try {
+         await this.orderRepository.update({ id: orderId }, { isActive: status });
       } catch (error) {
          return this.ThrowError(error);
       }

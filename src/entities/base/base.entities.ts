@@ -5,7 +5,7 @@ export class BaseEntity<T> implements IBaseEntity {
    @PrimaryGeneratedColumn('uuid')
    id: string;
 
-   @Column({ default: true })
+   @Column({ default: false })
    isActive: boolean;
 
    @CreateDateColumn()

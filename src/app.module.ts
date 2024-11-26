@@ -42,6 +42,7 @@ import { OptionModule } from './app/option/option.module';
 import { ListOptionModule } from './app/list-option/list-option.module';
 import { CartSeeder } from './seeders/cart.seeder';
 import { OrderModule } from './app/order/order.module';
+import { PaymentModule } from './app/payment/payment.module';
 
 @Module({
    imports: [
@@ -80,6 +81,7 @@ import { OrderModule } from './app/order/order.module';
       ListOptionModule,
       FeedbacksModule,
       OrderModule,
+      PaymentModule,
    ],
    providers: [
       RunAllSeeder,
