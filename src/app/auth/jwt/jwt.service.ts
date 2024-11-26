@@ -31,9 +31,11 @@ export class JWTService extends BaseService {
       }
    }
 
-   public verifyTokenPayment(token: string): IPayloadPayment {
+   public async verifyPayment(token: string): Promise<IPayloadPayment> {
       try {
-         return this.jwtService.verify(token);
+         const payload = this.jwtService.verify(token);
+         console.log('payload', payload);
+         return payload;
       } catch (error) {
          this.UnauthorizedException('Token payment is invalid');
       }
@@ -41,7 +43,7 @@ export class JWTService extends BaseService {
 
    public generatePaymentToken(payloadData: Record<string, any>): string {
       return this.jwtService.sign(payloadData, {
-         expiresIn: '1h',
+         expiresIn: '1d',
       });
    }
 }
