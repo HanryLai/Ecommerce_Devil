@@ -44,7 +44,8 @@ export class FeedbacksService extends BaseService {
       try {
          return await this.feedbackRepository.find({
             where: {
-               account: idAccount,
+               account: { id: idAccount.id },
+               isFeedback: false
             },
             relations: ['product'],
          });
@@ -60,14 +61,36 @@ export class FeedbacksService extends BaseService {
                product: {
                   id: idProduct, // Đảm bảo `product` được liên kết qua ID
                },
+               isFeedback: true,
             },
+            relations: ['account.detailInformation'],
          });
 
          if (!feedbacks.length) {
-            throw new Error(`No feedback found for product with ID: ${idProduct}`);
+            []
          }
 
          return feedbacks;
+      } catch (error) {
+         this.ThrowError(error);
+      }
+   }
+
+   async updateFeedback(id: string, updateFeedbackDto: UpdateFeedbackDto) {
+      try {
+         const feedback = await this.feedbackRepository.findOne({ where: { id } });
+
+         if (!feedback) {
+            throw new Error(`Feedback with ID: ${id} not found`);
+         }
+
+         const updatedFeedback = await this.feedbackRepository.save({
+            ...feedback,
+            ...updateFeedbackDto,
+            isFeedback: true,
+         });
+
+         return updatedFeedback;
       } catch (error) {
          this.ThrowError(error);
       }
