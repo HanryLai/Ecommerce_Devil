@@ -8,6 +8,7 @@ import {
    Delete,
    UseGuards,
    UseInterceptors,
+   Put,
 } from '@nestjs/common';
 import { FeedbacksService } from './feedbacks.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
@@ -52,5 +53,14 @@ export class FeedbacksController extends BaseController {
       @CurrentUser() user: CurrentUserDto,
    ): Promise<MessageResponse> {
       return this.OkResponse(await this.feedbacksService.findByAccount(user));
+   }
+
+   @UseGuards(AuthGuard)
+   @Put(':id')
+   public async updateFeedback(
+      @Param('id') id: string,
+      @Body() updateFeedbackDto: UpdateFeedbackDto,
+   ): Promise<MessageResponse> {
+      return this.OkResponse(await this.feedbacksService.updateFeedback(id, updateFeedbackDto));
    }
 }
