@@ -20,6 +20,7 @@ import { CurrentUser } from '@/common/decorators';
 import { BaseController } from 'src/common/base';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { AuthGuard } from '@/common/guard';
+import { CreateOrderNowDto } from './dto/order-now.dto';
 @UseGuards(AuthGuard)
 @UseInterceptors(CurrentUserInterceptor)
 @ApiTags('Order')
@@ -68,6 +69,22 @@ export class OrderController extends BaseController {
       return this.OkResponse(
          await this.orderService.getOrderById(user, orderId),
          MESSAGERESPONSE.QUERIED,
+      );
+   }
+
+   @Post('orderNow')
+   @ApiResponse({ status: '2XX', description: 'Order now' })
+   @ApiResponse({ status: '4XX', description: 'Order not found' })
+   @ApiResponse({ status: '5XX', description: 'Internal server error' })
+   @ApiBearerAuth()
+   @HttpCode(200)
+   public async orderNow(
+      @CurrentUser() user: CurrentUserDto,
+      @Body() orderNow: CreateOrderNowDto,
+   ): Promise<MessageResponse> {
+      return this.OkResponse(
+         await this.orderService.orderNow(user, orderNow),
+         MESSAGERESPONSE.CREATED,
       );
    }
 }
