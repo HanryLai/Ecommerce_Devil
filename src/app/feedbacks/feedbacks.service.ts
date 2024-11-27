@@ -87,6 +87,7 @@ export class FeedbacksService extends BaseService {
          const updatedFeedback = await this.feedbackRepository.save({
             ...feedback,
             ...updateFeedbackDto,
+            isFeedback: true,
          });
 
          return updatedFeedback;
