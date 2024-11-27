@@ -1,17 +1,29 @@
 import { BaseService } from '@/common/base';
 import { CurrentUserDto } from '@/common/interceptor';
-import { CartItemEntity, FeedbackEntity, OrderEntity, OrderItemEntity } from '@/entities/ecommerce';
+import {
+   CartItemEntity,
+   FeedbackEntity,
+   ListOptionEntity,
+   OptionEntity,
+   OrderEntity,
+   OrderItemEntity,
+   ProductEntity,
+} from '@/entities/ecommerce';
 import {
    CartItemRepository,
    FeedbackRepository,
+   ListOptionRepository,
+   OptionRepository,
    OrderItemRepository,
    OrderRepository,
+   ProductRepository,
 } from '@/repositories/ecommerce';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '../auth';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { EntityManager } from 'typeorm';
+import { CreateOrderNowDto } from './dto/order-now.dto';
 
 @Injectable()
 export class OrderService extends BaseService {
@@ -20,6 +32,9 @@ export class OrderService extends BaseService {
       @InjectRepository(OrderItemEntity) private orderItemRepository: OrderItemRepository,
       @InjectRepository(CartItemEntity) private cartItemRepository: CartItemRepository,
       @InjectRepository(FeedbackEntity) private feedbackRepository: FeedbackRepository,
+      @InjectRepository(ProductEntity) private productRepository: ProductRepository,
+      @InjectRepository(OptionEntity) private optionRepository: OptionRepository,
+      @InjectRepository(ListOptionEntity) private listOptionRepository: ListOptionRepository,
 
       @Inject() private readonly authService: AuthService,
       private entityManager: EntityManager,
@@ -105,7 +120,10 @@ export class OrderService extends BaseService {
 
          // Delete all cart items
          for (const cartItem of cartItems) {
-            const cartItemDelete = await this.cartItemRepository.findOne({ where: { id: cartItem.id }, relations: ['options'] });
+            const cartItemDelete = await this.cartItemRepository.findOne({
+               where: { id: cartItem.id },
+               relations: ['options'],
+            });
             for (const option of cartItemDelete.options) {
                await this.entityManager.remove(option);
             }
@@ -165,6 +183,75 @@ export class OrderService extends BaseService {
          await this.orderRepository.delete({ id: orderId });
 
          return { message: 'Cancel order successfully' };
+      } catch (error) {
+         return this.ThrowError(error);
+      }
+   }
+
+   async orderNow(user: CurrentUserDto, orderNowDto: CreateOrderNowDto) {
+      try {
+         const product = await this.productRepository.findOne({
+            where: { id: orderNowDto.productId },
+            relations: ['options', 'options.listOptions'],
+         });
+
+         if (!product) {
+            return this.NotFoundException('Product not found');
+         }
+
+         for (const option of orderNowDto.listOptions) {
+            const listOption = await this.listOptionRepository.findOne({ where: { id: option } });
+            if (!listOption) {
+               return this.NotFoundException('List option not found');
+            }
+         }
+
+         const detailInformation = await this.authService.findMyAccount(user);
+         if (!detailInformation) {
+            return this.NotFoundException('Detail information not found');
+         }
+
+         let total_price = product.price;
+         let product_description = '';
+
+         for (const listOptionId of orderNowDto.listOptions) {
+            const listOption = await this.listOptionRepository.findOne({
+               where: { id: listOptionId },
+            });
+            total_price += listOption.adjustPrice;
+            product_description += listOption.name + ', ';
+         }
+         total_price *= orderNowDto.quantity;
+         product_description = product_description.slice(0, -2);
+
+         const saveOrder = await this.orderRepository.save({
+            total_price,
+            full_name: detailInformation.detailInformation.full_name,
+            phone: detailInformation.detailInformation.phone,
+            address: detailInformation.detailInformation.address,
+            account_id: user.id,
+         });
+
+         const createFeedback = await this.feedbackRepository.save({
+            account: detailInformation,
+            product_id: product.id,
+         });
+
+         const orderItemSave = await this.orderItemRepository.save({
+            product_id: product.id,
+            quantity: orderNowDto.quantity,
+            single_price: total_price,
+            product_description: product_description,
+            order_id: saveOrder.id,
+            feedback_id: createFeedback.id,
+         });
+
+         await this.orderItemRepository.save(orderItemSave);
+
+         return await this.orderRepository.findOne({
+            where: { id: saveOrder.id },
+            relations: ['orderItems', 'orderItems.products'],
+         });
       } catch (error) {
          return this.ThrowError(error);
       }
