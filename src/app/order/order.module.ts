@@ -11,9 +11,10 @@ import { JWTModule } from '../auth/jwt';
    imports: [
       TypeOrmModule.forFeature([OrderEntity, OrderItemEntity, CartItemEntity, FeedbackEntity, ProductEntity, OptionEntity, ListOptionEntity]),
       AuthModule,
-      JWTModule
+      JWTModule,
    ],
    controllers: [OrderController],
    providers: [OrderService],
+   exports: [OrderService],
 })
 export class OrderModule {}
