@@ -28,8 +28,7 @@ export class PaymentService extends BaseService {
          var partnerCode = 'MOMO';
          var redirectUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
-         var ipnUrl =
-            'https://eb59-2402-800-63af-82b9-25e8-3cab-a81b-2e5b.ngrok-free.app/api/payment/callback';
+         var ipnUrl = 'https://628b-115-74-223-243.ngrok-free.app/api/payment/callback';
          var requestType = 'payWithMethod';
          var amount = amountMoney;
          var orderId = partnerCode + 'market' + orderIdCustomer + 'market' + new Date().getTime();
@@ -62,14 +61,8 @@ export class PaymentService extends BaseService {
             requestId +
             '&requestType=' +
             requestType;
-         //puts raw signature
-         console.log('--------------------RAW SIGNATURE----------------');
-         console.log(rawSignature);
-         //signature
          const crypto = require('crypto');
          var signature = crypto.createHmac('sha256', secretKey).update(rawSignature).digest('hex');
-         console.log('--------------------SIGNATURE----------------');
-         console.log(signature);
 
          //json object send to MoMo endpoint
          const requestBody = JSON.stringify({
@@ -112,11 +105,9 @@ export class PaymentService extends BaseService {
          }
 
          const result = await axios(this.MoMoRequestContent(order.total_price, orderId));
-         console.log('result', result.data);
          return result.data;
       } catch (error) {
-         console.log('--------------------ERROR----------------');
-         console.log(error);
+         this.ThrowError(error);
       }
    }
 
@@ -126,13 +117,12 @@ export class PaymentService extends BaseService {
          console.log(dataReturn);
          const orderId = dataReturn.orderId.split('market')[1];
          let result = undefined;
-         if (dataReturn != 0) this.BadRequestException('Payment error');
-         if (dataReturn.dataReturn == 0) {
-            result = await this.orderService.updateOrderById(orderId, true);
-            if (result && result.affected != 0) return dataReturn;
+         if (dataReturn.resultCode != 0) {
+            this.BadGatewayException("Can't pay this order");
          }
-
-         this.NotFoundException('Not found this order');
+         result = await this.orderService.updateOrderById(orderId, true);
+         if (result && result.affected == 0) this.NotFoundException('Not found this order ');
+         return dataReturn;
       } catch (error) {
          this.ThrowError(error);
       }
@@ -147,7 +137,6 @@ export class PaymentService extends BaseService {
          if (result.affected == 0) this.NotFoundException('Not found this order ');
          return result.raw;
       } catch (error) {
-         console.log('--------------------ERROR----------------');
          this.ThrowError(error);
       }
    }
