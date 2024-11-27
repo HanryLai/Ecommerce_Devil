@@ -28,7 +28,7 @@ export class PaymentService extends BaseService {
          var partnerCode = 'MOMO';
          var redirectUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
-         var ipnUrl = 'https://628b-115-74-223-243.ngrok-free.app/api/payment/callback';
+         var ipnUrl = process.env.FULL_URL + '/api/payment/callback';
          var requestType = 'payWithMethod';
          var amount = amountMoney;
          var orderId = partnerCode + 'market' + orderIdCustomer + 'market' + new Date().getTime();
