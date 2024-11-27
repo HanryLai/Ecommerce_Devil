@@ -97,9 +97,13 @@ export class OrderService extends BaseService {
             total_price += single_price * quantity;
             // Create order item
 
+            const product = await this.productRepository.findOne({
+               where: { id: product_id },
+               relations: ['options', 'options.listOptions'],
+            });
             const createFeedback = await this.feedbackRepository.save({
                account,
-               product_id,
+               product: product,
             });
 
             const orderItemSave = await this.orderItemRepository.save({
@@ -111,7 +115,10 @@ export class OrderService extends BaseService {
                feedback_id: createFeedback.id,
             });
 
-            const product = await this.orderItemRepository.findOne({ where: { product_id } });
+            const update = await this.feedbackRepository.update(
+               { id: createFeedback.id },
+               { orderItem_id: orderItemSave.id },
+            );
 
             await this.orderItemRepository.save(orderItemSave);
          }
@@ -146,7 +153,17 @@ export class OrderService extends BaseService {
             relations: ['orderItems', 'orderItems.products'],
          });
 
-         return orders;
+         const ordersReturn = [];
+
+         for (const order of orders) {
+            const orderItems = order.orderItems;
+            ordersReturn.push({
+               ...order,
+               itemCount: orderItems.length,
+            });
+         }
+
+         return ordersReturn;
       } catch (error) {
          return this.ThrowError(error);
       }
@@ -234,7 +251,7 @@ export class OrderService extends BaseService {
 
          const createFeedback = await this.feedbackRepository.save({
             account: detailInformation,
-            product_id: product.id,
+            product: product,
          });
 
          const orderItemSave = await this.orderItemRepository.save({
@@ -245,6 +262,11 @@ export class OrderService extends BaseService {
             order_id: saveOrder.id,
             feedback_id: createFeedback.id,
          });
+
+         const update = await this.feedbackRepository.update(
+            { id: createFeedback.id },
+            { orderItem_id: orderItemSave.id },
+         );
 
          await this.orderItemRepository.save(orderItemSave);
 
