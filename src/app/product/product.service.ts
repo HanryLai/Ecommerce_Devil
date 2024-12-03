@@ -59,7 +59,7 @@ export class ProductService extends BaseService {
          });
 
          return products.map((product) => {
-            const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            const feedbacks = feedback.filter((fb) => fb.product?.id === product.id);
             if (feedbacks.length === 0) {
                return {
                   ...product,
@@ -102,8 +102,7 @@ export class ProductService extends BaseService {
 
    async relationProduct() {
       try {
-         const productsResult = await this.productRepository.find({
-         });
+         const productsResult = await this.productRepository.find({});
 
          if (!productsResult) {
             return [];
