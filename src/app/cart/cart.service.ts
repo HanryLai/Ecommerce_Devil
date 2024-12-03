@@ -61,7 +61,6 @@ export class CartService extends BaseService {
 
    async addProductToCart(user: CurrentUserDto, addItemCartDto: AddItemCartDto) {
       try {
-         console.log(addItemCartDto.listOptionId);
          const userCart = await this.shoppingCartRepository.findOne({
             where: { userId: user.id },
          });

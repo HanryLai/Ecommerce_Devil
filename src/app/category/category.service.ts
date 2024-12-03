@@ -3,8 +3,12 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { BaseService } from 'src/common/base';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoryEntity, ProductEntity } from 'src/entities/ecommerce';
-import { CategoryRepository, ProductRepository } from 'src/repositories/ecommerce';
+import { CategoryEntity, FeedbackEntity, ProductEntity } from 'src/entities/ecommerce';
+import {
+   CategoryRepository,
+   FeedbackRepository,
+   ProductRepository,
+} from 'src/repositories/ecommerce';
 
 @Injectable()
 export class CategoryService extends BaseService {
@@ -13,6 +17,8 @@ export class CategoryService extends BaseService {
       private categoryRepository: CategoryRepository,
       @InjectRepository(ProductEntity)
       private readonly productRepository: ProductRepository,
+      @InjectRepository(FeedbackEntity)
+      private readonly feedbackRepository: FeedbackRepository,
    ) {
       super();
    }
@@ -35,7 +41,35 @@ export class CategoryService extends BaseService {
 
    async findProductsByCategory(categoryId: string) {
       try {
-         return await this.productRepository.find({ where: { categories: { id: categoryId } } });
+         const products = await this.productRepository.find({
+            where: { categories: { id: categoryId } },
+         });
+
+         if (!products) {
+            return [];
+         }
+         const feedback = await this.feedbackRepository.find({
+            where: { isFeedback: true },
+            relations: ['product'],
+         });
+
+         return products.map((product) => {
+            const feedbacks = feedback.filter((fb) => fb.product.id === product.id);
+            if (feedbacks.length === 0) {
+               return {
+                  ...product,
+                  rating: 0,
+               };
+            }
+            const avgRating = feedbacks.reduce((acc, fb) => acc + fb.rating, 0) / feedbacks.length;
+            // avgRating round 1 decimal
+            const roundRating = Math.round(avgRating * 10) / 10;
+
+            return {
+               ...product,
+               rating: roundRating,
+            };
+         });
       } catch (error) {
          this.ThrowError(error);
       }

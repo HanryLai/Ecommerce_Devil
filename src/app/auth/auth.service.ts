@@ -15,6 +15,7 @@ import { CurrentUserDto } from '@/common/interceptor';
 import { RoomService } from '../chat/room/room.service';
 import { RoomEntity } from '@/entities/chat';
 import { RoomRepository } from '@/repositories/chat';
+import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -65,6 +66,7 @@ export class AuthService extends BaseService {
       try {
          return await this.entityManager.transaction(async (entityManager: EntityManager) => {
             const detailInformationModel = entityManager.create(DetailInformationEntity);
+            detailInformationModel.avatar_url = faker.image.avatar();
             const detailInformation = await entityManager.save(detailInformationModel);
             const accountCreate = entityManager.create(AccountEntity, {
                ...account,
@@ -72,6 +74,7 @@ export class AuthService extends BaseService {
                role: role,
             });
             const accountSave = await entityManager.save(accountCreate);
+            console.log(accountSave);
             this.cartService.createNewCart({ id: accountSave.id } as unknown as CurrentUserDto);
 
             if (role.name === 'customer') {
