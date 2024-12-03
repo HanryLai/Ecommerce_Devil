@@ -37,6 +37,6 @@ export class RunAllSeeder extends BaseService implements OnModuleInit {
       await this.optionSeeder.run();
       await this.listOptionSeeder.run();
       await this.feedbackSeeder.run();
-      await this.cartSeeder.run();
+      // await this.cartSeeder.run();
    }
 }

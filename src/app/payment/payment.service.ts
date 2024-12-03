@@ -31,8 +31,9 @@ export class PaymentService extends BaseService {
          var ipnUrl = process.env.FULL_URL + '/api/payment/callback';
          var requestType = 'payWithMethod';
          var amount = amountMoney;
+         var orderIdResponse = orderIdCustomer;
          var orderId = partnerCode + 'market' + orderIdCustomer + 'market' + new Date().getTime();
-         var requestId = orderId;
+         var requestId = orderIdResponse;
          var extraData = '';
          var paymentCode =
             'T8Qii53fAXyUftPV3m9ysyRhEanUs9KlOPfHgpMR0ON50U10Bh+vZdpJU7VY4z+Z2y77fJHkoDc69scwwzLuW5MzeUKTwPo3ZMaB29imm6YulqnWfTkgzqRaion+EuD7FN9wZ4aXE1+mRt0gHsU193y+yxtRgpmY7SDMU9hCKoQtYyHsfFR5FUAOAKMdw2fzQqpToei3rnaYvZuYaxolprm9+/+WIETnPUDlxCYOiw7vPeaaYQQH0BF0TxyU3zu36ODx980rJvPAgtJzH1gUrlxcSS1HQeQ9ZaVM1eOK/jl8KJm6ijOwErHGbgf/hVymUQG65rHU2MWz9U8QUjvDWA==';
@@ -69,6 +70,7 @@ export class PaymentService extends BaseService {
             partnerCode: partnerCode,
             partnerName: 'Test',
             storeId: 'MomoTestStore',
+            orderIdResponse: orderIdResponse,
             requestId: requestId,
             amount: amount,
             orderId: orderId,
