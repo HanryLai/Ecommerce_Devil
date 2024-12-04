@@ -150,7 +150,7 @@ export class OrderService extends BaseService {
       try {
          const orders = await this.orderRepository.find({
             where: { account_id: user.id },
-            relations: ['orderItems', 'orderItems.products'],
+            relations: ['orderItems', 'orderItems.products', 'orderItems.feedback'],
          });
 
          const ordersReturn = [];
@@ -174,7 +174,7 @@ export class OrderService extends BaseService {
          console.log('getbyoprder', orderId);
          const order = await this.orderRepository.findOne({
             where: { id: orderId, account_id: user.id },
-            relations: ['orderItems', 'orderItems.products'],
+            relations: ['orderItems', 'orderItems.products', 'orderItems.feedback'],
          });
 
          return order;
